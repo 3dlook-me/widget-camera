@@ -1,0 +1,29 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["eslint-config-airbnb"],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/sort-comp": "off",
+    "class-methods-use-this": "off"
+  },
+  "globals": {
+    "API_HOST": true,
+    "API_DENIM_HOST": true,
+    "API_KEY": true,
+    "WIDGET_HOST": true,
+    "VERSION": true,
+    "COMMITHASH": true,
+    "BRANCH": true,
+    "ga": true,
+    "$": true,
+    "item": true,
+    "meta": true
+  }
+}
