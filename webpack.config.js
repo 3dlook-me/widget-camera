@@ -239,7 +239,7 @@ module.exports = {
   devtool: (mode === 'production') ? false : 'source-map',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    compress: false,
+    compress: true,
     host: '0.0.0.0',
     port: 9000,
     historyApiFallback: true,
