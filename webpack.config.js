@@ -10,6 +10,7 @@ const RenameOutputPlugin = require('rename-output-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackCleanPlugin = require('webpack-clean');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -25,7 +26,6 @@ const mode = (NODE_ENV && NODE_ENV.trim() === 'production') ? 'production' : 'de
 
 const shouldGenSourceMap = mode !== 'production';
 
-
 /**
  * SCSS configs
  */
@@ -38,10 +38,6 @@ const sass = {
 
 const css = {
   loader: 'css-loader',
-};
-
-const style = {
-  loader: 'style-loader',
 };
 
 const postcss = {
@@ -63,22 +59,21 @@ const plugins = [
     COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
     BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
   }),
-  new HtmlWebpackPlugin({
+  mode !== 'production' ? new HtmlWebpackPlugin({
     filename: 'index.html',
     template: path.resolve('src/index.html'),
     inject: true,
-    inlineSource: 'widget.(js|css)$',
-    minify: {
-      removeComments: mode === 'production',
-      collapseWhitespace: mode === 'production',
-      removeAttributeQuotes: mode === 'production',
-    },
+    inlineSource: 'widget.(js/css)$',
+  }) : false,
+  mode !== 'production' ? new HtmlWebpackInlineSourcePlugin() : false,
+  new MiniCssExtractPlugin({
+    filename: "style.css",
+    chunkFilename: "[name].css"
   }),
-  new HtmlWebpackInlineSourcePlugin(),
   new CleanWebpackPlugin([
     'dist',
   ]),
-];
+].filter(Boolean);
 
 /**
  * Webpack config
@@ -166,7 +161,7 @@ module.exports = {
 
       {
         test: /\.scss/,
-        use: [style, css, postcss, sass],
+        use: [MiniCssExtractPlugin.loader, css, postcss, sass],
       },
 
       {
@@ -244,7 +239,7 @@ module.exports = {
   devtool: (mode === 'production') ? false : 'source-map',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    compress: true,
+    compress: false,
     host: '0.0.0.0',
     port: 9000,
     historyApiFallback: true,
