@@ -73,7 +73,7 @@ const plugins = [
   new CleanWebpackPlugin([
     'dist',
   ]),
-].filter(Boolean);
+].filter(value => !value);
 
 /**
  * Webpack config
