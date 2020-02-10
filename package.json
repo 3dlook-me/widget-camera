@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git@bitbucket.org:Skiminojek/widget-camera.git"
   },
+  "publishConfig": {
+    "registry": "https://nexus.3dlook.me/repository/3dlook-npm-hosted/"
+  },
   "author": "3DLOOK",
   "license": "ISC",
   "main": "dist/index.js",
