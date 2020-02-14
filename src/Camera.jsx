@@ -6,8 +6,8 @@ import './Camera.scss'
 import frontContour from './images/front-contour.svg';
 
 // const frontContour = require('./images/front-contour.svg');
-const sideContour = require('./images/side-contour.svg');
-const warning = require('./images/camera-warning.svg');
+import sideContour from './images/side-contour.svg';
+import warning from './images/camera-warning.svg';
 
 const VIDEO_CONFIG = {
   video: {
@@ -222,6 +222,7 @@ class Camera extends Component {
   }
 
 }
+
 process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
 
 export default Camera;

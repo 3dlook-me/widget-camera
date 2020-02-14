@@ -7,8 +7,7 @@ const cssnano = require('cssnano');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const RenameOutputPlugin = require('rename-output-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const WebpackCleanPlugin = require('webpack-clean');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -22,7 +21,7 @@ if (!NODE_ENV) {
 }
 
 // get right mode
-const mode = (NODE_ENV && NODE_ENV.trim() === 'production') ? 'production' : 'development';
+const mode = NODE_ENV;
 
 const shouldGenSourceMap = mode !== 'production';
 
@@ -31,13 +30,14 @@ const shouldGenSourceMap = mode !== 'production';
  */
 const sass = {
   loader: 'sass-loader',
-  options: {
-    modules: true,
-  },
 };
 
 const css = {
   loader: 'css-loader',
+};
+
+const style = {
+  loader: 'style-loader',
 };
 
 const postcss = {
@@ -70,10 +70,8 @@ const plugins = [
     filename: "style.css",
     chunkFilename: "[name].css"
   }),
-  new CleanWebpackPlugin([
-    'dist',
-  ]),
-].filter(value => !value);
+  new CleanWebpackPlugin(),
+].filter(value => value);
 
 /**
  * Webpack config
@@ -160,7 +158,7 @@ module.exports = {
       },
 
       {
-        test: /\.scss/,
+        test: /\.(s*)css$/,
         use: [MiniCssExtractPlugin.loader, css, postcss, sass],
       },
 
@@ -199,12 +197,9 @@ module.exports = {
       'node_modules',
     ],
     alias: {
-      react: 'preact-compat',
-      'react-dom': 'preact-compat',
-      // Not necessary unless you consume a module using `createClass`
-      'create-react-class': 'preact-compat/lib/create-react-class',
-      // Not necessary unless you consume a module requiring `react-dom-factories`
-      'react-dom-factories': 'preact-compat/lib/react-dom-factories',
+      react: 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+      'react-dom': 'preact/compat',
     },
   },
   optimization: {
