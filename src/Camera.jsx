@@ -128,11 +128,19 @@ class Camera extends Component {
   };
 
   componentDidMount() {
+    window.addEventListener('devicemotion', (event) => {
+      if(event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
+        this.setState({
+          gyroscope: true,
+        })
+      }
+    }, {once: true});
+
     this.setState({
       width: document.body.clientWidth,
       height: document.body.clientHeight,
     }, this.startStream);
-    
+
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
           .then((response) => {
@@ -173,6 +181,7 @@ class Camera extends Component {
       info,
       processing,
       allowed,
+      gyroscope
     } = this.state;
 
     const {
@@ -215,7 +224,7 @@ class Camera extends Component {
                 ))}
           </div>
 
-          {(info) ? (
+          {(info && gyroscope) ? (
               <div className="widget-camera__warning">
                 <img src={warning} alt="warning" />
                 <h2>Hold the phone vertically</h2>
@@ -224,7 +233,6 @@ class Camera extends Component {
         </div>
     );
   }
-
 }
 
 process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
