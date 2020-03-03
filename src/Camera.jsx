@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import { getOrientation, fixOrientation, isSamsungBrowser } from './helpers/utils';
 import './Camera.scss'
 
-import frontContour from './images/front-contour.svg';
-
-// const frontContour = require('./images/front-contour.svg');
-import sideContour from './images/side-contour.svg';
+import femaleFrontContour from './images/female-front-contour.svg';
+import femaleSideContour from './images/female-side-contour.svg';
+import maleFrontContour from './images/male-front-contour.svg';
+import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
 
 const VIDEO_CONFIG = {
@@ -25,6 +25,7 @@ class Camera extends Component {
       processing: false,
       info: false,
       allowed: true,
+      gyroscope: false,
     };
 
     this.rotX = 0;
@@ -131,7 +132,7 @@ class Camera extends Component {
       width: document.body.clientWidth,
       height: document.body.clientHeight,
     }, this.startStream);
-
+    
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
           .then((response) => {
@@ -176,6 +177,7 @@ class Camera extends Component {
 
     const {
       type = 'front',
+      gender = 'female',
     } = this.props;
 
     return (
@@ -192,8 +194,10 @@ class Camera extends Component {
                     autoPlay
                     className={classNames('widget-camera-video')}
                 />
-                {(type === 'front') ? <img className="widget-camera__contour" src={frontContour} alt="front contour" /> : null }
-                {(type === 'side') ? <img className="widget-camera__contour" src={sideContour} alt="side contour" /> : null }
+                {(type === 'front' && gender === 'female') ? <img className="widget-camera__contour" src={femaleFrontContour} alt="front contour" /> : null }
+                {(type === 'side' && gender === 'female') ? <img className="widget-camera__contour" src={femaleSideContour} alt="side contour" /> : null }
+                {(type === 'front' && gender === 'male') ? <img className="widget-camera__contour" src={maleFrontContour} alt="front contour" /> : null }
+                {(type === 'side' && gender === 'male') ? <img className="widget-camera__contour" src={maleSideContour} alt="side contour" /> : null }
               </div>
           )}
 
