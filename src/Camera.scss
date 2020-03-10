@@ -127,6 +127,11 @@
     justify-content: center;
     align-items: center;
     color: #fff;
+    visibility: hidden;
+
+    &.active {
+      visibility: visible;
+    }
 
     h2 {
       font-size: 18px;

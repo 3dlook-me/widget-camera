@@ -224,12 +224,12 @@ class Camera extends Component {
                 ))}
           </div>
 
-          {(info && gyroscope) ? (
-              <div className="widget-camera__warning">
-                <img src={warning} alt="warning" />
-                <h2>Hold the phone vertically</h2>
-              </div>
-          ) : null}
+          <div className={classNames('widget-camera__warning', {
+            active: info && gyroscope,
+          })}>
+            <img src={warning} alt="warning" />
+            <h2>Hold the phone vertically</h2>
+          </div>
         </div>
     );
   }
