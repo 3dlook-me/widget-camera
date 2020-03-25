@@ -57,23 +57,27 @@ class Camera extends Component {
   }
 
   startStream = async () => {
+    this.startCamera(VIDEO_CONFIG, this.getUserDevices);
+  };
+
+  startCamera = async (config, callback) => {
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia(VIDEO_CONFIG);
+      this.stream = await navigator.mediaDevices.getUserMedia(config);
       this.video.srcObject = this.stream;
 
-      this.getUserDevices();
+      if (callback) {
+        callback();
+      }
     } catch (error) {
       this.setState({
         allowed: false,
       });
-      alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
-    }
 
-    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-      console.log("enumerateDevices() not supported.");
-      return;
+      alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
+
+      window.location.reload();
     }
-  };
+  }
 
   getUserDevices = () => {
     navigator.mediaDevices.enumerateDevices()
@@ -216,26 +220,17 @@ class Camera extends Component {
   };
 
   changeCamera = async (e) => {
-     const { cameras } = this.state;
-     const { id } = e.target.dataset;
+    const { cameras } = this.state;
+    const { id } = e.target.dataset;
+    const videoConfig = { video: { deviceId: cameras[id] } };
 
-     await this.stream.getTracks().forEach(track => track.stop())
+    await this.stream.getTracks().forEach(track => track.stop())
 
-     this.setState({
-       activeCamera: id
-     })
+    this.setState({
+      activeCamera: id
+    });
 
-     const videoConfig = { video: { deviceId: cameras[id] } };
-
-     try {
-       this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
-       this.video.srcObject = this.stream;
-     } catch (error) {
-       this.setState({
-         allowed: false,
-       });
-       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
-     }
+    this.startCamera(videoConfig);
   }
 
   render() {
