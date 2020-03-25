@@ -17,6 +17,14 @@ const VIDEO_CONFIG = {
   audio: false,
 };
 
+// // for development to open on desktop
+// let VIDEO_CONFIG = {
+//   'audio': false,
+//   'video': {
+//     facingMode: 'environment', //'user'
+//   }
+// };
+
 class Camera extends Component {
   constructor(props, context) {
     super(props, context);
@@ -26,6 +34,8 @@ class Camera extends Component {
       info: false,
       allowed: true,
       gyroscope: false,
+      cameras: [],
+      activeCamera: -1
     };
 
     this.rotX = 0;
@@ -50,13 +60,42 @@ class Camera extends Component {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia(VIDEO_CONFIG);
       this.video.srcObject = this.stream;
+
+      this.getUserDevices();
     } catch (error) {
       this.setState({
         allowed: false,
       });
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
     }
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      console.log("enumerateDevices() not supported.");
+      return;
+    }
   };
+
+  getUserDevices = () => {
+    navigator.mediaDevices.enumerateDevices()
+        .then((devices) => {
+          const devicesArr = [];
+
+          devices.forEach((e, i)=>{
+            if (e.kind === 'videoinput' && e.label.includes('back')) {
+              devicesArr.push(e.deviceId)
+            }
+          });
+
+          if (devicesArr.length > 1) {
+            this.setState({
+              cameras: devicesArr,
+            })
+          }
+        })
+        .catch(function(err) {
+          console.log(err.name + ": " + err.message);
+        });
+  }
 
   takePhoto = async () => {
     try {
@@ -176,12 +215,37 @@ class Camera extends Component {
     }
   };
 
+  changeCamera = async (e) => {
+     const { cameras } = this.state;
+     const { id } = e.target.dataset;
+
+     await this.stream.getTracks().forEach(track => track.stop())
+
+     this.setState({
+       activeCamera: id
+     })
+
+     const videoConfig = { video: { deviceId: cameras[id] } };
+
+     try {
+       this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
+       this.video.srcObject = this.stream;
+     } catch (error) {
+       this.setState({
+         allowed: false,
+       });
+       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
+     }
+  }
+
   render() {
     const {
       info,
       processing,
       allowed,
-      gyroscope
+      gyroscope,
+      cameras,
+      activeCamera
     } = this.state;
 
     const {
@@ -214,8 +278,23 @@ class Camera extends Component {
               <p className={classNames('widget-camera-processing')}>Processing...</p>
           )}
 
-          <div className={classNames('widget-camera-controls')}>
+          {cameras ? (
+              <ul className='widget-camera__cameras'>
+                {cameras.map((e, i) => (
+                    <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
+                      <button
+                        data-id={i}
+                        onClick={this.changeCamera}
+                        className='widget-camera__cameras-btn'
+                      >
+                        {i+1}
+                      </button>
+                    </li>
+                ))}
+              </ul>
+          ) : null}
 
+          <div className={classNames('widget-camera-controls')}>
             {this.before(!processing
                 && (
                     <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
@@ -228,6 +307,7 @@ class Camera extends Component {
             active: info && gyroscope,
           })}>
             <img src={warning} alt="warning" />
+            {/*<button type='button' onMouseDown={this.handleClick}>flip button</button>*/}
             <h2>Hold the phone vertically</h2>
           </div>
         </div>
