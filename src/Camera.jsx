@@ -9,21 +9,13 @@ import maleFrontContour from './images/male-front-contour.svg';
 import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
 
-const VIDEO_CONFIG = {
-  video: {
-    facingMode: { exact: 'environment' },
+let VIDEO_CONFIG = {
+  'audio': false,
+  'video': {
+    facingMode: 'environment', //'user'
     width: { exact: 1280 },
   },
-  audio: false,
 };
-
-// // for development to open on desktop
-// let VIDEO_CONFIG = {
-//   'audio': false,
-//   'video': {
-//     facingMode: 'environment', //'user'
-//   }
-// };
 
 class Camera extends Component {
   constructor(props, context) {
@@ -222,7 +214,13 @@ class Camera extends Component {
   changeCamera = async (e) => {
     const { cameras } = this.state;
     const { id } = e.target.dataset;
-    const videoConfig = { video: { deviceId: cameras[id] } };
+    const videoConfig = {
+      video: {
+        deviceId: cameras[id],
+        width: { exact: 1280 }
+      },
+      audio: false,
+    };
 
     await this.stream.getTracks().forEach(track => track.stop())
 
