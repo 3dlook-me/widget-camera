@@ -26,7 +26,8 @@ class Camera extends Component {
       info: false,
       allowed: true,
       gyroscope: false,
-      cameras: [],
+      camerasBack: [],
+      camerasFront: [],
       activeCamera: -1
     };
 
@@ -73,19 +74,41 @@ class Camera extends Component {
 
   getUserDevices = () => {
     navigator.mediaDevices.enumerateDevices()
-        .then((devices) => {
-          const devicesArr = [];
+        .then(async (devices) => {
+          const devicesBackArr = [];
+          const devicesFrontArr = [];
 
           devices.forEach((e, i)=>{
-            if (e.kind === 'videoinput' && e.label.includes('back')) {
-              devicesArr.push(e.deviceId)
+            if (e.kind === 'videoinput') {
+              if (e.label.includes('back')) {
+                devicesBackArr.push(e.deviceId)
+              }
+
+              if (e.label.includes('front')) {
+                devicesFrontArr.push(e.deviceId)
+              }
             }
           });
 
-          if (devicesArr.length > 1) {
+          if (devicesBackArr.length > 1 || devicesFrontArr.length > 2) {
             this.setState({
-              cameras: devicesArr,
+              camerasBack: devicesBackArr,
+              camerasFront: devicesFrontArr,
             })
+          }
+
+          // if opens front camera by default
+          if (devicesBackArr.length === 1 || devicesFrontArr.length >=1) {
+            const videoConfig = {
+              video: {
+                deviceId: devicesBackArr[0],
+                width: { exact: 1280 }
+              },
+              audio: false,
+            };
+
+            await this.stream.getTracks().forEach(track => track.stop())
+            this.startCamera(videoConfig)
           }
         })
         .catch(function(err) {
@@ -212,11 +235,11 @@ class Camera extends Component {
   };
 
   changeCamera = async (e) => {
-    const { cameras } = this.state;
+    const { camerasBack } = this.state;
     const { id } = e.target.dataset;
     const videoConfig = {
       video: {
-        deviceId: cameras[id],
+        deviceId: camerasBack[id],
         width: { exact: 1280 }
       },
       audio: false,
@@ -237,7 +260,7 @@ class Camera extends Component {
       processing,
       allowed,
       gyroscope,
-      cameras,
+      camerasBack,
       activeCamera
     } = this.state;
 
@@ -271,9 +294,9 @@ class Camera extends Component {
               <p className={classNames('widget-camera-processing')}>Processing...</p>
           )}
 
-          {cameras ? (
+          {camerasBack.length >= 1 ? (
               <ul className='widget-camera__cameras'>
-                {cameras.map((e, i) => (
+                {camerasBack.map((e, i) => (
                     <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
                       <button
                         data-id={i}
