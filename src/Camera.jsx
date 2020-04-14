@@ -322,7 +322,6 @@ class Camera extends Component {
           ) : null}
 
           <div className={classNames('widget-camera-controls')}>
-
             {this.before(!processing
                 && (
                     // TODO enable this.takePhoto after feature approve
