@@ -9,6 +9,8 @@ import maleFrontContour from './images/male-front-contour.svg';
 import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
 
+// TODO enable this.takePhoto after feature approve
+
 let VIDEO_CONFIG = {
   'audio': false,
   'video': {
@@ -72,49 +74,57 @@ class Camera extends Component {
     }
   }
 
+  // TODO enable this.takePhoto after feature approve
+
+  androidCameraStart = async (cameras) => {
+    this.setState({
+      camerasBack: cameras,
+      activeCamera: 0
+    })
+
+    const videoConfig = {
+      video: {
+        deviceId: cameras[0],
+        width: {exact: 1280}
+      },
+      audio: false,
+    }
+
+    await this.stream.getTracks().forEach(track => track.stop())
+    this.startCamera(videoConfig)
+  }
+
   getUserDevices = () => {
     navigator.mediaDevices.enumerateDevices()
         .then(async (devices) => {
           const devicesBackArr = [];
-          const devicesFrontArr = [];
 
           devices.forEach((e, i)=>{
-            if (e.kind === 'videoinput') {
-              if (e.label.includes('back')) {
-                devicesBackArr.push(e.deviceId)
-              }
-
-              if (e.label.includes('front')) {
-                devicesFrontArr.push(e.deviceId)
-              }
+            if (e.kind === 'videoinput' && e.label.includes('back')) {
+              devicesBackArr.push(e.deviceId)
             }
           });
 
-          if (devicesBackArr.length > 1 || devicesFrontArr.length > 2) {
-            this.setState({
-              camerasBack: devicesBackArr,
-              camerasFront: devicesFrontArr,
-            })
+          // for android (start stream from camera by id)
+          if (this.is('Android')) {
+            this.androidCameraStart(devicesBackArr);
+
+            return;
           }
 
-          // if opens front camera by default
-          if (devicesBackArr.length === 1 || devicesFrontArr.length >=1) {
-            const videoConfig = {
-              video: {
-                deviceId: devicesBackArr[0],
-                width: { exact: 1280 }
-              },
-              audio: false,
-            };
-
-            await this.stream.getTracks().forEach(track => track.stop())
-            this.startCamera(videoConfig)
+          // for other (start stream from default camera)
+          if (devicesBackArr.length > 1) {
+            this.setState({
+              camerasBack: devicesBackArr,
+            })
           }
         })
         .catch(function(err) {
           console.log(err.name + ": " + err.message);
         });
   }
+
+  // TODO enable this.takePhoto after feature approve
 
   takePhoto = async () => {
     try {
@@ -294,7 +304,8 @@ class Camera extends Component {
               <p className={classNames('widget-camera-processing')}>Processing...</p>
           )}
 
-          {camerasBack.length >= 1 ? (
+          {/* condition > 1 is for android phones ( this.androidCameraStart )*/}
+          {camerasBack.length > 1 ? (
               <ul className='widget-camera__cameras'>
                 {camerasBack.map((e, i) => (
                     <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
@@ -313,7 +324,8 @@ class Camera extends Component {
           <div className={classNames('widget-camera-controls')}>
             {this.before(!processing
                 && (
-                    <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
+                    // TODO enable this.takePhoto after feature approve
+                    <button className={classNames('widget-camera-take-photo')} /*onClick={this.takePhoto}*/ type="button" disabled={!allowed}>
                       <div className={classNames('widget-camera-take-photo-effect')} />
                     </button>
                 ))}
