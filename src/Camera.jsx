@@ -1,7 +1,7 @@
 import { h, render, Component } from 'preact';
 import classNames from 'classnames';
 import { getOrientation, fixOrientation, isSamsungBrowser } from './helpers/utils';
-import './Camera.scss'
+import './Camera.scss';
 
 import femaleFrontContour from './images/female-front-contour.svg';
 import femaleSideContour from './images/female-side-contour.svg';
@@ -9,12 +9,10 @@ import maleFrontContour from './images/male-front-contour.svg';
 import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
 
-// TODO enable this.takePhoto after feature approve
-
-let VIDEO_CONFIG = {
-  'audio': false,
-  'video': {
-    facingMode: 'environment', //'user'
+const VIDEO_CONFIG = {
+  audio: false,
+  video: {
+    facingMode: 'environment', // 'user'
     width: { exact: 1280 },
   },
 };
@@ -30,7 +28,7 @@ class Camera extends Component {
       gyroscope: false,
       camerasBack: [],
       camerasFront: [],
-      activeCamera: -1
+      activeCamera: -1,
     };
 
     this.rotX = 0;
@@ -74,24 +72,22 @@ class Camera extends Component {
     }
   }
 
-  // TODO enable this.takePhoto after feature approve
-
   androidCameraStart = async (cameras) => {
     this.setState({
       camerasBack: cameras,
-      activeCamera: 0
-    })
+      activeCamera: 0,
+    });
 
     const videoConfig = {
       video: {
         deviceId: cameras[0],
-        width: {exact: 1280}
+        width: { exact: 1280 },
       },
       audio: false,
-    }
+    };
 
-    await this.stream.getTracks().forEach(track => track.stop())
-    this.startCamera(videoConfig)
+    await this.stream.getTracks().forEach((track) => track.stop());
+    this.startCamera(videoConfig);
   }
 
   getUserDevices = () => {
@@ -99,9 +95,9 @@ class Camera extends Component {
         .then(async (devices) => {
           const devicesBackArr = [];
 
-          devices.forEach((e, i)=>{
+          devices.forEach((e, i) => {
             if (e.kind === 'videoinput' && e.label.includes('back')) {
-              devicesBackArr.push(e.deviceId)
+              devicesBackArr.push(e.deviceId);
             }
           });
 
@@ -116,15 +112,13 @@ class Camera extends Component {
           if (devicesBackArr.length > 1) {
             this.setState({
               camerasBack: devicesBackArr,
-            })
+            });
           }
         })
-        .catch(function(err) {
-          console.log(err.name + ": " + err.message);
+        .catch((err) => {
+          console.log(`${err.name}: ${err.message}`);
         });
   }
-
-  // TODO enable this.takePhoto after feature approve
 
   takePhoto = async () => {
     try {
@@ -197,12 +191,12 @@ class Camera extends Component {
 
   componentDidMount() {
     window.addEventListener('devicemotion', (event) => {
-      if(event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
+      if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
         this.setState({
           gyroscope: true,
-        })
+        });
       }
-    }, {once: true});
+    }, { once: true });
 
     this.setState({
       width: document.body.clientWidth,
@@ -250,15 +244,15 @@ class Camera extends Component {
     const videoConfig = {
       video: {
         deviceId: camerasBack[id],
-        width: { exact: 1280 }
+        width: { exact: 1280 },
       },
       audio: false,
     };
 
-    await this.stream.getTracks().forEach(track => track.stop())
+    await this.stream.getTracks().forEach((track) => track.stop());
 
     this.setState({
-      activeCamera: id
+      activeCamera: id,
     });
 
     this.startCamera(videoConfig);
@@ -271,7 +265,7 @@ class Camera extends Component {
       allowed,
       gyroscope,
       camerasBack,
-      activeCamera
+      activeCamera,
     } = this.state;
 
     const {
@@ -297,24 +291,24 @@ class Camera extends Component {
                 {(type === 'side' && gender === 'female') ? <img className="widget-camera__contour" src={femaleSideContour} alt="side contour" /> : null }
                 {(type === 'front' && gender === 'male') ? <img className="widget-camera__contour" src={maleFrontContour} alt="front contour" /> : null }
                 {(type === 'side' && gender === 'male') ? <img className="widget-camera__contour" src={maleSideContour} alt="side contour" /> : null }
-              </div>
+              </div>,
           )}
 
           {this.processing(
-              <p className={classNames('widget-camera-processing')}>Processing...</p>
+              <p className={classNames('widget-camera-processing')}>Processing...</p>,
           )}
 
-          {/* condition > 1 is for android phones ( this.androidCameraStart )*/}
+          {/* condition > 1 is for android phones ( this.androidCameraStart ) */}
           {camerasBack.length > 1 ? (
-              <ul className='widget-camera__cameras'>
+              <ul className="widget-camera__cameras">
                 {camerasBack.map((e, i) => (
                     <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
                       <button
-                        data-id={i}
-                        onClick={this.changeCamera}
-                        className='widget-camera__cameras-btn'
+                          data-id={i}
+                          onClick={this.changeCamera}
+                          className="widget-camera__cameras-btn"
                       >
-                        {i+1}
+                        {i + 1}
                       </button>
                     </li>
                 ))}
@@ -324,8 +318,7 @@ class Camera extends Component {
           <div className={classNames('widget-camera-controls')}>
             {this.before(!processing
                 && (
-                    // TODO enable this.takePhoto after feature approve
-                    <button className={classNames('widget-camera-take-photo')} /*onClick={this.takePhoto}*/ type="button" disabled={!allowed}>
+                    <button className={classNames('wßidget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
                       <div className={classNames('widget-camera-take-photo-effect')} />
                     </button>
                 ))}
@@ -333,9 +326,9 @@ class Camera extends Component {
 
           <div className={classNames('widget-camera__warning', {
             active: info && gyroscope,
-          })}>
+          })}
+          >
             <img src={warning} alt="warning" />
-            {/*<button type='button' onMouseDown={this.handleClick}>flip button</button>*/}
             <h2>Hold the phone vertically</h2>
           </div>
         </div>
