@@ -59,7 +59,9 @@ class Camera extends Component {
       this.video.srcObject = this.stream;
 
       if (callback) {
-        callback();
+        callback().catch((err) => {
+          console.log(`${err.name}: ${err.message}`);
+        });
       }
     } catch (error) {
       this.setState({
@@ -91,7 +93,7 @@ class Camera extends Component {
   }
 
   getUserDevices = () => {
-    navigator.mediaDevices.enumerateDevices()
+     return navigator.mediaDevices.enumerateDevices()
         .then(async (devices) => {
           const devicesBackArr = [];
 
@@ -115,9 +117,6 @@ class Camera extends Component {
             });
           }
         })
-        .catch((err) => {
-          console.log(`${err.name}: ${err.message}`);
-        });
   }
 
   takePhoto = async () => {
