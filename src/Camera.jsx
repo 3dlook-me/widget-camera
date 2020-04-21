@@ -105,7 +105,7 @@ class Camera extends Component {
           if (this.is('Android')) {
             this.androidCameraStart(devicesBackArr);
 
-            return;
+            return Promise.resolve();
           }
 
           // for other (start stream from default camera)
@@ -318,7 +318,7 @@ class Camera extends Component {
           <div className={classNames('widget-camera-controls')}>
             {this.before(!processing
                 && (
-                    <button className={classNames('wßidget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
+                    <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
                       <div className={classNames('widget-camera-take-photo-effect')} />
                     </button>
                 ))}
