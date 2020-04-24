@@ -50,10 +50,12 @@ class Camera extends Component {
   }
 
   startStream = async () => {
-    this.startCamera(VIDEO_CONFIG, this.getUserDevices);
+    this.startCamera(VIDEO_CONFIG/*, this.getUserDevices*/);
   };
 
   startCamera = async (config, callback) => {
+    this.stream = null;
+
     try {
       this.stream = await navigator.mediaDevices.getUserMedia(config);
       this.video.srcObject = this.stream;
