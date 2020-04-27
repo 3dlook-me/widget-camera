@@ -17,6 +17,37 @@ const VIDEO_CONFIG = {
   },
 };
 
+// const VIDEO_CONFIG = {
+//   audio: false,
+//   video: {
+//     facingMode: 'user', // 'environment'
+//     width: { exact: 1280 },
+//   },
+// };
+//
+// const VIDEO_CONFIG = {
+//   audio: false,
+//   video: {
+//     facingMode: { exact: 'user' }, // 'environment'
+//     width: { exact: 1280 },
+//   },
+// };
+//
+// const VIDEO_CONFIG = {
+//   audio: false,
+//   video: {
+//     facingMode: { exact: 'environment' }, // 'environment'
+//     width: { exact: 1280 },
+//   },
+// };
+
+// const VIDEO_CONFIG = {
+//   audio: false,
+//   video: {
+//      deviceId: '5651be22c555a70b7049250a322d0124ae1f44f5ff42659fb28849461cff9ddf',
+//   },
+// };
+
 class Camera extends Component {
   constructor(props, context) {
     super(props, context);
@@ -50,18 +81,25 @@ class Camera extends Component {
   }
 
   startStream = async () => {
-    this.startCamera(VIDEO_CONFIG/*, this.getUserDevices*/);
+    this.startCamera(VIDEO_CONFIG, this.getUserDevices);
   };
 
   startCamera = async (config, callback) => {
     this.stream = null;
 
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia(config);
+      this.stream = await navigator.mediaDevices.getUserMedia(config)
+
       this.video.srcObject = this.stream;
+
+      console.log('startCamera - start stream');
+      console.log('================================================')
 
       if (callback) {
         callback().catch((err) => {
+          console.log(`callback - ${err}`);
+          console.log('================================================')
+
           console.log(`${err.name}: ${err.message}`);
         });
       }
@@ -70,9 +108,12 @@ class Camera extends Component {
         allowed: false,
       });
 
+      console.log(`Catch stream === ${error}`)
+      console.log('================================================')
+
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
-      window.location.reload();
+      // window.location.reload();
     }
   }
 
@@ -90,7 +131,11 @@ class Camera extends Component {
       audio: false,
     };
 
+    console.log(`(androidCameraStart stream below)`)
+    console.log(this.stream)
+    console.log('================================================')
     await this.stream.getTracks().forEach((track) => track.stop());
+
     this.startCamera(videoConfig);
   }
 
@@ -99,8 +144,12 @@ class Camera extends Component {
         .then(async (devices) => {
           const devicesBackArr = [];
 
+          console.log(devices)
+          // console.log(JSON.stringify(devices))
+          console.log('================================================')
+
           devices.forEach((e, i) => {
-            if (e.kind === 'videoinput' && e.label.includes('back')) {
+            if (e.kind === 'videoinput'/* && e.label.includes('back')*/) {
               devicesBackArr.push(e.deviceId);
             }
           });
@@ -239,7 +288,7 @@ class Camera extends Component {
     }
   };
 
-  changeCamera = async (e) => {
+  changeCamera = (e) => {
     const { camerasBack } = this.state;
     const { id } = e.target.dataset;
     const videoConfig = {
@@ -250,7 +299,11 @@ class Camera extends Component {
       audio: false,
     };
 
-    await this.stream.getTracks().forEach((track) => track.stop());
+    this.stream.getTracks().forEach((track) => track.stop());
+
+    console.log(`changeCamera this.stream below`)
+    console.log(this.stream)
+    console.log('================================================')
 
     this.setState({
       activeCamera: id,
@@ -325,13 +378,13 @@ class Camera extends Component {
                 ))}
           </div>
 
-          <div className={classNames('widget-camera__warning', {
-            active: info && gyroscope,
-          })}
-          >
-            <img src={warning} alt="warning" />
-            <h2>Hold the phone vertically</h2>
-          </div>
+          {/*<div className={classNames('widget-camera__warning', {*/}
+          {/*  active: info && gyroscope,*/}
+          {/*})}*/}
+          {/*>*/}
+          {/*  <img src={warning} alt="warning" />*/}
+          {/*  <h2>Hold the phone vertically</h2>*/}
+          {/*</div>*/}
         </div>
     );
   }
