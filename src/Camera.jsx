@@ -288,7 +288,7 @@ class Camera extends Component {
     }
   };
 
-  changeCamera = (e) => {
+  changeCamera = async (e) => {
     const { camerasBack } = this.state;
     const { id } = e.target.dataset;
     const videoConfig = {
@@ -299,7 +299,15 @@ class Camera extends Component {
       audio: false,
     };
 
-    this.stream.getTracks().forEach((track) => track.stop());
+    console.log(`changeCamera stream track below`)
+    console.log(this.stream.getTracks())
+    console.log('================================================')
+
+    await this.stream.getTracks().forEach((track) => track.stop());
+
+    console.log(`changeCamera stream track below after track stop`)
+    console.log(this.stream.getTracks())
+    console.log('================================================')
 
     console.log(`changeCamera this.stream below`)
     console.log(this.stream)
