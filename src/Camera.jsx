@@ -17,37 +17,6 @@ const VIDEO_CONFIG = {
   },
 };
 
-// const VIDEO_CONFIG = {
-//   audio: false,
-//   video: {
-//     facingMode: 'user', // 'environment'
-//     width: { exact: 1280 },
-//   },
-// };
-//
-// const VIDEO_CONFIG = {
-//   audio: false,
-//   video: {
-//     facingMode: { exact: 'user' }, // 'environment'
-//     width: { exact: 1280 },
-//   },
-// };
-//
-// const VIDEO_CONFIG = {
-//   audio: false,
-//   video: {
-//     facingMode: { exact: 'environment' }, // 'environment'
-//     width: { exact: 1280 },
-//   },
-// };
-
-// const VIDEO_CONFIG = {
-//   audio: false,
-//   video: {
-//      deviceId: '5651be22c555a70b7049250a322d0124ae1f44f5ff42659fb28849461cff9ddf',
-//   },
-// };
-
 class Camera extends Component {
   constructor(props, context) {
     super(props, context);
@@ -66,18 +35,31 @@ class Camera extends Component {
     this.rotY = 0;
   }
 
-  is(platform) {
-    const ua = navigator.userAgent;
+  componentDidMount() {
+    window.addEventListener('devicemotion', (event) => {
+      if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
+        this.setState({
+          gyroscope: true,
+        });
+      }
+    }, { once: true });
 
-    if (platform === 'iOS') {
-      return ua.includes('iPhone') || ua.includes('Mac OS');
+    this.setState({
+      width: document.body.clientWidth,
+      height: document.body.clientHeight,
+    }, this.startStream);
+
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+          .then((response) => {
+            if (response === 'granted') {
+              window.ondeviceorientation = this.orientation;
+            }
+          })
+          .catch(console.error);
+    } else {
+      window.ondeviceorientation = this.orientation;
     }
-
-    if (platform === 'Android') {
-      return ua.includes('Android') || ua.includes('Linux');
-    }
-
-    return false;
   }
 
   startStream = async () => {
@@ -85,20 +67,18 @@ class Camera extends Component {
   };
 
   startCamera = async (config, callback) => {
-    this.stream = null;
-
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia(config)
+      this.stream = await navigator.mediaDevices.getUserMedia(config);
 
       this.video.srcObject = this.stream;
 
       console.log('startCamera - start stream');
-      console.log('================================================')
+      console.log('================================================');
 
       if (callback) {
         callback().catch((err) => {
           console.log(`callback - ${err}`);
-          console.log('================================================')
+          console.log('================================================');
 
           console.log(`${err.name}: ${err.message}`);
         });
@@ -108,67 +88,109 @@ class Camera extends Component {
         allowed: false,
       });
 
-      console.log(`Catch stream === ${error}`)
-      console.log('================================================')
+      console.log(`Catch stream === ${error}`);
+      console.log('================================================');
 
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
-      // window.location.reload();
+      window.location.reload();
     }
   }
 
+  getUserDevices = () => navigator.mediaDevices.enumerateDevices()
+      .then(async (devices) => {
+        const devicesBackArr = [];
+
+        devices.forEach((e, i) => {
+          if (e.kind === 'videoinput' && e.label.includes('back')) {
+            devicesBackArr.push(e.deviceId);
+          }
+        });
+
+        // for android (start stream from camera by id)
+        if (this.is('Android')) {
+          this.androidCameraStart(devicesBackArr);
+
+          return Promise.resolve();
+        }
+
+        // for other (start stream from default camera)
+        if (devicesBackArr.length > 1) {
+          this.setState({
+            camerasBack: devicesBackArr,
+          });
+        }
+      })
+
   androidCameraStart = async (cameras) => {
+    const filteredCameras = [];
+
+    // check for case if the camera is unavailable
+    for (let i = 0; i < cameras.length; i++) {
+      this.stream.getTracks().forEach((track) => track.stop());
+
+      const videoConfig = {
+        video: {
+          deviceId: cameras[i],
+          width: { exact: 1280 },
+        },
+        audio: false,
+      };
+
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
+
+        filteredCameras.push(cameras[i]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     this.setState({
-      camerasBack: cameras,
+      camerasBack: filteredCameras,
       activeCamera: 0,
     });
 
+    this.stream.getTracks().forEach((track) => track.stop());
+
     const videoConfig = {
       video: {
-        deviceId: cameras[0],
+        deviceId: filteredCameras[0],
         width: { exact: 1280 },
       },
       audio: false,
     };
 
-    console.log(`(androidCameraStart stream below)`)
-    console.log(this.stream)
-    console.log('================================================')
+    this.startCamera(videoConfig);
+  }
+
+  changeCamera = async (e) => {
+    const { camerasBack } = this.state;
+    const { id } = e.target.dataset;
+    const videoConfig = {
+      video: {
+        deviceId: camerasBack[id],
+        width: { exact: 1280 },
+      },
+      audio: false,
+    };
+
     await this.stream.getTracks().forEach((track) => track.stop());
+
+    this.setState({
+      activeCamera: id,
+    });
 
     this.startCamera(videoConfig);
   }
 
-  getUserDevices = () => {
-     return navigator.mediaDevices.enumerateDevices()
-        .then(async (devices) => {
-          const devicesBackArr = [];
+  orientation = (event) => {
+    const { beta, gamma } = event;
 
-          console.log(devices)
-          // console.log(JSON.stringify(devices))
-          console.log('================================================')
-
-          devices.forEach((e, i) => {
-            if (e.kind === 'videoinput'/* && e.label.includes('back')*/) {
-              devicesBackArr.push(e.deviceId);
-            }
-          });
-
-          // for android (start stream from camera by id)
-          if (this.is('Android')) {
-            this.androidCameraStart(devicesBackArr);
-
-            return Promise.resolve();
-          }
-
-          // for other (start stream from default camera)
-          if (devicesBackArr.length > 1) {
-            this.setState({
-              camerasBack: devicesBackArr,
-            });
-          }
-        })
-  }
+    setTimeout(() => {
+      this.normalizeData(gamma, beta);
+    }, 50);
+  };
 
   takePhoto = async () => {
     try {
@@ -239,41 +261,6 @@ class Camera extends Component {
     return component;
   };
 
-  componentDidMount() {
-    window.addEventListener('devicemotion', (event) => {
-      if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
-        this.setState({
-          gyroscope: true,
-        });
-      }
-    }, { once: true });
-
-    this.setState({
-      width: document.body.clientWidth,
-      height: document.body.clientHeight,
-    }, this.startStream);
-
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response === 'granted') {
-              window.ondeviceorientation = this.orientation;
-            }
-          })
-          .catch(console.error);
-    } else {
-      window.ondeviceorientation = this.orientation;
-    }
-  }
-
-  orientation = (event) => {
-    const { beta, gamma } = event;
-
-    setTimeout(() => {
-      this.normalizeData(gamma, beta);
-    }, 50);
-  };
-
   normalizeData = (_g, _b) => {
     this.b = Math.round(_b);
     this.g = Math.round(_g);
@@ -288,36 +275,18 @@ class Camera extends Component {
     }
   };
 
-  changeCamera = async (e) => {
-    const { camerasBack } = this.state;
-    const { id } = e.target.dataset;
-    const videoConfig = {
-      video: {
-        deviceId: camerasBack[id],
-        width: { exact: 1280 },
-      },
-      audio: false,
-    };
+  is(platform) {
+    const ua = navigator.userAgent;
 
-    console.log(`changeCamera stream track below`)
-    console.log(this.stream.getTracks())
-    console.log('================================================')
+    if (platform === 'iOS') {
+      return ua.includes('iPhone') || ua.includes('Mac OS');
+    }
 
-    await this.stream.getTracks().forEach((track) => track.stop());
+    if (platform === 'Android') {
+      return ua.includes('Android') || ua.includes('Linux');
+    }
 
-    console.log(`changeCamera stream track below after track stop`)
-    console.log(this.stream.getTracks())
-    console.log('================================================')
-
-    console.log(`changeCamera this.stream below`)
-    console.log(this.stream)
-    console.log('================================================')
-
-    this.setState({
-      activeCamera: id,
-    });
-
-    this.startCamera(videoConfig);
+    return false;
   }
 
   render() {
@@ -386,13 +355,13 @@ class Camera extends Component {
                 ))}
           </div>
 
-          {/*<div className={classNames('widget-camera__warning', {*/}
-          {/*  active: info && gyroscope,*/}
-          {/*})}*/}
-          {/*>*/}
-          {/*  <img src={warning} alt="warning" />*/}
-          {/*  <h2>Hold the phone vertically</h2>*/}
-          {/*</div>*/}
+          <div className={classNames('widget-camera__warning', {
+            active: info && gyroscope,
+          })}
+          >
+            <img src={warning} alt="warning" />
+            <h2>Hold the phone vertically</h2>
+          </div>
         </div>
     );
   }
