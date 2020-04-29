@@ -85,7 +85,9 @@ class Camera extends Component {
       }
     } catch (error) {
       if (this.is('Android')) {
-        if (this.camerasFilter()) return;
+        const isCameras = await this.camerasFilter();
+
+        if (isCameras) return;
       }
 
       this.setState({
