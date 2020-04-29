@@ -85,55 +85,7 @@ class Camera extends Component {
       }
     } catch (error) {
       if (this.is('Android')) {
-        const { camerasBack } = this.state;
-        const filteredCameras = [];
-        let isCameraAllowed = false;
-
-        alert(`info for dev - ${camerasBack.length}`)
-
-        // check for case if the camera is unavailable
-        for (let i = 0; i < camerasBack.length; i++) {
-          this.stream.getTracks().forEach((track) => track.stop());
-
-          const videoConfig = {
-            video: {
-              deviceId: camerasBack[i],
-              width: { exact: 1280 },
-            },
-            audio: false,
-          };
-
-          try {
-            this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
-
-            filteredCameras.push(camerasBack[i]);
-
-            isCameraAllowed = true;
-          } catch (error) {
-            console.error(error);
-          }
-        }
-
-        if (isCameraAllowed) {
-          this.setState({
-            camerasBack: filteredCameras,
-            activeCamera: 0,
-          });
-
-          this.stream.getTracks().forEach((track) => track.stop());
-
-          const videoConfig = {
-            video: {
-              deviceId: filteredCameras[0],
-              width: { exact: 1280 },
-            },
-            audio: false,
-          };
-
-          this.startCamera(videoConfig);
-
-          return;
-        }
+        if (this.camerasFilter()) return;
       }
 
       this.setState({
@@ -210,6 +162,60 @@ class Camera extends Component {
     });
 
     this.startCamera(videoConfig);
+  }
+
+  camerasFilter = async () => {
+    const { camerasBack } = this.state;
+    const filteredCameras = [];
+    let isCameraAllowed = false;
+
+    alert(`info for dev - ${camerasBack.length}`)
+
+    // check for case if the camera is unavailable
+    for (let i = 0; i < camerasBack.length; i++) {
+      this.stream.getTracks().forEach((track) => track.stop());
+
+      const videoConfig = {
+        video: {
+          deviceId: camerasBack[i],
+          width: { exact: 1280 },
+        },
+        audio: false,
+      };
+
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
+
+        filteredCameras.push(camerasBack[i]);
+
+        isCameraAllowed = true;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (isCameraAllowed) {
+      this.setState({
+        camerasBack: filteredCameras,
+        activeCamera: 0,
+      });
+
+      this.stream.getTracks().forEach((track) => track.stop());
+
+      const videoConfig = {
+        video: {
+          deviceId: filteredCameras[0],
+          width: { exact: 1280 },
+        },
+        audio: false,
+      };
+
+      this.startCamera(videoConfig);
+
+      return true;
+    }
+
+    return false;
   }
 
   orientation = (event) => {
