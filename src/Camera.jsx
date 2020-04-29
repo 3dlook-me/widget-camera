@@ -84,12 +84,61 @@ class Camera extends Component {
         });
       }
     } catch (error) {
+      if (this.is('Android')) {
+        const { camerasBack } = this.state;
+        const filteredCameras = [];
+        let isCameraAllowed = false;
+
+        alert(`info for dev - ${camerasBack.length}`)
+
+        // check for case if the camera is unavailable
+        for (let i = 0; i < camerasBack.length; i++) {
+          this.stream.getTracks().forEach((track) => track.stop());
+
+          const videoConfig = {
+            video: {
+              deviceId: camerasBack[i],
+              width: { exact: 1280 },
+            },
+            audio: false,
+          };
+
+          try {
+            this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
+
+            filteredCameras.push(camerasBack[i]);
+
+            isCameraAllowed = true;
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+        if (isCameraAllowed) {
+          this.setState({
+            camerasBack: filteredCameras,
+            activeCamera: 0,
+          });
+
+          this.stream.getTracks().forEach((track) => track.stop());
+
+          const videoConfig = {
+            video: {
+              deviceId: filteredCameras[0],
+              width: { exact: 1280 },
+            },
+            audio: false,
+          };
+
+          this.startCamera(videoConfig);
+
+          return;
+        }
+      }
+
       this.setState({
         allowed: false,
       });
-
-      console.log(`Catch stream === ${error}`);
-      console.log('================================================');
 
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
@@ -123,43 +172,22 @@ class Camera extends Component {
       })
 
   androidCameraStart = async (cameras) => {
-    const filteredCameras = [];
-
-    // check for case if the camera is unavailable
-    for (let i = 0; i < cameras.length; i++) {
-      this.stream.getTracks().forEach((track) => track.stop());
-
-      const videoConfig = {
-        video: {
-          deviceId: cameras[i],
-          width: { exact: 1280 },
-        },
-        audio: false,
-      };
-
-      try {
-        this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
-
-        filteredCameras.push(cameras[i]);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
     this.setState({
-      camerasBack: filteredCameras,
+      camerasBack: cameras,
       activeCamera: 0,
     });
 
-    this.stream.getTracks().forEach((track) => track.stop());
+    alert('info for dev - start');
 
     const videoConfig = {
       video: {
-        deviceId: filteredCameras[0],
+        deviceId: cameras[0],
         width: { exact: 1280 },
       },
       audio: false,
     };
+
+    await this.stream.getTracks().forEach((track) => track.stop());
 
     this.startCamera(videoConfig);
   }
