@@ -131,7 +131,7 @@ class Camera extends Component {
       activeCamera: 0,
     });
 
-    alert('info for dev - start');
+    // alert('info for dev - start');
 
     const videoConfig = {
       video: {
@@ -171,7 +171,7 @@ class Camera extends Component {
     const filteredCameras = [];
     let isCameraAllowed = false;
 
-    alert(`info for dev - ${camerasBack.length}`)
+    // alert(`info for dev - ${camerasBack.length}`)
 
     // check for case if the camera is unavailable
     for (let i = 0; i < camerasBack.length; i++) {
