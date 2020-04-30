@@ -61,6 +61,11 @@
     height: 100%;
     left: 0;
     right: 0;
+
+    @media screen and (max-width: 500px) {
+      width: 100%;
+      object-fit: cover;
+    }
   }
 
   &-take-photo {
@@ -178,6 +183,7 @@
 
     &--active {
       background-color: rgba(255, 255, 255, .8);
+      pointer-events: none;
 
       .widget-camera__cameras-btn {
         color: rgba(0, 0, 0, .8);
