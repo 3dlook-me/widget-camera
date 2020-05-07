@@ -29,6 +29,7 @@ class Camera extends Component {
       camerasBack: [],
       camerasFront: [],
       activeCamera: -1,
+      samsungs10: [],
     };
 
     this.rotX = 0;
@@ -76,6 +77,7 @@ class Camera extends Component {
       console.log('================================================');
 
       if (callback) {
+        console.log('callback')
         callback().catch((err) => {
           console.log(`callback - ${err}`);
           console.log('================================================');
@@ -85,7 +87,8 @@ class Camera extends Component {
       }
     } catch (error) {
       if (this.is('Android')) {
-        const isCameras = await this.camerasFilter();
+        const cameras = await this.additionalCamerasCheck();
+        const isCameras = await this.camerasFilter(cameras);
 
         if (isCameras) return;
       }
@@ -93,6 +96,11 @@ class Camera extends Component {
       this.setState({
         allowed: false,
       });
+
+      console.log(`callback - ${error}`);
+      console.log('================================================');
+
+      console.log(`${error.name}: ${error.message}`);
 
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
@@ -112,6 +120,7 @@ class Camera extends Component {
 
         // for android (start stream from camera by id)
         if (this.is('Android')) {
+          console.log(devicesBackArr)
           this.androidCameraStart(devicesBackArr);
 
           return Promise.resolve();
@@ -125,13 +134,26 @@ class Camera extends Component {
         }
       })
 
+  additionalCamerasCheck = () => navigator.mediaDevices.enumerateDevices()
+      .then(async (devices) => {
+        const devicesBackArr = [];
+
+        devices.forEach((e, i) => {
+          if (e.kind === 'videoinput' && e.label.includes('back')) {
+            devicesBackArr.push(e.deviceId);
+          }
+        });
+
+        return devicesBackArr;
+      })
+
   androidCameraStart = async (cameras) => {
     this.setState({
       camerasBack: cameras,
       activeCamera: 0,
     });
 
-    alert('info for dev - start');
+    console.log('info for dev - start');
 
     const videoConfig = {
       video: {
@@ -166,16 +188,15 @@ class Camera extends Component {
     this.startCamera(videoConfig);
   }
 
-  camerasFilter = async () => {
-    const { camerasBack } = this.state;
+  camerasFilter = async (camerasBack) => {
     const filteredCameras = [];
     let isCameraAllowed = false;
 
-    alert(`info for dev - ${camerasBack.length}`)
+    console.log(`info for dev - ${camerasBack.length}`)
 
     // check for case if the camera is unavailable
     for (let i = 0; i < camerasBack.length; i++) {
-      this.stream.getTracks().forEach((track) => track.stop());
+      // this.stream.getTracks().forEach((track) => track.stop());
 
       const videoConfig = {
         video: {
@@ -211,6 +232,10 @@ class Camera extends Component {
         },
         audio: false,
       };
+
+      console.log(filteredCameras)
+
+      console.log(videoConfig)
 
       this.startCamera(videoConfig);
 
