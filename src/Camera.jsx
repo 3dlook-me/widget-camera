@@ -8,6 +8,10 @@ import femaleSideContour from './images/female-side-contour.svg';
 import maleFrontContour from './images/male-front-contour.svg';
 import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
+import grade from './images/grade.svg';
+import frame from './images/frame.svg';
+import frameSuccess from './images/frame_ok.svg';
+import pointer from './images/pointer.svg';
 
 const VIDEO_CONFIG = {
   audio: false,
@@ -27,7 +31,6 @@ class Camera extends Component {
       allowed: true,
       gyroscope: false,
       camerasBack: [],
-      camerasFront: [],
       activeCamera: -1,
     };
 
@@ -44,19 +47,19 @@ class Camera extends Component {
       }
     }, { once: true });
 
-    this.setState({
-      width: document.body.clientWidth,
-      height: document.body.clientHeight,
-    }, this.startStream);
+    // this.setState({
+    //   width: document.body.clientWidth,
+    //   height: document.body.clientHeight,
+    // }, this.startStream);
 
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response === 'granted') {
-              window.ondeviceorientation = this.orientation;
-            }
-          })
-          .catch(console.error);
+        .then((response) => {
+          if (response === 'granted') {
+            window.ondeviceorientation = this.orientation;
+          }
+        })
+        .catch(console.error);
     } else {
       window.ondeviceorientation = this.orientation;
     }
@@ -94,42 +97,42 @@ class Camera extends Component {
   }
 
   getUserDevices = () => navigator.mediaDevices.enumerateDevices()
-      .then(async (devices) => {
-        const devicesBackArr = [];
+    .then(async (devices) => {
+      const devicesBackArr = [];
 
-        devices.forEach((e, i) => {
-          if (e.kind === 'videoinput' && e.label.includes('back')) {
-            devicesBackArr.push(e.deviceId);
-          }
+      devices.forEach((e, i) => {
+        if (e.kind === 'videoinput' && e.label.includes('back')) {
+          devicesBackArr.push(e.deviceId);
+        }
+      });
+
+      // for android (start stream from camera by id)
+      if (this.is('Android')) {
+        this.androidCameraStart(devicesBackArr);
+
+        return Promise.resolve();
+      }
+
+      // for other (start stream from default camera)
+      if (devicesBackArr.length > 1) {
+        this.setState({
+          camerasBack: devicesBackArr,
         });
-
-        // for android (start stream from camera by id)
-        if (this.is('Android')) {
-          this.androidCameraStart(devicesBackArr);
-
-          return Promise.resolve();
-        }
-
-        // for other (start stream from default camera)
-        if (devicesBackArr.length > 1) {
-          this.setState({
-            camerasBack: devicesBackArr,
-          });
-        }
-      })
+      }
+    })
 
   additionalCamerasCheck = () => navigator.mediaDevices.enumerateDevices()
-      .then(async (devices) => {
-        const devicesBackArr = [];
+    .then(async (devices) => {
+      const devicesBackArr = [];
 
-        devices.forEach((e, i) => {
-          if (e.kind === 'videoinput' && e.label.includes('back')) {
-            devicesBackArr.push(e.deviceId);
-          }
-        });
+      devices.forEach((e, i) => {
+        if (e.kind === 'videoinput' && e.label.includes('back')) {
+          devicesBackArr.push(e.deviceId);
+        }
+      });
 
-        return devicesBackArr;
-      })
+      return devicesBackArr;
+    })
 
   androidCameraStart = async (cameras) => {
     this.setState({
@@ -334,70 +337,93 @@ class Camera extends Component {
       activeCamera,
     } = this.state;
 
-    const {
-      type = 'front',
-      gender = 'female',
-    } = this.props;
+    const { type = 'front' } = this.props;
 
     return (
-        <div className={classNames('widget-camera')} ref={this.initCamera}>
-          {this.before(
-              <div className="widget-camera__video-wrapper">
-                <video
-                    crossOrigin="anonymous"
-                    controls={false}
-                    controlsList={false}
-                    muted
-                    ref={(ref) => this.video = ref}
-                    playsinline
-                    autoPlay
-                    className={classNames('widget-camera-video')}
-                />
-                {(type === 'front' && gender === 'female') ? <img className="widget-camera__contour" src={femaleFrontContour} alt="front contour" /> : null }
-                {(type === 'side' && gender === 'female') ? <img className="widget-camera__contour" src={femaleSideContour} alt="side contour" /> : null }
-                {(type === 'front' && gender === 'male') ? <img className="widget-camera__contour" src={maleFrontContour} alt="front contour" /> : null }
-                {(type === 'side' && gender === 'male') ? <img className="widget-camera__contour" src={maleSideContour} alt="side contour" /> : null }
-              </div>,
-          )}
-
-          {this.processing(
-              <p className={classNames('widget-camera-processing')}>Processing...</p>,
-          )}
-
-          {/* condition > 1 is for android phones ( this.androidCameraStart ) */}
-          {camerasBack.length > 1 ? (
-              <ul className="widget-camera__cameras">
-                {camerasBack.map((e, i) => (
-                    <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
-                      <button
-                          data-id={i}
-                          onClick={this.changeCamera}
-                          className="widget-camera__cameras-btn"
-                      >
-                        {i + 1}
-                      </button>
-                    </li>
-                ))}
-              </ul>
-          ) : null}
-
-          <div className={classNames('widget-camera-controls')}>
-            {this.before(!processing
-                && (
-                    <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
-                      <div className={classNames('widget-camera-take-photo-effect')} />
-                    </button>
-                ))}
-          </div>
-
-          <div className={classNames('widget-camera__warning', {
-            active: info && gyroscope,
-          })}
-          >
-            <img src={warning} alt="warning" />
-            <h2>Hold the phone vertically</h2>
+      <div className={classNames('widget-camera')} ref={this.initCamera}>
+        <div className="widget-camera__title">
+          {`${type} photo`}
+        </div>
+        <div className="widget-camera__grade-wrap">
+          <div className="widget-camera__grade-container">
+            <img className="widget-camera__grade" src={grade} alt="grade" />
+            <img className="widget-camera__pointer" src={pointer} alt="pointer" />
           </div>
         </div>
+        {this.before(
+          <div className="widget-camera__video-wrapper">
+            <video
+              crossOrigin="anonymous"
+              controls={false}
+              controlsList={false}
+              muted
+              ref={(ref) => this.video = ref}
+              playsinline
+              autoPlay
+              className={classNames('widget-camera-video')}
+            />
+
+            {/* TODO remove */}
+            {/* {(type === 'front' && gender === 'female') ?
+             <img className="widget-camera__contour" src={femaleFrontContour} alt="front contour" />
+             : null } */}
+            {/* {(type === 'side' && gender === 'female') ?
+             <img className="widget-camera__contour" src={femaleSideContour} alt="side contour" />
+             : null } */}
+            {/* {(type === 'front' && gender === 'male') ?
+             <img className="widget-camera__contour" src={maleFrontContour} alt="front contour" />
+             : null } */}
+            {/* {(type === 'side' && gender === 'male') ?
+             <img className="widget-camera__contour" src={maleSideContour} alt="side contour" />
+             : null } */}
+          </div>,
+        )}
+
+        {this.processing(
+          <p className={classNames('widget-camera-processing')}>Processing...</p>,
+        )}
+
+        {/* condition > 1 is for android phones ( this.androidCameraStart ) */}
+        {camerasBack.length > 1 ? (
+          <ul className="widget-camera__cameras">
+            {camerasBack.map((e, i) => (
+              <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
+                <button
+                  data-id={i}
+                  onClick={this.changeCamera}
+                  className="widget-camera__cameras-btn"
+                >
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        <div className={classNames('widget-camera-controls')}>
+          {this.before(!processing
+                && (
+                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
+                  <div className={classNames('widget-camera-take-photo-effect')} />
+                </button>
+                ))}
+        </div>
+
+        <div className={classNames('allow-frame allow-frame--warning', {
+          'allow-frame--warning': info && gyroscope,
+        })}
+        >
+
+          <div className="allow-frame__warning-content">
+            <img className="allow-frame__warning-img" src={warning} alt="warning" />
+            <h2 className="allow-frame__warning-txt">Hold the phone vertically</h2>
+          </div>
+
+          <div className="allow-frame__bottom-border">
+            <div className="allow-frame__bottom-border-space" />
+          </div>
+        </div>
+      </div>
     );
   }
 }
