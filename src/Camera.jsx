@@ -29,7 +29,6 @@ class Camera extends Component {
       camerasBack: [],
       camerasFront: [],
       activeCamera: -1,
-      samsungs10: [],
     };
 
     this.rotX = 0;
@@ -74,7 +73,7 @@ class Camera extends Component {
       this.video.srcObject = this.stream;
 
       if (callback) {
-        callback().catch((err) =>  console.err(err) );
+        callback().catch((err) => console.err(err));
       }
     } catch (error) {
       if (this.is('Android')) {
@@ -87,8 +86,6 @@ class Camera extends Component {
       this.setState({
         allowed: false,
       });
-
-      console.err(error);
 
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
