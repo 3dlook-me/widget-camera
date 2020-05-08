@@ -10,8 +10,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: lightblue;
+  background-color: black;
   overflow: hidden;
+
+  p {
+    color: white;
+  }
 
   &-info {
     position: absolute;
@@ -39,7 +43,7 @@
 
   &-controls {
     position: absolute;
-    z-index: 4;
+    z-index: 6;
     bottom: 0;
     height: 133px;
     width: 100%;
@@ -195,15 +199,22 @@
     align-items: center;
   }
 
+  &__grade {
+    margin-top: -8px;
+    margin-bottom: -16px;
+  }
+
   &__grade-container {
     position: relative;
   }
 
   &__pointer {
-    position: absolute;
-    top: calc(50% - 11px);
-    left: 0;
-    transition: top .3s ease;
+    height: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform .15s linear;
+    will-change: transform;
   }
 }
 
@@ -211,6 +222,7 @@ $color-1: #00FF77;
 $color-2: rgba(255,255,255,0.6);
 
 .allow-frame {
+  z-index: 5;
   position: absolute;
   top: 0;
   left: 0;
@@ -227,6 +239,7 @@ $color-2: rgba(255,255,255,0.6);
   border-left: 4px solid $color-1;
   border-right: 4px solid $color-1;
   border-top: 4px solid $color-1;
+  transition: border-color .3s linear, background-color .3s linear;
 
   &--warning {
     border-left: 4px solid $color-2;
@@ -237,12 +250,13 @@ $color-2: rgba(255,255,255,0.6);
     .allow-frame__bottom-border {
       &::before,
       &::after {
-        background: $color-2;
+        background-color: $color-2;
       }
     }
 
     .allow-frame__warning-content {
       visibility: visible;
+      opacity: 1;
     }
   }
 
@@ -260,9 +274,10 @@ $color-2: rgba(255,255,255,0.6);
     &::before,
     &::after {
       content: '';
-      background: $color-1;
+      background-color: $color-1;
       height: 4px;
       flex: 1;
+      transition: background-color .3s linear;
     }
   }
 
@@ -277,6 +292,8 @@ $color-2: rgba(255,255,255,0.6);
     justify-content: center;
     align-items: center;
     visibility: hidden;
+    opacity: 0;
+    transition: opacity .3s linear, visibility .3s linear;
   }
 
   &__warning-txt {

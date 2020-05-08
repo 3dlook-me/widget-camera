@@ -9,8 +9,6 @@ import maleFrontContour from './images/male-front-contour.svg';
 import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
 import grade from './images/grade.svg';
-import frame from './images/frame.svg';
-import frameSuccess from './images/frame_ok.svg';
 import pointer from './images/pointer.svg';
 
 const VIDEO_CONFIG = {
@@ -32,6 +30,7 @@ class Camera extends Component {
       gyroscope: false,
       camerasBack: [],
       activeCamera: -1,
+      gyroscopePosition: 180,
     };
 
     this.rotX = 0;
@@ -47,10 +46,10 @@ class Camera extends Component {
       }
     }, { once: true });
 
-    // this.setState({
-    //   width: document.body.clientWidth,
-    //   height: document.body.clientHeight,
-    // }, this.startStream);
+    this.setState({
+      width: document.body.clientWidth,
+      height: document.body.clientHeight,
+    }, this.startStream);
 
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
@@ -226,6 +225,7 @@ class Camera extends Component {
     const { beta, gamma } = event;
 
     setTimeout(() => {
+      this.gyroscopePointerPosition(beta);
       this.normalizeData(gamma, beta);
     }, 50);
   };
@@ -327,6 +327,35 @@ class Camera extends Component {
     return false;
   }
 
+  gyroscopePointerPosition = (value) => {
+    const result = (value * 360) / 180;
+    let position = result;
+
+    if (result < 0) {
+      position = 0;
+
+      this.setState({
+        gyroscopePosition: position,
+      });
+
+      return;
+    }
+
+    if (result > 360) {
+      position = 360;
+
+      this.setState({
+        gyroscopePosition: position,
+      });
+
+      return;
+    }
+
+    this.setState({
+      gyroscopePosition: position,
+    });
+  }
+
   render() {
     const {
       info,
@@ -335,19 +364,24 @@ class Camera extends Component {
       gyroscope,
       camerasBack,
       activeCamera,
+      gyroscopePosition,
     } = this.state;
 
     const { type = 'front' } = this.props;
 
     return (
       <div className={classNames('widget-camera')} ref={this.initCamera}>
+        <button className={classNames('widget-camera__title')} onClick={this.test} type="button">dasdsahjgdsajhads djsa</button>
+
         <div className="widget-camera__title">
           {`${type} photo`}
         </div>
         <div className="widget-camera__grade-wrap">
           <div className="widget-camera__grade-container">
             <img className="widget-camera__grade" src={grade} alt="grade" />
-            <img className="widget-camera__pointer" src={pointer} alt="pointer" />
+            <div className="widget-camera__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
+              <img className="widget-camera__pointer-icon" src={pointer} alt="pointer" />
+            </div>
           </div>
         </div>
         {this.before(
@@ -362,20 +396,6 @@ class Camera extends Component {
               autoPlay
               className={classNames('widget-camera-video')}
             />
-
-            {/* TODO remove */}
-            {/* {(type === 'front' && gender === 'female') ?
-             <img className="widget-camera__contour" src={femaleFrontContour} alt="front contour" />
-             : null } */}
-            {/* {(type === 'side' && gender === 'female') ?
-             <img className="widget-camera__contour" src={femaleSideContour} alt="side contour" />
-             : null } */}
-            {/* {(type === 'front' && gender === 'male') ?
-             <img className="widget-camera__contour" src={maleFrontContour} alt="front contour" />
-             : null } */}
-            {/* {(type === 'side' && gender === 'male') ?
-             <img className="widget-camera__contour" src={maleSideContour} alt="side contour" />
-             : null } */}
           </div>,
         )}
 
@@ -389,6 +409,7 @@ class Camera extends Component {
             {camerasBack.map((e, i) => (
               <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
                 <button
+                  type="button"
                   data-id={i}
                   onClick={this.changeCamera}
                   className="widget-camera__cameras-btn"
@@ -409,14 +430,15 @@ class Camera extends Component {
                 ))}
         </div>
 
-        <div className={classNames('allow-frame allow-frame--warning', {
+        <div className={classNames('allow-frame allow-frame--warnin', {
           'allow-frame--warning': info && gyroscope,
         })}
         >
-
           <div className="allow-frame__warning-content">
             <img className="allow-frame__warning-img" src={warning} alt="warning" />
-            <h2 className="allow-frame__warning-txt">Hold the phone vertically</h2>
+            <h2 className="allow-frame__warning-txt">
+              Hold the phone vertically
+            </h2>
           </div>
 
           <div className="allow-frame__bottom-border">
