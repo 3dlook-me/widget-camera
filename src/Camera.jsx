@@ -73,34 +73,22 @@ class Camera extends Component {
 
       this.video.srcObject = this.stream;
 
-      console.log('startCamera - start stream');
-      console.log('================================================');
-
       if (callback) {
-        console.log('callback')
-        callback().catch((err) => {
-          console.log(`callback - ${err}`);
-          console.log('================================================');
-
-          console.log(`${err.name}: ${err.message}`);
-        });
+        callback().catch((err) =>  console.err(err) );
       }
     } catch (error) {
       if (this.is('Android')) {
         const cameras = await this.additionalCamerasCheck();
-        const isCameras = await this.camerasFilter(cameras);
+        const isAvailableCameras = await this.camerasFilter(cameras);
 
-        if (isCameras) return;
+        if (isAvailableCameras) return;
       }
 
       this.setState({
         allowed: false,
       });
 
-      console.log(`callback - ${error}`);
-      console.log('================================================');
-
-      console.log(`${error.name}: ${error.message}`);
+      console.err(error);
 
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
@@ -120,7 +108,6 @@ class Camera extends Component {
 
         // for android (start stream from camera by id)
         if (this.is('Android')) {
-          console.log(devicesBackArr)
           this.androidCameraStart(devicesBackArr);
 
           return Promise.resolve();
@@ -152,8 +139,6 @@ class Camera extends Component {
       camerasBack: cameras,
       activeCamera: 0,
     });
-
-    console.log('info for dev - start');
 
     const videoConfig = {
       video: {
@@ -192,12 +177,8 @@ class Camera extends Component {
     const filteredCameras = [];
     let isCameraAllowed = false;
 
-    console.log(`info for dev - ${camerasBack.length}`)
-
     // check for case if the camera is unavailable
     for (let i = 0; i < camerasBack.length; i++) {
-      // this.stream.getTracks().forEach((track) => track.stop());
-
       const videoConfig = {
         video: {
           deviceId: camerasBack[i],
@@ -232,10 +213,6 @@ class Camera extends Component {
         },
         audio: false,
       };
-
-      console.log(filteredCameras)
-
-      console.log(videoConfig)
 
       this.startCamera(videoConfig);
 
