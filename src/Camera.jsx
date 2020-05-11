@@ -436,7 +436,7 @@ class Camera extends Component {
                 ))}
         </div>
 
-        <div className={classNames('allow-frame allow-frame--warning', {
+        <div className={classNames('allow-frame', {
           'allow-frame--warning': info && gyroscope,
         })}
         >
