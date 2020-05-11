@@ -43,7 +43,7 @@
 
   &-controls {
     position: absolute;
-    z-index: 6;
+    z-index: 20;
     bottom: 0;
     height: 133px;
     width: 100%;
@@ -51,6 +51,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    mix-blend-mode: screen;
   }
 
   &-video {
@@ -79,10 +80,23 @@
     background-color: transparent;
     border-radius: 50%;
     border: 6px solid #fff;
-    opacity: 0.8;
+    opacity: 1;
+    transition: opacity .3s linear;
+
+    &[disabled] {
+      opacity: 0.8;
+
+      .widget-camera-take-photo-effect {
+        &::after {
+          display: none;
+        }
+      }
+    }
 
     &-effect {
-      display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: absolute;
       top: 3px;
       left: 3px;
@@ -91,24 +105,20 @@
       border-radius: 50%;
       transition: transform 0.25s, background-color 0.25s;
       background-color: #fff;
+
+      &::after {
+        content: 'READY';
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: -0.34px;
+        line-height: 19px;
+        color: black;
+      }
     }
 
     &:active &-effect {
       transform: scale(0.85);
     }
-  }
-
-  //TODO remove
-  &__contour {
-    position: absolute;
-    top: 0px;
-    bottom: 0;
-    height: 100%;
-    opacity: 0.4;
-    object-fit: contain;
-    z-index: 4;
-    left: 50%;
-    transform: translateX(-50%) scale(0.75);
   }
 
   &__video-wrapper {
@@ -125,7 +135,7 @@
     position: absolute;
     left: 0;
     bottom: 133px;
-    z-index: 4;
+    z-index: 6;
     width: 100%;
     height: 40px;
     display: flex;
@@ -134,6 +144,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    mix-blend-mode: screen;
   }
 
   &__cameras-btn-wrap {
@@ -246,6 +257,7 @@ $color-2: rgba(255,255,255,0.6);
     border-right: 4px solid $color-2;
     border-top: 4px solid $color-2;
     background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10;
 
     .allow-frame__bottom-border {
       &::before,

@@ -3,10 +3,6 @@ import classNames from 'classnames';
 import { getOrientation, fixOrientation, isSamsungBrowser } from './helpers/utils';
 import './Camera.scss';
 
-import femaleFrontContour from './images/female-front-contour.svg';
-import femaleSideContour from './images/female-side-contour.svg';
-import maleFrontContour from './images/male-front-contour.svg';
-import maleSideContour from './images/male-side-contour.svg';
 import warning from './images/camera-warning.svg';
 import grade from './images/grade.svg';
 import pointer from './images/pointer.svg';
@@ -26,7 +22,6 @@ class Camera extends Component {
       imgURI: null,
       processing: false,
       info: false,
-      allowed: true,
       gyroscope: false,
       camerasBack: [],
       activeCamera: -1,
@@ -64,6 +59,21 @@ class Camera extends Component {
     }
   }
 
+  // tap at the bottom of the screen to allow gyroscope for iphone in dev mode
+  iphoneGyroStart = () => {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+          if (response === 'granted') {
+            window.ondeviceorientation = this.orientation;
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.ondeviceorientation = this.orientation;
+    }
+  }
+
   startStream = async () => {
     this.startCamera(VIDEO_CONFIG, this.getUserDevices);
   };
@@ -84,10 +94,6 @@ class Camera extends Component {
 
         if (isAvailableCameras) return;
       }
-
-      this.setState({
-        allowed: false,
-      });
 
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
@@ -360,7 +366,6 @@ class Camera extends Component {
     const {
       info,
       processing,
-      allowed,
       gyroscope,
       camerasBack,
       activeCamera,
@@ -371,8 +376,6 @@ class Camera extends Component {
 
     return (
       <div className={classNames('widget-camera')} ref={this.initCamera}>
-        <button className={classNames('widget-camera__title')} onClick={this.test} type="button">dasdsahjgdsajhads djsa</button>
-
         <div className="widget-camera__title">
           {`${type} photo`}
         </div>
@@ -421,16 +424,19 @@ class Camera extends Component {
           </ul>
         ) : null}
 
-        <div className={classNames('widget-camera-controls')}>
+        <div
+          className="widget-camera-controls"
+          onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
+        >
           {this.before(!processing
                 && (
-                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={!allowed}>
+                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={info && gyroscope}>
                   <div className={classNames('widget-camera-take-photo-effect')} />
                 </button>
                 ))}
         </div>
 
-        <div className={classNames('allow-frame allow-frame--warnin', {
+        <div className={classNames('allow-frame allow-frame--warning', {
           'allow-frame--warning': info && gyroscope,
         })}
         >
