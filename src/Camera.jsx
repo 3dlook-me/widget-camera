@@ -52,6 +52,10 @@ class Camera extends Component {
           if (response === 'granted') {
             window.ondeviceorientation = this.orientation;
           }
+
+          this.setState({
+            gyroscope: true,
+          });
         })
         .catch(console.error);
     } else {
@@ -335,31 +339,12 @@ class Camera extends Component {
 
   gyroscopePointerPosition = (value) => {
     const result = (value * 360) / 180;
-    let position = result;
-
-    if (result < 0) {
-      position = 0;
-
-      this.setState({
-        gyroscopePosition: position,
-      });
-
-      return;
-    }
-
-    if (result > 360) {
-      position = 360;
-
-      this.setState({
-        gyroscopePosition: position,
-      });
-
-      return;
-    }
 
     this.setState({
-      gyroscopePosition: position,
+      gyroscopePosition: Math.min(Math.max(+result, 1), 20),
     });
+
+    return;
   }
 
   render() {
@@ -424,8 +409,9 @@ class Camera extends Component {
           </ul>
         ) : null}
 
-        <div
-          className="widget-camera-controls"
+        <div className={classNames('widget-camera-controls', {
+            'widget-camera-controls--warning': info && gyroscope,
+          })}
           onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
         >
           {this.before(!processing
@@ -437,7 +423,7 @@ class Camera extends Component {
         </div>
 
         <div className={classNames('allow-frame', {
-          'allow-frame--warning': info && gyroscope,
+          'allow-frame--warning': info,
         })}
         >
           <div className="allow-frame__warning-content">
@@ -459,3 +445,37 @@ class Camera extends Component {
 process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
 
 export default Camera;
+
+
+// const gyroscopePointerPosition = (value) => {
+//   const result = (value * 360) / 180;
+//   let position = result;
+
+//   if (result < 0) {
+//     position = 0;
+
+//     return position;
+//   }
+
+//   if (result > 360) {
+//     position = 360;
+
+//     return position;
+//   }
+
+//   return position;
+// };
+
+// const gyroscopePointerPositionMath = (value) => {
+//   const result = (value * 360) / 180;
+
+//   return Math.min(Math.max(result, 1), 20);
+// };
+
+// console.time('start')
+
+// gyroscopePointerPositionMath(155)
+
+// console.timeEnd('start')
+
+// start: 0.0498046875ms
