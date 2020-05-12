@@ -52,10 +52,6 @@ class Camera extends Component {
           if (response === 'granted') {
             window.ondeviceorientation = this.orientation;
           }
-
-          this.setState({
-            gyroscope: true,
-          });
         })
         .catch(console.error);
     } else {
@@ -71,6 +67,10 @@ class Camera extends Component {
           if (response === 'granted') {
             window.ondeviceorientation = this.orientation;
           }
+
+          this.setState({
+            gyroscope: true,
+          });
         })
         .catch(console.error);
     } else {
