@@ -22,7 +22,6 @@ class Camera extends Component {
       imgURI: null,
       processing: false,
       info: false,
-      gyroscope: false,
       camerasBack: [],
       activeCamera: -1,
       gyroscopePosition: 180,
@@ -33,14 +32,6 @@ class Camera extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('devicemotion', (event) => {
-      if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
-        this.setState({
-          gyroscope: true,
-        });
-      }
-    }, { once: true });
-
     this.setState({
       width: document.body.clientWidth,
       height: document.body.clientHeight,
@@ -67,10 +58,6 @@ class Camera extends Component {
           if (response === 'granted') {
             window.ondeviceorientation = this.orientation;
           }
-
-          this.setState({
-            gyroscope: true,
-          });
         })
         .catch(console.error);
     } else {
@@ -429,13 +416,13 @@ class Camera extends Component {
         ) : null}
 
         <div className={classNames('widget-camera-controls', {
-            'widget-camera-controls--warning': info && gyroscope,
+            'widget-camera-controls--warning': info,
           })}
           onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
         >
           {this.before(!processing
                 && (
-                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={info && gyroscope}>
+                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={info}>
                   <div className={classNames('widget-camera-take-photo-effect')} />
                 </button>
                 ))}
