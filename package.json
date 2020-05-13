@@ -1,6 +1,7 @@
 {
   "name": "@3dlook/camera",
   "version": "1.0.6",
+  "url": "//nexus.3dlook.me/repository/3dlook-npm-hosted/:_authToken=NpmToken.d7face60-7894-3a81-bf5d-4782d02a9016",
   "description": "Widget camera component",
   "engines": {
     "node": ">=12.0.0"
