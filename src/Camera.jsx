@@ -1,8 +1,11 @@
 import { h, render, Component } from 'preact';
 import classNames from 'classnames';
-import { getOrientation, fixOrientation, isSamsungBrowser } from './helpers/utils';
-import './Camera.scss';
 
+import {
+  getOrientation, fixOrientation, isSamsungBrowser,
+} from './helpers/utils';
+
+import './Camera.scss';
 import warning from './images/camera-warning.svg';
 import grade from './images/grade.svg';
 import pointer from './images/pointer.svg';
@@ -21,7 +24,7 @@ class Camera extends Component {
     this.state = {
       imgURI: null,
       processing: false,
-      info: false,
+      info: true,
       camerasBack: [],
       activeCamera: -1,
       gyroscopePosition: 180,
@@ -415,7 +418,8 @@ class Camera extends Component {
           </ul>
         ) : null}
 
-        <div className={classNames('widget-camera-controls', {
+        <div
+          className={classNames('widget-camera-controls', {
             'widget-camera-controls--warning': info,
           })}
           onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
@@ -435,7 +439,7 @@ class Camera extends Component {
           <div className="allow-frame__warning-content">
             <img className="allow-frame__warning-img" src={warning} alt="warning" />
             <h2 className="allow-frame__warning-txt">
-              Hold the phone vertically
+              Hold your phone vertically and line up the green arrows
             </h2>
           </div>
 
