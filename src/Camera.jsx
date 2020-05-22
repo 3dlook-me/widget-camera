@@ -24,7 +24,7 @@ class Camera extends Component {
     this.state = {
       imgURI: null,
       processing: false,
-      info: true,
+      info: false,
       camerasBack: [],
       activeCamera: -1,
       gyroscopePosition: 180,

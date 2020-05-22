@@ -18,7 +18,7 @@ npm start
 
 ### Publish to npm (master branch)
 ```sh
-1. npmrc default
+1. npmrc npm-camera
 2. npm run build 
 3. npm version patch 
 4. npm publish --access=public
