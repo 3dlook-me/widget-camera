@@ -142,6 +142,7 @@ class Camera extends Component {
     this.setState({
       camerasBack: cameras,
       activeCamera: 0,
+      isButtonInit: false,
     });
 
     const videoConfig = {
@@ -252,6 +253,8 @@ class Camera extends Component {
       this.setState({ processing: true }, () => canvas.toBlob(this.setPhoto));
     } catch (exception) {
       alert(`Error: ${exception}`);
+
+      window.location.reload();
     }
   };
 
