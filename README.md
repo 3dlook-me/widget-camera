@@ -12,7 +12,7 @@ npm start
 ```sh
 1. npmrc nexus
 2. npm run build 
-3. npm version patch 
+3. npm version patch (if you need to up camera version)
 4. npm publish
 ```
 
@@ -20,7 +20,7 @@ npm start
 ```sh
 1. npmrc npm-camera
 2. npm run build 
-3. npm version patch 
+3. npm version patch (if you need to up camera version)
 4. npm publish --access=public
 ```
 
