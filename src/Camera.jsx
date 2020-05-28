@@ -28,6 +28,7 @@ class Camera extends Component {
       camerasBack: [],
       activeCamera: -1,
       gyroscopePosition: 180,
+      isButtonInit: false,
     };
 
     this.rotX = 0;
@@ -92,6 +93,10 @@ class Camera extends Component {
       alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
       window.location.reload();
+    } finally {
+      this.setState({
+        isButtonInit: true,
+      });
     }
   }
 
@@ -137,6 +142,7 @@ class Camera extends Component {
     this.setState({
       camerasBack: cameras,
       activeCamera: 0,
+      isButtonInit: false,
     });
 
     const videoConfig = {
@@ -247,6 +253,8 @@ class Camera extends Component {
       this.setState({ processing: true }, () => canvas.toBlob(this.setPhoto));
     } catch (exception) {
       alert(`Error: ${exception}`);
+
+      window.location.reload();
     }
   };
 
@@ -360,10 +368,10 @@ class Camera extends Component {
     const {
       info,
       processing,
-      gyroscope,
       camerasBack,
       activeCamera,
       gyroscopePosition,
+      isButtonInit,
     } = this.state;
 
     const { type = 'front' } = this.props;
@@ -426,7 +434,7 @@ class Camera extends Component {
         >
           {this.before(!processing
                 && (
-                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={info}>
+                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={info || !isButtonInit}>
                   <div className={classNames('widget-camera-take-photo-effect')} />
                 </button>
                 ))}
