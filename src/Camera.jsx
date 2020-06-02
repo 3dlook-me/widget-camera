@@ -1,14 +1,32 @@
-import { h, render, Component } from 'preact';
+import {
+  h,
+  render,
+  Component,
+  createRef,
+} from 'preact';
 import classNames from 'classnames';
 
 import {
-  getOrientation, fixOrientation, isSamsungBrowser,
+  getOrientation,
+  fixOrientation,
+  isSamsungBrowser,
 } from './helpers/utils';
 
 import './Camera.scss';
 import warning from './images/camera-warning.svg';
 import grade from './images/grade.svg';
 import pointer from './images/pointer.svg';
+import pose from './images/ic_pose.svg';
+import muteIcon from './images/ic_sound.svg';
+
+import placeYourPhone from './audio/Place_your_phone_on_a_table.mp3';
+import wellDone from './audio/well_done.mp3';
+import toClickReady from './audio/to_continue.mp3';
+import audioStepsBackwards from './audio/take_3_to_4.mp3';
+import audioHighQuality from './audio/remember.mp3';
+import audioFrontInstruction from './audio/your_legs.mp3';
+import audioDontMove from './audio/please_stay_camera_shutter.mp3';
+import audioPhotoShutter from './audio/shutter.mp3';
 
 const VIDEO_CONFIG = {
   audio: false,
@@ -19,8 +37,11 @@ const VIDEO_CONFIG = {
 };
 
 class Camera extends Component {
+  audio = createRef();
+
   constructor(props, context) {
     super(props, context);
+
     this.state = {
       imgURI: null,
       processing: false,
@@ -29,11 +50,138 @@ class Camera extends Component {
       activeCamera: -1,
       gyroscopePosition: 180,
       isButtonInit: false,
+      // tapScreen: props.tapScreen === 'front-mode',
+      tapScreen: true,
+
+      activeAudioTrack: placeYourPhone,
+      activeAudioTrackIndex: 0,
+
+      isGyroTimerAccess: false,
+      isFrontFlowButtonDisabled: false,
+      photoTimerSecs: 6,
+      isPhotoTimer: false,
+      isFirstAudio: true,
     };
 
+    this.gyroTimer = null;
+    this.playSpeed = 2;
     this.rotX = 0;
     this.rotY = 0;
   }
+
+  tapToStart = () => {
+    const { current } = this.audio;
+
+    current.play();
+    this.audio.current.playbackRate = this.playSpeed;
+
+    current.addEventListener('ended', () => {
+      this.setState({ isFirstAudio: false });
+    }, { once: true });
+
+    this.setState({
+      tapScreen: false,
+      isGyroTimerAccess: true,
+      isFrontFlowButtonDisabled: true,
+    });
+  }
+
+  voiceAfterSuccessGyro = () => {
+    const { current } = this.audio;
+
+    current.addEventListener('ended', () => {
+      this.setState({
+        activeAudioTrack: toClickReady,
+        isFrontFlowButtonDisabled: false,
+      });
+
+      current.load();
+      current.play();
+      this.audio.current.playbackRate = this.playSpeed;
+    }, { once: true });
+
+    this.setState({
+      activeAudioTrack: wellDone,
+    });
+
+    current.load();
+    current.play();
+    this.audio.current.playbackRate = this.playSpeed;
+  }
+
+  gyroTimerStart = () => {
+    this.setState({
+      activeAudioTrackIndex: 0,
+      photoTimerSecs: 6,
+      isPhotoTimer: false,
+      isFrontFlowButtonDisabled: true,
+    });
+
+    this.gyroTimer = setTimeout(this.voiceAfterSuccessGyro, 3000);
+  }
+
+  gyroTimerClear = () => {
+    clearTimeout(this.gyroTimer);
+
+    this.gyroTimer = null;
+
+    this.setState({
+      isFrontFlowButtonDisabled: true,
+    });
+  }
+
+  photoTimerStart = () => {
+    this.photoTimer = setInterval(() => {
+      const { photoTimerSecs } = this.state;
+
+      if (photoTimerSecs > 0) {
+        // eslint-disable-next-line no-shadow
+        this.setState(({ photoTimerSecs }) => ({
+          photoTimerSecs: photoTimerSecs - 1,
+          isPhotoTimer: true,
+        }));
+      }
+
+      if (photoTimerSecs === 1) {
+        const { current } = this.audio;
+
+        clearInterval(this.photoTimer);
+
+        this.setState({
+          isPhotoTimer: false,
+          activeAudioTrack: audioPhotoShutter,
+        });
+
+        current.load();
+        current.play();
+        this.audio.current.playbackRate = this.playSpeed;
+
+        this.takePhoto();
+      }
+    }, 1000);
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  // componentDidUpdate(previousProps, previousState, snapshot) {
+  //   const { info, isGyroTimerAccess } = this.state;
+  //   const { current } = this.video;
+  //
+  //   if (previousState.info !== info) {
+  //     if (info) {
+  //       // reset gyroTimerStart
+  //       if (this.gyroTimer) {
+  //         this.gyroTimerClear();
+  //       }
+  //
+  //       // stop current sound
+  //       if (!current.paused) {
+  //         current.pause();
+  //       }
+  //     } else if (isGyroTimerAccess && !this.gyroTimer) {
+  //       this.gyroTimerStart();
+  //     }
+  //   }
+  // }
 
   componentDidMount() {
     this.setState({
@@ -51,6 +199,80 @@ class Camera extends Component {
         .catch(console.error);
     } else {
       window.ondeviceorientation = this.orientation;
+    }
+  }
+
+  voiceStartFrontInstructions = () => {
+    const { activeAudioTrackIndex, info } = this.state;
+    const { current } = this.audio;
+
+    let track = activeAudioTrackIndex;
+
+    if (track < 3) {
+      current.addEventListener('ended', this.voiceStartFrontInstructions, { once: true });
+    }
+
+    if (info) {
+      current.removeEventListener('ended', this.voiceStartFrontInstructions, { once: true });
+      current.pause();
+    }
+
+    switch (track) {
+      case 0:
+        track += 1;
+
+        this.setState({
+          activeAudioTrack: audioStepsBackwards,
+          activeAudioTrackIndex: track,
+        });
+
+        current.load();
+        current.play();
+            this.audio.current.playbackRate = this.playSpeed;
+
+        break;
+      case 1:
+        track += 1;
+
+        this.setState({
+          activeAudioTrack: audioHighQuality,
+          activeAudioTrackIndex: track,
+        });
+
+        current.load();
+        current.play();
+            this.audio.current.playbackRate = this.playSpeed;
+
+        break;
+      case 2:
+        track += 1;
+
+        this.setState({
+          activeAudioTrack: audioFrontInstruction,
+          activeAudioTrackIndex: track,
+        });
+
+        current.load();
+        current.play();
+            this.audio.current.playbackRate = this.playSpeed;
+
+        break;
+
+      case 3:
+        this.setState({
+          activeAudioTrack: audioDontMove,
+          activeAudioTrackIndex: 0,
+        });
+
+        current.load();
+        current.play();
+            this.audio.current.playbackRate = this.playSpeed;
+
+        current.addEventListener('ended', this.photoTimerStart, { once: true });
+
+        break;
+      default:
+        alert('Problems with audio');
     }
   }
 
@@ -236,6 +458,12 @@ class Camera extends Component {
     }, 50);
   };
 
+  handleClick = () => {
+    this.voiceStartFrontInstructions();
+
+    // this.takePhoto();
+  }
+
   takePhoto = async () => {
     try {
       const settings = this.stream.getVideoTracks()[0].getSettings();
@@ -308,6 +536,8 @@ class Camera extends Component {
   };
 
   normalizeData = (_g, _b) => {
+    const { isGyroTimerAccess, isFirstAudio } = this.state;
+
     this.b = Math.round(_b);
     this.g = Math.round(_g);
 
@@ -315,11 +545,44 @@ class Camera extends Component {
     this.rotX += (this.b - this.rotX) / 5;
 
     if (this.b < 75 || this.b > 105) {
-      this.setState({ info: true });
+      // reset gyroTimerStart
+      if (this.gyroTimer) {
+        this.gyroTimerClear();
+      }
+
+      // stop current sound
+      if (!isFirstAudio) {
+        this.audio.current.pause();
+      }
+
+      this.setState({
+        info: true,
+        isFrontFlowButtonDisabled: true,
+        activeAudioTrackIndex: 0,
+        photoTimerSecs: 6,
+      });
     } else {
+      if (isGyroTimerAccess && !this.gyroTimer) {
+        this.gyroTimerStart();
+      }
+
       this.setState({ info: false });
     }
   };
+
+  // normalizeData = (_g, _b) => {
+  //   this.b = Math.round(_b);
+  //   this.g = Math.round(_g);
+  //
+  //   this.rotY += (this.g - this.rotY) / 5;
+  //   this.rotX += (this.b - this.rotX) / 5;
+  //
+  //   if (this.b < 75 || this.b > 105) {
+  //     this.setState({ info: true });
+  //   } else {
+  //     this.setState({ info: false });
+  //   }
+  // };
 
   is(platform) {
     const ua = navigator.userAgent;
@@ -372,14 +635,49 @@ class Camera extends Component {
       activeCamera,
       gyroscopePosition,
       isButtonInit,
+      activeAudioTrack,
+      tapScreen,
+      isFrontFlowButtonDisabled,
+      isPhotoTimer,
+      photoTimerSecs,
     } = this.state;
 
-    const { type = 'front' } = this.props;
+    const { type = 'front', flowMode = 'front-mode' } = this.props;
 
     return (
-      <div className={classNames('widget-camera')} ref={this.initCamera}>
+      <div
+        className={classNames('widget-camera', {
+          'widget-camera--front-mode': flowMode === 'front-mode',
+        })}
+        ref={this.initCamera}
+      >
+        {flowMode === 'front-mode' && tapScreen ? (
+          <div className="widget-camera__tap-screen">
+            <img className="widget-camera__tap-screen-icon" src={muteIcon} alt="sound-on" />
+            <p className="widget-camera__tap-screen-text">
+              Please check the sound on your phone.
+              <br />
+              To use voice instructions, it
+              <b> must be turned on.</b>
+            </p>
+            <button
+              className="widget-camera__button widget-camera__tap-screen-button"
+              type="button"
+              onClick={this.tapToStart}
+            >
+              done
+            </button>
+          </div>
+        ) : null }
+
+        {isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
+
+        <img className="widget-camera__top-icon" src={pose} alt="human" />
         <div className="widget-camera__title">
           {`${type} photo`}
+          <audio ref={this.audio} controls preload="auto">
+            <source src={activeAudioTrack} type="audio/mp3" />
+          </audio>
         </div>
         <div className="widget-camera__grade-wrap">
           <div className="widget-camera__grade-container">
@@ -434,7 +732,12 @@ class Camera extends Component {
         >
           {this.before(!processing
                 && (
-                <button className={classNames('widget-camera-take-photo')} onClick={this.takePhoto} type="button" disabled={info || !isButtonInit}>
+                <button
+                  className="widget-camera-take-photo"
+                  onClick={this.handleClick}
+                  type="button"
+                  disabled={info || !isButtonInit || isFrontFlowButtonDisabled}
+                >
                   <div className={classNames('widget-camera-take-photo-effect')} />
                 </button>
                 ))}
@@ -444,6 +747,10 @@ class Camera extends Component {
           'allow-frame--warning': info,
         })}
         >
+          {/* <button onClick={this.audio1}>1</button> */}
+          {/* <button onClick={this.audio2}>2</button> */}
+          {/* <button onClick={this.audio3}>3</button> */}
+          {/* <button onClick={this.audio4}>4</button> */}
           <div className="allow-frame__warning-content">
             <img className="allow-frame__warning-img" src={warning} alt="warning" />
             <h2 className="allow-frame__warning-txt">

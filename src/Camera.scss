@@ -1,3 +1,6 @@
+$color-1: #00FF77;
+$color-2: rgba(255,255,255,0.6);
+
 .widget-camera {
   position: absolute;
   top: 0;
@@ -13,8 +16,27 @@
   background-color: black;
   overflow: hidden;
 
+  &--front-mode {
+    .allow-frame {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border-bottom: 4px solid $color-1;
+    }
+
+    .allow-frame__bottom-border {
+      display: none;
+    }
+
+    .allow-frame--warning {
+      border: none;
+    }
+  }
+
   p {
-    color: white;
+    &:not(.widget-camera__tap-screen-text) {
+      color: white;
+    }
   }
 
   &-info {
@@ -232,10 +254,105 @@
     transition: transform .15s linear;
     will-change: transform;
   }
-}
 
-$color-1: #00FF77;
-$color-2: rgba(255,255,255,0.6);
+  &__top-icon {
+    position: absolute;
+    z-index: 5;
+    top: 28px;
+    left: 28px;
+    max-height: 19px;
+  }
+
+  &__tap-screen {
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 70px;
+    padding: 0 16px;
+    box-sizing: border-box;
+
+    & ~ .allow-frame {
+      opacity: 0;
+      z-index: 0;
+    }
+
+    & ~ .widget-camera-controls {
+      display: none;
+    }
+
+    & ~ .widget-camera__grade-wrap {
+      display: none;
+    }
+  }
+
+  &__tap-screen-text {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 21px;
+    text-align: center;
+    margin-top: 50px;
+    width: 100%;
+    max-width: 292px;
+  }
+
+  &__button {
+    display: block;
+    height: 50px;
+    width: 275px;
+    border-radius: 4px;
+    background-color: #343239;
+    padding: 0;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 2.3px;
+    text-transform: uppercase;
+    font-weight: 400;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  &__tap-screen-icon {
+    width: 100%;
+    max-width: 112px;
+    margin-top: auto;
+  }
+
+  &__tap-screen-button {
+    margin-top: auto;
+    margin-bottom: 20px;
+  }
+
+  &__photo-timer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 270px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 316px;
+    text-align: center;
+    color: $color-1;
+  }
+}
 
 .allow-frame {
   z-index: 5;
