@@ -2,7 +2,7 @@ import {
   h,
   render,
   Component,
-  createRef,
+  createRef, Fragment,
 } from 'preact';
 import classNames from 'classnames';
 
@@ -62,7 +62,7 @@ class Camera extends Component {
 
     this.gyroTimer = null;
     this.photoTimer = null;
-    this.playSpeed = 2;
+    this.playSpeed = 1.5;
     this.rotX = 0;
     this.rotY = 0;
 
@@ -246,7 +246,7 @@ class Camera extends Component {
             window.ondeviceorientation = this.orientation;
           }
         })
-        .catch(console.error);
+        .catch((err) => console.error(err));
     } else {
       window.ondeviceorientation = this.orientation;
     }
@@ -775,9 +775,13 @@ class Camera extends Component {
       >
 
         {flowMode === 'front-mode' ? (
-          <audio ref={this.$audio} preload="auto">
-            <source src={activeAudioTrack} type="audio/mp3" />
-          </audio>
+          <Fragment>
+            <img className="widget-camera__top-icon" src={pose} alt="human" />
+
+            <audio ref={this.$audio} preload="auto">
+              <source src={activeAudioTrack} type="audio/mp3" />
+            </audio>
+          </Fragment>
         ) : null}
 
         {flowMode === 'front-mode' && tapScreen ? (
@@ -801,7 +805,6 @@ class Camera extends Component {
 
         {isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
 
-        <img className="widget-camera__top-icon" src={pose} alt="human" />
         <div className="widget-camera__title">
           {`${type} photo`}
         </div>

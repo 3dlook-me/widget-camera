@@ -224,7 +224,7 @@ $color-2: rgba(255,255,255,0.6);
     z-index: 5;
     text-transform: lowercase;
     position: absolute;
-    top: 26px;
+    top: 34px;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0;
@@ -268,7 +268,7 @@ $color-2: rgba(255,255,255,0.6);
   &__top-icon {
     position: absolute;
     z-index: 5;
-    top: 28px;
+    top: 38px;
     left: 28px;
     max-height: 19px;
   }
@@ -306,7 +306,6 @@ $color-2: rgba(255,255,255,0.6);
   &__tap-screen-text {
     color: black;
     font-size: 14px;
-    font-weight: bold;
     letter-spacing: 0;
     line-height: 21px;
     text-align: center;
