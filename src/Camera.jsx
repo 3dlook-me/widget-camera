@@ -42,11 +42,11 @@ class Camera extends Component {
       imgURI: null,
       processing: false,
       info: false,
-      camerasBack: [],
+      camerasArr: [],
       activeCamera: -1,
       gyroscopePosition: 180,
       isButtonInit: false,
-      tapScreen: props.flowMode === 'front-mode' && props.type === 'front',
+      tapScreen: props.flowMode === 'front-mode',
       // tapScreen: true,
 
       activeAudioTrack: audioPlaceYourPhone,
@@ -57,6 +57,7 @@ class Camera extends Component {
       photoTimerSecs: 6,
       isPhotoTimer: false,
       isFirstAudio: true,
+      isSidePhotoFrontFlow: false,
     };
 
     this.gyroTimer = null;
@@ -71,7 +72,6 @@ class Camera extends Component {
       audio: false,
       video: {
         facingMode: this.cameraType,
-        // facingMode: 'environment', // 'user'
         width: { exact: 1280 },
       },
     };
@@ -119,8 +119,9 @@ class Camera extends Component {
     this.$audio.current.playbackRate = this.playSpeed;
   }
 
-  voiceFinal = () => {
-    const { current } = this.props;
+  voiceFinal = (img) => {
+    const { current } = this.$audio;
+    const { saveSide } = this.props;
 
     this.setState({
       activeAudioTrack: audioSuccessFinish,
@@ -128,6 +129,10 @@ class Camera extends Component {
 
     current.load();
     current.play();
+
+    current.addEventListener('ended', () => {
+      saveSide(img);
+    }, { once: true });
   }
 
   gyroTimerStart = () => {
@@ -164,7 +169,8 @@ class Camera extends Component {
   }
 
   photoTimerStart = () => {
-    this.photoTimer = setInterval(() => {
+    this.photoTimer = setInterval(async () => {
+      const { current } = this.$audio;
       const { photoTimerSecs } = this.state;
 
       if (photoTimerSecs > 0) {
@@ -175,31 +181,26 @@ class Camera extends Component {
         }));
       }
 
-      if (photoTimerSecs === 2) {
-        const { current } = this.$audio;
-        const { type } = this.props;
-
+      if (photoTimerSecs === 5) {
         this.setState({
           activeAudioTrack: audioPhotoShutter,
         });
 
-        if (type === 'side') {
-          current.addEventListener('ended', this.voiceFinal, { once: true });
-        }
-
         current.load();
-        current.play();
       }
 
       if (photoTimerSecs === 1) {
+        current.play();
+
         clearInterval(this.photoTimer);
 
         this.setState({
           isPhotoTimer: false,
           photoTimerSecs: 6,
+          isSidePhotoFrontFlow: true,
         });
 
-        this.takePhoto();
+        await this.takePhoto();
       }
     }, 1000);
   }
@@ -233,29 +234,6 @@ class Camera extends Component {
   // }
 
   componentDidMount() {
-    // const {
-    //   type,
-    //   frontImage,
-    //   flowMode,
-    // } = this.props;
-    //
-    // if (flowMode === 'front-mode' && type === 'side') {
-    //   this.setState({
-    //     isButtonDisabled: true,
-    //     isFirstAudio: false,
-    //   });
-    //
-    //   this.voiceInstructions();
-    //
-    //   // if () {
-    //   //
-    //   // }
-    //   //
-    //   // this.setState({
-    //   //   tapScreen: true,
-    //   // });
-    // }
-
     this.setState({
       width: document.body.clientWidth,
       height: document.body.clientHeight,
@@ -355,7 +333,9 @@ class Camera extends Component {
 
         break;
       default:
-        alert('Problems with audio');
+        alert('Problems with audio. Please try again.');
+
+        window.location.reload();
     }
   }
 
@@ -407,45 +387,47 @@ class Camera extends Component {
 
   getUserDevices = () => navigator.mediaDevices.enumerateDevices()
     .then(async (devices) => {
-      const devicesBackArr = [];
+      const devicesArr = [];
+      const { flowMode } = this.props;
+      const cameraType = flowMode === 'front-mode' ? 'front' : 'back';
 
-      devices.forEach((e, i) => {
-        if (e.kind === 'videoinput' && e.label.includes('back')) {
-          devicesBackArr.push(e.deviceId);
+      devices.forEach((e) => {
+        if (e.kind === 'videoinput' && e.label.includes(cameraType)) {
+          devicesArr.push(e.deviceId);
         }
       });
 
       // for android (start stream from camera by id)
       if (this.is('Android')) {
-        this.androidCameraStart(devicesBackArr);
+        this.androidCameraStart(devicesArr);
 
         return Promise.resolve();
       }
 
       // for other (start stream from default camera)
-      if (devicesBackArr.length > 1) {
+      if (devicesArr.length > 1) {
         this.setState({
-          camerasBack: devicesBackArr,
+          camerasArr: devicesArr,
         });
       }
     })
 
   additionalCamerasCheck = () => navigator.mediaDevices.enumerateDevices()
     .then(async (devices) => {
-      const devicesBackArr = [];
+      const devicesArr = [];
 
       devices.forEach((e, i) => {
         if (e.kind === 'videoinput' && e.label.includes('back')) {
-          devicesBackArr.push(e.deviceId);
+          devicesArr.push(e.deviceId);
         }
       });
 
-      return devicesBackArr;
+      return devicesArr;
     })
 
   androidCameraStart = async (cameras) => {
     this.setState({
-      camerasBack: cameras,
+      camerasArr: cameras,
       activeCamera: 0,
       isButtonInit: false,
     });
@@ -464,11 +446,11 @@ class Camera extends Component {
   }
 
   changeCamera = async (e) => {
-    const { camerasBack } = this.state;
+    const { camerasArr } = this.state;
     const { id } = e.target.dataset;
     const videoConfig = {
       video: {
-        deviceId: camerasBack[id],
+        deviceId: camerasArr[id],
         width: { exact: 1280 },
       },
       audio: false,
@@ -483,24 +465,25 @@ class Camera extends Component {
     this.startCamera(videoConfig);
   }
 
-  camerasFilter = async (camerasBack) => {
+  camerasFilter = async (camerasArr) => {
     const filteredCameras = [];
     let isCameraAllowed = false;
 
     // check for case if the camera is unavailable
-    for (let i = 0; i < camerasBack.length; i++) {
+    for (let i = 0; i < camerasArr.length; i++) {
       const videoConfig = {
         video: {
-          deviceId: camerasBack[i],
+          deviceId: camerasArr[i],
           width: { exact: 1280 },
         },
         audio: false,
       };
 
       try {
+        // eslint-disable-next-line no-await-in-loop
         this.stream = await navigator.mediaDevices.getUserMedia(videoConfig);
 
-        filteredCameras.push(camerasBack[i]);
+        filteredCameras.push(camerasArr[i]);
 
         isCameraAllowed = true;
       } catch (error) {
@@ -510,7 +493,7 @@ class Camera extends Component {
 
     if (isCameraAllowed) {
       this.setState({
-        camerasBack: filteredCameras,
+        camerasArr: filteredCameras,
         activeCamera: 0,
       });
 
@@ -534,21 +517,33 @@ class Camera extends Component {
 
   orientation = (event) => {
     const { beta, gamma } = event;
+    const { flowMode } = this.props;
 
-    setTimeout(() => {
-      this.gyroscopePointerPosition(beta);
-      this.normalizeData(gamma, beta);
-    }, 50);
+    if (flowMode === 'front-mode') {
+      setTimeout(() => {
+        this.gyroscopePointerPosition(beta);
+        this.normalizeDataFrontMode(gamma, beta);
+      }, 50);
+    } else {
+      setTimeout(() => {
+        this.gyroscopePointerPosition(beta);
+        this.normalizeData(gamma, beta);
+      }, 50);
+    }
   };
 
-  handleClick = () => {
-    this.voiceInstructions();
+  handleClick = async () => {
+    const { flowMode } = this.props;
 
-    this.setState({
-      isButtonDisabled: true,
-    });
+    if (flowMode === 'front-mode') {
+      this.voiceInstructions();
 
-    // this.takePhoto();
+      this.setState({
+        isButtonDisabled: true,
+      });
+    } else {
+      await this.takePhoto();
+    }
   }
 
   takePhoto = async () => {
@@ -580,9 +575,14 @@ class Camera extends Component {
       const { saveFront, saveSide } = this.props;
       const image = await fixOrientation(blob, await getOrientation(blob));
 
+      // front-mode - dont stop stream after first photo
       if (flowMode === 'front-mode') {
         if (type !== 'front') {
           this.stream.getVideoTracks()[0].stop();
+
+          this.setState({
+            isSidePhotoFrontFlow: true,
+          });
         }
       } else {
         this.stream.getVideoTracks()[0].stop();
@@ -592,6 +592,8 @@ class Camera extends Component {
 
       if (type === 'front') {
         saveFront(image);
+      } else if (flowMode === 'front-mode') {
+        this.voiceFinal(image);
       } else {
         saveSide(image);
       }
@@ -599,7 +601,8 @@ class Camera extends Component {
       if (flowMode === 'front-mode') {
         if (type === 'front') {
           this.startStream();
-          this.voiceInstructions();
+
+          setTimeout(this.voiceInstructions, 1000);
         }
       }
     } catch (exception) {
@@ -644,8 +647,12 @@ class Camera extends Component {
     return component;
   };
 
-  normalizeData = (_g, _b) => {
-    const { isGyroTimerAccess, isFirstAudio } = this.state;
+  normalizeDataFrontMode = (_g, _b) => {
+    const {
+      isGyroTimerAccess,
+      isFirstAudio,
+      isSidePhotoFrontFlow,
+    } = this.state;
 
     this.b = Math.round(_b);
     this.g = Math.round(_g);
@@ -665,7 +672,7 @@ class Camera extends Component {
       }
 
       // stop current sound
-      if (!isFirstAudio) {
+      if (!isFirstAudio && !isSidePhotoFrontFlow) {
         this.$audio.current.pause();
       }
 
@@ -684,19 +691,19 @@ class Camera extends Component {
     }
   };
 
-  // normalizeData = (_g, _b) => {
-  //   this.b = Math.round(_b);
-  //   this.g = Math.round(_g);
-  //
-  //   this.rotY += (this.g - this.rotY) / 5;
-  //   this.rotX += (this.b - this.rotX) / 5;
-  //
-  //   if (this.b < 75 || this.b > 105) {
-  //     this.setState({ info: true });
-  //   } else {
-  //     this.setState({ info: false });
-  //   }
-  // };
+  normalizeData = (_g, _b) => {
+    this.b = Math.round(_b);
+    this.g = Math.round(_g);
+
+    this.rotY += (this.g - this.rotY) / 5;
+    this.rotX += (this.b - this.rotX) / 5;
+
+    if (this.b < 75 || this.b > 105) {
+      this.setState({ info: true });
+    } else {
+      this.setState({ info: false });
+    }
+  };
 
   is(platform) {
     const ua = navigator.userAgent;
@@ -745,7 +752,7 @@ class Camera extends Component {
     const {
       info,
       processing,
-      camerasBack,
+      camerasArr,
       activeCamera,
       gyroscopePosition,
       isButtonInit,
@@ -754,9 +761,10 @@ class Camera extends Component {
       isButtonDisabled,
       isPhotoTimer,
       photoTimerSecs,
+      isSidePhotoFrontFlow,
     } = this.state;
 
-    const { type = 'front', flowMode = 'front-mode' } = this.props;
+    const { type = 'front', flowMode = 'back-mode' } = this.props;
 
     return (
       <div
@@ -765,6 +773,13 @@ class Camera extends Component {
         })}
         ref={this.initCamera}
       >
+
+        {flowMode === 'front-mode' ? (
+          <audio ref={this.$audio} preload="auto">
+            <source src={activeAudioTrack} type="audio/mp3" />
+          </audio>
+        ) : null}
+
         {flowMode === 'front-mode' && tapScreen ? (
           <div className="widget-camera__tap-screen">
             <img className="widget-camera__tap-screen-icon" src={muteIcon} alt="sound-on" />
@@ -789,13 +804,6 @@ class Camera extends Component {
         <img className="widget-camera__top-icon" src={pose} alt="human" />
         <div className="widget-camera__title">
           {`${type} photo`}
-
-
-          <audio ref={this.$audio} preload="auto" controls>
-            <source src={activeAudioTrack} type="audio/mp3" />
-          </audio>
-
-
         </div>
         <div className="widget-camera__grade-wrap">
           <div className="widget-camera__grade-container">
@@ -825,9 +833,9 @@ class Camera extends Component {
         )}
 
         {/* condition > 1 is for android phones ( this.androidCameraStart ) */}
-        {camerasBack.length > 1 ? (
+        {camerasArr.length > 1 ? (
           <ul className="widget-camera__cameras">
-            {camerasBack.map((e, i) => (
+            {camerasArr.map((e, i) => (
               <li className={classNames('widget-camera__cameras-btn-wrap', { 'widget-camera__cameras-btn-wrap--active': +i === +activeCamera })}>
                 <button
                   type="button"
@@ -863,12 +871,9 @@ class Camera extends Component {
 
         <div className={classNames('allow-frame', {
           'allow-frame--warning': info,
+          'allow-frame--hidden': isSidePhotoFrontFlow,
         })}
         >
-          {/* <button onClick={this.$audio1}>1</button> */}
-          {/* <button onClick={this.$audio2}>2</button> */}
-          {/* <button onClick={this.$audio3}>3</button> */}
-          {/* <button onClick={this.$audio4}>4</button> */}
           <div className="allow-frame__warning-content">
             <img className="allow-frame__warning-img" src={warning} alt="warning" />
             <h2 className="allow-frame__warning-txt">

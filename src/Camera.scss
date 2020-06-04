@@ -35,6 +35,12 @@ $color-2: rgba(255,255,255,0.6);
     .widget-camera-video {
       transform: scaleX(-1);
     }
+
+    .widget-camera-take-photo {
+      &[disabled] {
+        opacity: 0;
+      }
+    }
   }
 
   p {
@@ -114,8 +120,7 @@ $color-2: rgba(255,255,255,0.6);
 
     &[disabled] {
       border-color: #CBC9C7;
-      opacity: 0;
-      
+
       .widget-camera-take-photo-effect {
         background-color: #CBC9C7;
 
@@ -398,6 +403,10 @@ $color-2: rgba(255,255,255,0.6);
     }
   }
 
+  &--hidden {
+    opacity: 0;
+  }
+
   &__bottom-border {
     position: absolute;
     height: 74px;
@@ -444,5 +453,9 @@ $color-2: rgba(255,255,255,0.6);
   &__warning-img {
     margin-bottom: 30px;
     height: 92px;
+  }
+
+  audio {
+    opacity: 0;
   }
 }
