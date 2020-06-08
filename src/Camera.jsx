@@ -19,20 +19,53 @@ import pointer from './images/pointer.svg';
 import pose from './images/ic_pose.svg';
 import muteIcon from './images/ic_sound.svg';
 
-import audioPlaceYourPhone from './audio/Place_your_phone_on_a_table.mp3';
-import audioWellDone from './audio/well_done.mp3';
+// import audioPlaceYourPhone from './audio/Place_your_phone_on_a_table.mp3';
+// import audioWellDone from './audio/well_done.mp3';
+// import audioWellDoneRetakeFront from './audio/audioWellDoneRetakeFront.mp3';
+// import audioToClickReady from './audio/to_continue.mp3';
+// import audioStepsBackwards from './audio/take_3_to_4.mp3';
+// import audioHighQuality from './audio/remember.mp3';
+// import audioFrontInstruction from './audio/your_legs.mp3';
+// import audioInstructionThreeRetakeFront from './audio/audioInstructionThreeRetakeFront.mp3';
+// import audioDontMove from './audio/please_stay_camera_shutter.mp3';
+// import audioPhotoShutter from './audio/shutter.mp3';
+// import audioSideStart from './audio/now_lets_take_side_photo.mp3';
+// import audioTurnLeft from './audio/turn_your_left_side.mp3';
+// import audioLegsTogether from './audio/push_your_legs_together.mp3';
+// import audioSuccessFinish from './audio/now_you_can_take_your_phone.mp3';
+// import audioTimer from './audio/timer.mp3';
+
+import audioPlaceYourPhone from './audio/1.1.mp3';
+import audioPlaceYourPhoneRetakeFrontSideFront from './audio/3.1.mp3';
+import audioWellDone from './audio/1.2.mp3';
+import audioWellDoneRetakeFrontSideFront from './audio/3.2.mp3';
 import audioWellDoneRetakeFront from './audio/audioWellDoneRetakeFront.mp3';
-import audioToClickReady from './audio/to_continue.mp3';
-import audioStepsBackwards from './audio/take_3_to_4.mp3';
-import audioHighQuality from './audio/remember.mp3';
-import audioFrontInstruction from './audio/your_legs.mp3';
-import audioInstructionThreeRetakeFront from './audio/audioInstructionThreeRetakeFront.mp3';
-import audioDontMove from './audio/please_stay_camera_shutter.mp3';
+import audioToClickReady from './audio/1.3.mp3';
+import audioToClickReadyRetakeFront from './audio/5.3.mp3';
+import audioStepsBackwards from './audio/1.4.mp3';
+import audioStepsBackwardsRetakeFrontSideFront from './audio/3.4.mp3';
+import audioStepsBackwardsRetakeFront from './audio/5.4.mp3';
+import audioHighQuality from './audio/1.5.mp3';
+import audioHighQualityRetakeFrontSideFront from './audio/3.5.mp3';
+import audioHighQualityRetakeFront from './audio/5.5.mp3';
+import audioFrontInstruction from './audio/1.6.mp3';
+import audioFrontInstructionRetakeFrontSideFront from './audio/3.6.mp3';
+import audioInstructionThreeRetakeFront from './audio/5.6.mp3';
+import audioDontMove from './audio/1.7.mp3';
+import audioSideDontMove from './audio/2.4.mp3';
+import audioSideDontMoveRetakeFrontSideSide from './audio/4.4.mp3';
+import audioSideDontMoveRetakeFrontSide from './audio/3.7.mp3';
+import audioSideDontMoveRetakeSide from './audio/6.9.mp3';
+import audioAwesomeLookingGreat from './audio/1.8.mp3';
+import audioAwesomeLookingGreatRetakeFrontSideFront from './audio/3.8.mp3';
 import audioPhotoShutter from './audio/shutter.mp3';
-import audioSideStart from './audio/now_lets_take_side_photo.mp3';
-import audioTurnLeft from './audio/turn_your_left_side.mp3';
-import audioLegsTogether from './audio/push_your_legs_together.mp3';
-import audioSuccessFinish from './audio/now_you_can_take_your_phone.mp3';
+import audioSideStart from './audio/2.1.mp3';
+import audioSideStartRetakeSide from './audio/6.6.mp3';
+import audioTurnLeft from './audio/2.2.mp3';
+import audioTurnLeftRetakeFrontSideSide from './audio/4.2.mp3';
+import audioLegsTogether from './audio/2.3.mp3';
+import audioSuccessFinish from './audio/2.5.mp3';
+import audioSuccessFinishRetakeFrontSideSide from './audio/4.5.mp3';
 import audioTimer from './audio/timer.mp3';
 
 class Camera extends Component {
@@ -358,13 +391,15 @@ class Camera extends Component {
 
       if (type === 'front') {
         if (hardValidation.front && !hardValidation.side) {
-          setTimeout(this.voiceFinal, 1000, image);
+          // setTimeout(this.voiceFinal, 1000, image);
+          this.voiceFinal(image);
         } else {
           saveFront(image);
         }
       } else if (isTableFlow) {
         // setTimeout is for iphone to have time play camera shutter
-        setTimeout(this.voiceFinal, 1000, image);
+        // setTimeout(this.voiceFinal, 1000, image);
+        this.voiceFinal(image);
       } else {
         saveSide(image);
       }
@@ -375,7 +410,7 @@ class Camera extends Component {
             const { current } = this.$audio;
 
             this.setState({
-              activeAudioTrack: audioWellDone,
+              activeAudioTrack: hardValidation.front && hardValidation.side ? audioAwesomeLookingGreatRetakeFrontSideFront : audioAwesomeLookingGreat,
             });
 
             current.load();
@@ -383,25 +418,7 @@ class Camera extends Component {
 
             current.addEventListener('ended', this.startVoiceInstructions, { once: true });
 
-            // current.addEventListener('ended', () => {
-            //   this.startVoiceInstructions();
-            // }, { once: true });
-            //
-            // if (this.is('Android')) {
-            //   current.load();
-            //   current.play();
-            // } else {
-            //   // setTimeout is for iphone to have time to play camera shutter
-            //   setTimeout(() => {
-            //     current.load();
-            //     current.play();
-            //   }, 1000);
-            // }
-
             this.startStream();
-
-            // setTimeout is for iphone to have time to play camera shutter
-            // setTimeout(this.startVoiceInstructions, 1000);
           }
         }
       }
@@ -551,17 +568,33 @@ class Camera extends Component {
   // table flow
   tapToStart = () => {
     const { current } = this.$audio;
+    const { type, hardValidation } = this.props;
 
+    let firstAudioTrack;
+
+    if (type === 'front' || type === 'side') {
+      firstAudioTrack = audioPlaceYourPhone;
+    } else if (hardValidation.front && hardValidation.side) {
+      firstAudioTrack = audioPlaceYourPhoneRetakeFrontSideFront;
+    }
+
+    this.setState({
+      firstAudioTrack,
+    });
+
+    current.load();
     current.play();
     this.$audio.current.playbackRate = this.playSpeed;
 
     current.addEventListener('ended', () => {
-      this.setState({ isFirstAudio: false });
+      this.setState({
+        isFirstAudio: false,
+        isGyroTimerAccess: true,
+      });
     }, { once: true });
 
     this.setState({
       tapScreen: false,
-      isGyroTimerAccess: true,
       isButtonDisabled: true,
     });
   }
@@ -569,10 +602,11 @@ class Camera extends Component {
   // table flow
   voiceAfterSuccessGyro = () => {
     const { current } = this.$audio;
+    const { hardValidation } = this.props;
 
     current.addEventListener('ended', () => {
       this.setState({
-        activeAudioTrack: audioToClickReady,
+        activeAudioTrack: hardValidation.front && !hardValidation.side ? audioToClickReadyRetakeFront : audioToClickReady,
         isButtonDisabled: false,
       });
 
@@ -581,8 +615,14 @@ class Camera extends Component {
       this.$audio.current.playbackRate = this.playSpeed;
     }, { once: true });
 
+    let audioDone = audioWellDone;
+
+    if (hardValidation.front && hardValidation.side) {
+      audioDone = audioWellDoneRetakeFrontSideFront;
+    }
+
     this.setState({
-      activeAudioTrack: audioWellDone,
+      activeAudioTrack: audioDone,
     });
 
     current.load();
@@ -751,7 +791,7 @@ class Camera extends Component {
 
       case 3:
         this.setState({
-          activeAudioTrack: audioDontMove,
+          activeAudioTrack: frontPhoto ? audioDontMove : audioSideDontMove,
           activeAudioTrackIndex: 0,
         });
 
@@ -790,7 +830,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: audioStepsBackwards,
+          activeAudioTrack: audioStepsBackwardsRetakeFront,
           activeAudioTrackIndex: track,
         });
 
@@ -804,7 +844,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: audioHighQuality,
+          activeAudioTrack: audioHighQualityRetakeFront,
           activeAudioTrackIndex: track,
         });
 
@@ -834,7 +874,7 @@ class Camera extends Component {
 
       case 3:
         this.setState({
-          activeAudioTrack: audioDontMove,
+          activeAudioTrack: audioSideDontMoveRetakeFrontSideSide,
           activeAudioTrackIndex: 0,
         });
 
@@ -905,7 +945,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: audioSideStart,
+          activeAudioTrack: audioSideStartRetakeSide,
           activeAudioTrackIndex: track,
         });
 
@@ -919,7 +959,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: audioTurnLeft,
+          activeAudioTrack: audioTurnLeftRetakeFrontSideSide,
           activeAudioTrackIndex: track,
         });
 
@@ -945,7 +985,7 @@ class Camera extends Component {
 
       case 5:
         this.setState({
-          activeAudioTrack: audioDontMove,
+          activeAudioTrack: audioSideDontMoveRetakeSide,
           activeAudioTrackIndex: 0,
         });
 
@@ -986,7 +1026,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: frontPhoto ? audioStepsBackwards : audioSideStart,
+          activeAudioTrack: frontPhoto ? audioStepsBackwardsRetakeFrontSideFront : audioSideStart,
           activeAudioTrackIndex: track,
         });
 
@@ -1000,7 +1040,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: frontPhoto ? audioHighQuality : audioTurnLeft,
+          activeAudioTrack: frontPhoto ? audioHighQualityRetakeFrontSideFront : audioTurnLeft,
           activeAudioTrackIndex: track,
         });
 
@@ -1022,7 +1062,7 @@ class Camera extends Component {
         track += 1;
 
         this.setState({
-          activeAudioTrack: frontPhoto ? audioInstructionThreeRetakeFront : audioLegsTogether,
+          activeAudioTrack: frontPhoto ? audioFrontInstructionRetakeFrontSideFront : audioLegsTogether,
           activeAudioTrackIndex: track,
         });
 
@@ -1034,7 +1074,7 @@ class Camera extends Component {
 
       case 3:
         this.setState({
-          activeAudioTrack: audioDontMove,
+          activeAudioTrack: frontPhoto ? audioSideDontMoveRetakeFrontSide : audioSideDontMoveRetakeFrontSideSide,
           activeAudioTrackIndex: 0,
         });
 
@@ -1074,7 +1114,12 @@ class Camera extends Component {
   // table flow
   voiceFinal = (img) => {
     const { current } = this.$audio;
-    const { saveSide, saveFront, type } = this.props;
+    const {
+      saveSide,
+      saveFront,
+      type,
+      hardValidation,
+    } = this.props;
 
     if (type === 'front') {
       this.setState({
@@ -1082,7 +1127,7 @@ class Camera extends Component {
       });
     } else {
       this.setState({
-        activeAudioTrack: audioSuccessFinish,
+        activeAudioTrack: hardValidation.front && hardValidation.side ? audioSuccessFinishRetakeFrontSideSide : audioSuccessFinish,
       });
     }
 
