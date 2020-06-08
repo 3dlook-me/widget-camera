@@ -337,6 +337,7 @@ $color-2: rgba(255,255,255,0.6);
     width: 100%;
     max-width: 112px;
     margin-top: auto;
+    height: 192px;
   }
 
   &__tap-screen-button {
@@ -360,6 +361,12 @@ $color-2: rgba(255,255,255,0.6);
     line-height: 316px;
     text-align: center;
     color: $color-1;
+  }
+
+  audio {
+    opacity: 0;
+    //z-index: 100;
+    //position: relative;
   }
 }
 
@@ -452,9 +459,5 @@ $color-2: rgba(255,255,255,0.6);
   &__warning-img {
     margin-bottom: 30px;
     height: 92px;
-  }
-
-  audio {
-    opacity: 0;
   }
 }

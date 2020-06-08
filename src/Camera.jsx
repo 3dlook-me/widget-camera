@@ -21,6 +21,7 @@ import muteIcon from './images/ic_sound.svg';
 
 import audioPlaceYourPhone from './audio/Place_your_phone_on_a_table.mp3';
 import audioWellDone from './audio/well_done.mp3';
+import audioWellDoneRetakeFront from './audio/audioWellDoneRetakeFront.mp3';
 import audioToClickReady from './audio/to_continue.mp3';
 import audioStepsBackwards from './audio/take_3_to_4.mp3';
 import audioHighQuality from './audio/remember.mp3';
@@ -32,6 +33,7 @@ import audioSideStart from './audio/now_lets_take_side_photo.mp3';
 import audioTurnLeft from './audio/turn_your_left_side.mp3';
 import audioLegsTogether from './audio/push_your_legs_together.mp3';
 import audioSuccessFinish from './audio/now_you_can_take_your_phone.mp3';
+import audioTimer from './audio/timer.mp3';
 
 class Camera extends Component {
   $audio = createRef();
@@ -63,7 +65,7 @@ class Camera extends Component {
 
     this.gyroTimer = null;
     this.photoTimer = null;
-    this.playSpeed = 1.5;
+    this.playSpeed = 1;
     this.rotX = 0;
     this.rotY = 0;
 
@@ -370,10 +372,36 @@ class Camera extends Component {
       if (isTableFlow) {
         if (type === 'front') {
           if (!(hardValidation.front && !hardValidation.side)) {
+            const { current } = this.$audio;
+
+            this.setState({
+              activeAudioTrack: audioWellDone,
+            });
+
+            current.load();
+            current.play();
+
+            current.addEventListener('ended', this.startVoiceInstructions, { once: true });
+
+            // current.addEventListener('ended', () => {
+            //   this.startVoiceInstructions();
+            // }, { once: true });
+            //
+            // if (this.is('Android')) {
+            //   current.load();
+            //   current.play();
+            // } else {
+            //   // setTimeout is for iphone to have time to play camera shutter
+            //   setTimeout(() => {
+            //     current.load();
+            //     current.play();
+            //   }, 1000);
+            // }
+
             this.startStream();
 
             // setTimeout is for iphone to have time to play camera shutter
-            setTimeout(this.startVoiceInstructions, 1000);
+            // setTimeout(this.startVoiceInstructions, 1000);
           }
         }
       }
@@ -536,8 +564,6 @@ class Camera extends Component {
       isGyroTimerAccess: true,
       isButtonDisabled: true,
     });
-
-    this.gyroTimerStart();
   }
 
   // table flow
@@ -589,10 +615,31 @@ class Camera extends Component {
     });
   }
 
-  // table flow
   photoTimerStart = () => {
+    const { current } = this.$audio;
+
+    this.setState({
+      activeAudioTrack: audioTimer,
+    });
+
+    current.addEventListener('canplay', this.photoTimerShow, { once: true });
+
+    current.load();
+
+    if (this.is('Android')) {
+      setTimeout(() => {
+        current.play();
+      }, 1000);
+    } else {
+      current.play();
+    }
+  }
+
+  // table flow
+  photoTimerShow = () => {
+    const { current } = this.$audio;
+
     this.photoTimer = setInterval(async () => {
-      const { current } = this.$audio;
       const { photoTimerSecs } = this.state;
 
       if (photoTimerSecs > 0) {
@@ -603,26 +650,21 @@ class Camera extends Component {
         }));
       }
 
-      if (photoTimerSecs === 5) {
-        this.setState({
-          activeAudioTrack: audioPhotoShutter,
-        });
-
-        current.load();
-      }
-
       if (photoTimerSecs === 1) {
-        current.play();
-
         clearInterval(this.photoTimer);
 
         this.setState({
           isPhotoTimer: false,
           photoTimerSecs: 6,
-          isSidePhotoFrontFlow: true,
+          activeAudioTrack: audioPhotoShutter,
         });
 
-        await this.takePhoto();
+        current.load();
+        current.play();
+
+        current.addEventListener('ended', this.takePhoto, { once: true });
+
+        // this.takePhoto();
       }
     }, 1000);
   }
@@ -1034,9 +1076,15 @@ class Camera extends Component {
     const { current } = this.$audio;
     const { saveSide, saveFront, type } = this.props;
 
-    this.setState({
-      activeAudioTrack: audioSuccessFinish,
-    });
+    if (type === 'front') {
+      this.setState({
+        activeAudioTrack: audioWellDoneRetakeFront,
+      });
+    } else {
+      this.setState({
+        activeAudioTrack: audioSuccessFinish,
+      });
+    }
 
     current.load();
     current.play();
@@ -1058,6 +1106,9 @@ class Camera extends Component {
     current.removeEventListener('ended', this.voiceInstructionsRetakeFront, { once: true });
     current.removeEventListener('ended', this.voiceInstructionsRetakeSide, { once: true });
     current.removeEventListener('ended', this.voiceInstructionsRetakeFrontSide, { once: true });
+    current.removeEventListener('canplay', this.photoTimer, { once: true });
+    current.removeEventListener('ended', this.takePhoto, { once: true });
+    current.removeEventListener('ended', this.startVoiceInstructions, { once: true });
   }
 
   render() {
