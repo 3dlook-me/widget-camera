@@ -65,7 +65,7 @@ class Camera extends Component {
 
     this.gyroTimer = null;
     this.photoTimer = null;
-    this.playSpeed = 1;
+    this.playSpeed = 2;
     this.rotX = 0;
     this.rotY = 0;
 
@@ -307,6 +307,9 @@ class Camera extends Component {
   }
 
   takePhoto = async () => {
+    const { isTableFlow } = this.props;
+    const callback = isTableFlow ? this.setPhotoTableFlow : this.setPhoto;
+
     try {
       const settings = this.stream.getVideoTracks()[0].getSettings();
       // alert(JSON.stringify(settings));
@@ -320,7 +323,7 @@ class Camera extends Component {
         canvas.height = settings.height;
       }
       canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
-      this.setState({ processing: true }, () => canvas.toBlob(this.setPhoto));
+      this.setState({ processing: true }, () => canvas.toBlob(callback));
     } catch (exception) {
       alert(`Error: ${exception}`);
 
@@ -330,83 +333,76 @@ class Camera extends Component {
 
   setPhoto = async (blob) => {
     const {
+      saveFront,
+      saveSide,
       type,
-      isTableFlow,
-      hardValidation,
     } = this.props;
 
     try {
-      const { saveFront, saveSide } = this.props;
       const image = await fixOrientation(blob, await getOrientation(blob));
+      this.stream.getVideoTracks()[0].stop();
+      this.setState({ processing: false });
 
-      // front-mode - dont stop stream after first photo
-      if (isTableFlow) {
-        if (type !== 'front') {
-          this.stream.getVideoTracks()[0].stop();
-
-          this.setState({
-            isSidePhotoFrontFlow: true,
-          });
-        } else if (hardValidation.front && !hardValidation.side) {
-          this.stream.getVideoTracks()[0].stop();
-        }
+      if (type === 'front') {
+        saveFront(image);
       } else {
-        this.stream.getVideoTracks()[0].stop();
+        saveSide(image);
       }
+    } catch (exception) {
+      alert(`Error: ${exception}`);
+    }
+  }
+
+  setPhotoTableFlow = async (blob) => {
+    const { type } = this.props;
+
+    try {
+      const image = await fixOrientation(blob, await getOrientation(blob));
 
       this.setState({ processing: false });
 
       if (type === 'front') {
-        if (hardValidation.front && !hardValidation.side) {
-          setTimeout(this.voiceFinal, 1000, image);
-        } else {
-          saveFront(image);
-        }
-      } else if (isTableFlow) {
-        // setTimeout is for iphone to have time play camera shutter
-        setTimeout(this.voiceFinal, 1000, image);
+        this.setFrontPhotoTableFlow(image);
       } else {
-        saveSide(image);
-      }
+        this.stream.getVideoTracks()[0].stop();
 
-      if (isTableFlow) {
-        if (type === 'front') {
-          if (!(hardValidation.front && !hardValidation.side)) {
-            const { current } = this.$audio;
+        this.setState({
+          isSidePhotoFrontFlow: true,
+        });
 
-            this.setState({
-              activeAudioTrack: audioWellDone,
-            });
-
-            current.load();
-            current.play();
-
-            current.addEventListener('ended', this.startVoiceInstructions, { once: true });
-
-            // current.addEventListener('ended', () => {
-            //   this.startVoiceInstructions();
-            // }, { once: true });
-            //
-            // if (this.is('Android')) {
-            //   current.load();
-            //   current.play();
-            // } else {
-            //   // setTimeout is for iphone to have time to play camera shutter
-            //   setTimeout(() => {
-            //     current.load();
-            //     current.play();
-            //   }, 1000);
-            // }
-
-            this.startStream();
-
-            // setTimeout is for iphone to have time to play camera shutter
-            // setTimeout(this.startVoiceInstructions, 1000);
-          }
-        }
+        this.voiceFinal(image);
       }
     } catch (exception) {
       alert(`Error: ${exception}`);
+    }
+  }
+
+  setFrontPhotoTableFlow = async (img) => {
+    const { hardValidation, saveFront } = this.props;
+
+    if (hardValidation.front && !hardValidation.side) {
+      this.stream.getVideoTracks()[0].stop();
+
+      this.setState({
+        isSidePhotoFrontFlow: true,
+      });
+
+      this.voiceFinal(img);
+    } else {
+      const { current } = this.$audio;
+
+      saveFront(img);
+
+      this.setState({
+        activeAudioTrack: audioWellDone,
+      });
+
+      current.load();
+      current.play();
+
+      current.addEventListener('ended', this.startVoiceInstructions, { once: true });
+
+      this.startStream();
     }
   }
 
