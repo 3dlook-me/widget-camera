@@ -96,7 +96,7 @@ class Camera extends Component {
       photoTimerSecs: 6,
       isPhotoTimer: false,
       isFirstAudio: true,
-      isSidePhotoFrontFlow: false,
+      isLastPhoto: false,
     };
 
     this.gyroTimer = null;
@@ -403,7 +403,7 @@ class Camera extends Component {
         this.stream.getVideoTracks()[0].stop();
 
         this.setState({
-          isSidePhotoFrontFlow: true,
+          isLastPhoto: true,
         });
 
         this.voiceFinal(image);
@@ -420,7 +420,7 @@ class Camera extends Component {
       this.stream.getVideoTracks()[0].stop();
 
       this.setState({
-        isSidePhotoFrontFlow: true,
+        isLastPhoto: true,
       });
 
       this.voiceFinal(img);
@@ -495,7 +495,7 @@ class Camera extends Component {
     const {
       isGyroTimerAccess,
       isFirstAudio,
-      isSidePhotoFrontFlow,
+      isLastPhoto,
     } = this.state;
 
     this.b = Math.round(_b);
@@ -516,7 +516,7 @@ class Camera extends Component {
       }
 
       // stop current sound
-      if (!isFirstAudio && !isSidePhotoFrontFlow) {
+      if (!isFirstAudio && !isLastPhoto) {
         this.$audio.current.pause();
       }
 
@@ -1226,7 +1226,7 @@ class Camera extends Component {
       isButtonDisabled,
       isPhotoTimer,
       photoTimerSecs,
-      isSidePhotoFrontFlow,
+      isLastPhoto,
     } = this.state;
 
     const { type = 'front', isTableFlow = false } = this.props;
@@ -1339,7 +1339,7 @@ class Camera extends Component {
 
         <div className={classNames('allow-frame', {
           'allow-frame--warning': info,
-          'allow-frame--hidden': isSidePhotoFrontFlow,
+          'allow-frame--hidden': isLastPhoto,
         })}
         >
           <div className="allow-frame__warning-content">
