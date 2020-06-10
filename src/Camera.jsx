@@ -127,12 +127,46 @@ class Camera extends Component {
         .then((response) => {
           if (response === 'granted') {
             window.ondeviceorientation = this.orientation;
+          } else {
+            this.isGyroActiveIphone();
           }
         })
         .catch((err) => console.error(err));
     } else {
-      window.ondeviceorientation = this.orientation;
+      this.isGyroActive();
     }
+  }
+
+  isGyroActive = () => {
+    window.addEventListener('deviceorientation', (event) => {
+      if (event.beta === null || event.gamma === null) {
+        const { isTableFlow } = this.props;
+
+        if (isTableFlow) {
+          this.gyroDisabledMsg();
+        }
+      } else {
+        window.ondeviceorientation = this.orientation;
+      }
+    }, { once: true });
+  }
+
+  isGyroActiveIphone = () => {
+    const { isTableFlow } = this.props;
+
+    if (isTableFlow) {
+      this.gyroDisabledMsg();
+    }
+  }
+
+  gyroDisabledMsg = () => {
+    const { disableTableFlow } = this.props;
+
+    disableTableFlow();
+
+    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use AI ASSISTANT mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
+
+    window.location.href = '#/camera-mode-selection';
   }
 
   // tap at the bottom of the screen to allow gyroscope for iphone in dev mode
