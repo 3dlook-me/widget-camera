@@ -2,7 +2,8 @@ import {
   h,
   render,
   Component,
-  createRef, Fragment,
+  createRef,
+  Fragment,
 } from 'preact';
 import classNames from 'classnames';
 
@@ -19,57 +20,69 @@ import pointer from './images/pointer.svg';
 import pose from './images/ic_pose.svg';
 import muteIcon from './images/ic_sound.svg';
 
-// import audioPlaceYourPhone from './audio/Place_your_phone_on_a_table.mp3';
-// import audioWellDone from './audio/well_done.mp3';
-// import audioWellDoneRetakeFront from './audio/audioWellDoneRetakeFront.mp3';
-// import audioToClickReady from './audio/to_continue.mp3';
-// import audioStepsBackwards from './audio/take_3_to_4.mp3';
-// import audioHighQuality from './audio/remember.mp3';
-// import audioFrontInstruction from './audio/your_legs.mp3';
-// import audioInstructionThreeRetakeFront from './audio/audioInstructionThreeRetakeFront.mp3';
-// import audioDontMove from './audio/please_stay_camera_shutter.mp3';
-// import audioPhotoShutter from './audio/shutter.mp3';
-// import audioSideStart from './audio/now_lets_take_side_photo.mp3';
-// import audioTurnLeft from './audio/turn_your_left_side.mp3';
-// import audioLegsTogether from './audio/push_your_legs_together.mp3';
-// import audioSuccessFinish from './audio/now_you_can_take_your_phone.mp3';
-// import audioTimer from './audio/timer.mp3';
-
-import audioPlaceYourPhone from './audio/1.1.mp3';
-import audioPlaceYourPhoneRetakeFrontSideFront from './audio/3.1.mp3';
-import audioPlaceYourPhoneRetakeFrontSide from './audio/5.1.mp3';
-import audioWellDone from './audio/1.2.mp3';
-import audioWellDoneRetakeFrontSideFront from './audio/3.2.mp3';
-import audioToClickReady from './audio/1.3.mp3';
-import audioToClickReadyRetakeFront from './audio/5.3.mp3';
-import audioToClickReadyRetakeFrontSide from './audio/3.3.mp3';
-import audioStepsBackwards from './audio/1.4.mp3';
-import audioStepsBackwardsRetakeFrontSideFront from './audio/3.4.mp3';
-import audioStepsBackwardsRetakeFront from './audio/5.4.mp3';
-import audioStepsBackwardsRetakeSide from './audio/6.4.mp3';
-import audioHighQuality from './audio/1.5.mp3';
-import audioHighQualityRetakeFrontSideFront from './audio/3.5.mp3';
-import audioHighQualityRetakeFront from './audio/5.5.mp3';
-import audioFrontInstruction from './audio/1.6.mp3';
-import audioFrontInstructionRetakeFrontSideFront from './audio/3.6.mp3';
-import audioInstructionThreeRetakeFront from './audio/5.6.mp3';
-import audioDontMove from './audio/1.7.mp3';
-import audioSideDontMove from './audio/2.4.mp3';
-import audioSideDontMoveRetakeFrontSideSide from './audio/4.4.mp3';
-import audioSideDontMoveRetakeFrontSide from './audio/3.7.mp3';
-import audioSideDontMoveRetakeSide from './audio/6.9.mp3';
-import audioAwesomeLookingGreat from './audio/1.8.mp3';
-import audioAwesomeLookingGreatRetakeFrontSideFront from './audio/3.8.mp3';
-import audioPhotoShutter from './audio/shutter.mp3';
-import audioSideStart from './audio/2.1.mp3';
-import audioSideStartRetakeFrontSideSide from './audio/4.1.mp3';
-import audioSideStartRetakeSide from './audio/6.6.mp3';
-import audioTurnLeft from './audio/2.2.mp3';
-import audioTurnLeftRetakeFrontSideSide from './audio/4.2.mp3';
-import audioLegsTogether from './audio/2.3.mp3';
-import audioSuccessFinish from './audio/2.5.mp3';
-import audioSuccessFinishRetakeFrontSideSide from './audio/4.5.mp3';
+// System
 import audioTimer from './audio/timer.mp3';
+import audioPhotoShutter from './audio/shutter.mp3';
+
+// Front and side
+import audioStandYourPhone from './audio/1.1.mp3';
+import audioSuccessGyro from './audio/1.2.mp3';
+import audioToClickReadyBtn from './audio/1.3.mp3';
+
+// Front
+import audioFirstInstructionF from './audio/1.4.mp3';
+import audioSecondInstructionF from './audio/1.5.mp3';
+import audioThirdInstructionF from './audio/1.6.mp3';
+import audioFourthInstructionF from './audio/1.7.mp3';
+import audioSuccessPhotoF from './audio/1.8.mp3';
+
+// Side
+import audioFirstInstructionS from './audio/2.1.mp3';
+import audioSecondInstructionS from './audio/2.2.mp3';
+import audioThirdInstructionS from './audio/2.3.mp3';
+import audioFourthInstructionS from './audio/2.4.mp3';
+import audioSuccessPhotoS from './audio/2.5.mp3';
+
+// Hard-validation front and side
+import audioStandYourPhoneHVFS from './audio/3.1.mp3';
+import audioSuccessGyroHVFS from './audio/3.2.mp3';
+import audioToClickReadyBtnHVFS from './audio/3.3.mp3';
+
+// Hard-validation front and side - FRONT
+import audioFirstInstructionHVFSF from './audio/3.4.mp3';
+import audioSecondInstructionHVFSF from './audio/3.5.mp3';
+import audioThirdInstructionHVFSF from './audio/3.6.mp3';
+import audioFourthInstructionHVFSF from './audio/3.7.mp3';
+import audioSuccessPhotoHVFSF from './audio/3.8.mp3';
+
+// Hard-validation front and side - SIDE
+import audioFirstInstructionHVFSS from './audio/4.1.mp3';
+import audioSecondInstructionHVFSS from './audio/4.2.mp3';
+import audioThirdInstructionHVFSS from './audio/4.3.mp3';
+import audioFourthInstructionHVFSS from './audio/4.4.mp3';
+import audioSuccessPhotoHVFSS from './audio/4.5.mp3';
+
+// Hard-validation front
+import audioStandYourPhoneHVF from './audio/5.1.mp3';
+import audioSuccessGyroHVF from './audio/5.2.mp3';
+import audioToClickReadyBtnHVF from './audio/5.3.mp3';
+import audioFirstInstructionHVF from './audio/5.4.mp3';
+import audioSecondInstructionHVF from './audio/5.5.mp3';
+import audioThirdInstructionHVF from './audio/5.6.mp3';
+import audioFourthInstructionHVF from './audio/5.7.mp3';
+import audioSuccessPhotoHVF from './audio/5.8.mp3';
+
+// Hard-validation front and side
+import audioStandYourPhoneHVS from './audio/6.1.mp3';
+import audioSuccessGyroHVS from './audio/6.2.mp3';
+import audioToClickReadyBtnHVS from './audio/6.3.mp3';
+import audioFirstInstructionHVS from './audio/6.4.mp3';
+import audioSecondInstructionHVS from './audio/6.5.mp3';
+import audioThirdInstructionHVS from './audio/6.6.mp3';
+import audioFourthInstructionHVS from './audio/6.7.mp3';
+import audioFifthInstructionHVS from './audio/6.8.mp3';
+import audioSixthInstructionHVS from './audio/6.9.mp3';
+import audioSuccessPhotoHVS from './audio/6.10.mp3';
 
 class Camera extends Component {
   $audio = createRef();
@@ -88,7 +101,7 @@ class Camera extends Component {
       tapScreen: props.isTableFlow,
       // tapScreen: true,
 
-      activeAudioTrack: audioPlaceYourPhone,
+      activeAudioTrack: audioStandYourPhone,
       activeAudioTrackIndex: 0,
 
       isGyroTimerAccess: false,
@@ -104,6 +117,11 @@ class Camera extends Component {
     this.playSpeed = 1;
     this.rotX = 0;
     this.rotY = 0;
+
+    // in dev mode comment 3 lines below
+    this.hardValidationFS = props.hardValidation.front && props.hardValidation.side;
+    this.hardValidationF = props.hardValidation.front && !props.hardValidation.side;
+    this.hardValidationS = !props.hardValidation.front && props.hardValidation.side;
 
     this.cameraType = props.isTableFlow ? 'user' : 'environment';
 
@@ -366,7 +384,7 @@ class Camera extends Component {
     const { isTableFlow } = this.props;
 
     if (isTableFlow) {
-      this.startVoiceInstructions();
+      this.playAudioInstructions();
 
       this.setState({
         isButtonDisabled: true,
@@ -423,6 +441,7 @@ class Camera extends Component {
     }
   }
 
+  // table flow
   setPhotoTableFlow = async (blob) => {
     const { type } = this.props;
 
@@ -440,13 +459,14 @@ class Camera extends Component {
           isLastPhoto: true,
         });
 
-        this.voiceFinal(image);
+        this.playFinalSuccessPhotoAudio(image);
       }
     } catch (exception) {
       alert(`Error: ${exception}`);
     }
   }
 
+  // table flow
   setFrontPhotoTableFlow = async (img) => {
     const { hardValidation, saveFront } = this.props;
 
@@ -457,32 +477,31 @@ class Camera extends Component {
         isLastPhoto: true,
       });
 
-      this.voiceFinal(img);
+      this.playFinalSuccessPhotoAudio(img);
     } else {
       const { current } = this.$audio;
 
       saveFront(img);
 
       this.setState({
-        activeAudioTrack: this.chooseNicePhotoAudioTrack(),
+        activeAudioTrack: this.specifySuccessPhotoAudio(),
       });
 
       current.load();
       current.play();
 
-      current.addEventListener('ended', this.startVoiceInstructions, { once: true });
+      current.addEventListener('ended', this.playAudioInstructions, { once: true });
 
       this.startStream();
     }
   }
 
-  chooseNicePhotoAudioTrack = () => {
-    const { hardValidation } = this.props;
+  // table flow
+  specifySuccessPhotoAudio = () => {
+    let track = audioSuccessPhotoF;
 
-    let track = audioAwesomeLookingGreat;
-
-    if (hardValidation.front && hardValidation.side) {
-      track = audioAwesomeLookingGreatRetakeFrontSideFront;
+    if (this.hardValidationFS) {
+      track = audioSuccessPhotoHVFSF;
     }
 
     return track;
@@ -539,14 +558,14 @@ class Camera extends Component {
     this.rotX += (this.b - this.rotX) / 5;
 
     if (this.b < 75 || this.b > 105) {
-      // reset gyroTimerStart
+      // reset startGyroTimer
       if (this.gyroTimer) {
-        this.gyroTimerClear();
+        this.clearGyroTimer();
       }
 
       // reset photoTimer
       if (this.photoTimer) {
-        this.photoTimerClear();
+        this.clearPhotoTimer();
       }
 
       // stop current sound
@@ -562,7 +581,7 @@ class Camera extends Component {
       });
     } else {
       if (isGyroTimerAccess && !this.gyroTimer) {
-        this.gyroTimerStart();
+        this.startGyroTimer();
       }
 
       this.setState({ info: false });
@@ -627,11 +646,11 @@ class Camera extends Component {
   }
 
   // table flow
-  tapToStart = () => {
+  playFirstAudio = () => {
     const { current } = this.$audio;
 
     this.setState({
-      activeAudioTrack: this.chooseFirstAudioTrack(),
+      activeAudioTrack: this.specifyStandPhoneAudio(),
     });
 
     current.load();
@@ -639,6 +658,7 @@ class Camera extends Component {
     this.$audio.current.playbackRate = this.playSpeed;
 
     current.addEventListener('ended', () => {
+      // next method is this.startGyroTimer
       this.setState({
         isFirstAudio: false,
         isGyroTimerAccess: true,
@@ -652,74 +672,22 @@ class Camera extends Component {
   }
 
   // table flow
-  chooseFirstAudioTrack = () => {
-    const { hardValidation } = this.props;
+  specifyStandPhoneAudio = () => {
+    let track = audioStandYourPhone;
 
-    let track = audioPlaceYourPhone;
-
-    if ((hardValidation.front && hardValidation.side)) {
-      track = audioPlaceYourPhoneRetakeFrontSideFront;
-    } else if (hardValidation.front || hardValidation.side) {
-      track = audioPlaceYourPhoneRetakeFrontSide;
+    if (this.hardValidationFS) {
+      track = audioStandYourPhoneHVFS;
+    } else if (this.hardValidationF) {
+      track = audioStandYourPhoneHVF;
+    } else if (this.hardValidationS) {
+      track = audioStandYourPhoneHVS;
     }
 
     return track;
   }
 
   // table flow
-  voiceAfterSuccessGyro = () => {
-    const { current } = this.$audio;
-
-    current.addEventListener('ended', () => {
-      this.setState({
-        activeAudioTrack: this.chooseIfReadyAudioTrack(),
-        isButtonDisabled: false,
-      });
-
-      current.load();
-      current.play();
-      this.$audio.current.playbackRate = this.playSpeed;
-    }, { once: true });
-
-    this.setState({
-      activeAudioTrack: this.chooseSuccessAfterGyroAudioTrack(),
-    });
-
-    current.load();
-    current.play();
-    this.$audio.current.playbackRate = this.playSpeed;
-  }
-
-  // table flow
-  chooseIfReadyAudioTrack = () => {
-    const { hardValidation } = this.props;
-
-    let track = audioToClickReady;
-
-    if (hardValidation.front && hardValidation.side) {
-      track = audioToClickReadyRetakeFrontSide;
-    } else if (hardValidation.front || hardValidation.side) {
-      track = audioToClickReadyRetakeFront;
-    }
-
-    return track;
-  }
-
-  // table flow
-  chooseSuccessAfterGyroAudioTrack = () => {
-    const { hardValidation } = this.props;
-
-    let track = audioWellDone;
-
-    if (hardValidation.front && hardValidation.side) {
-      track = audioWellDoneRetakeFrontSideFront;
-    }
-
-    return track;
-  }
-
-  // table flow
-  gyroTimerStart = () => {
+  startGyroTimer = () => {
     this.setState({
       activeAudioTrackIndex: 0,
       photoTimerSecs: 6,
@@ -729,11 +697,11 @@ class Camera extends Component {
 
     this.removeAudioEventListeners();
 
-    this.gyroTimer = setTimeout(this.voiceAfterSuccessGyro, 3000);
+    this.gyroTimer = setTimeout(this.playSuccessGyroAudio, 3000);
   }
 
   // table flow
-  gyroTimerClear = () => {
+  clearGyroTimer = () => {
     clearTimeout(this.gyroTimer);
 
     this.gyroTimer = null;
@@ -743,14 +711,194 @@ class Camera extends Component {
     });
   }
 
-  photoTimerStart = () => {
+  // table flow
+  playSuccessGyroAudio = () => {
     const { current } = this.$audio;
 
     this.setState({
+      activeAudioTrack: this.specifySuccessGyroAudio(),
+    });
+
+    current.addEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
+
+    current.load();
+    current.play();
+    this.$audio.current.playbackRate = this.playSpeed;
+  }
+
+  // table flow
+  specifySuccessGyroAudio = () => {
+    let track = audioSuccessGyro;
+
+    if (this.hardValidationFS) {
+      track = audioSuccessGyroHVFS;
+    } else if (this.hardValidationF) {
+      track = audioSuccessGyroHVF;
+    } else if (this.hardValidationS) {
+      track = audioSuccessGyroHVS;
+    }
+
+    return track;
+  }
+
+  // table flow
+  playToClickReadyBtnAudio = () => {
+    const { current } = this.$audio;
+
+    this.setState({
+      activeAudioTrack: this.specifyToClickReadyBtnAudio(),
+      isButtonDisabled: false,
+    });
+
+    // next method if user taps ready is this.handleClick -> this.playAudioInstructions
+    current.load();
+    current.play();
+    this.$audio.current.playbackRate = this.playSpeed;
+  }
+
+  // table flow
+  specifyToClickReadyBtnAudio = () => {
+    let track = audioToClickReadyBtn;
+
+    if (this.hardValidationFS) {
+      track = audioToClickReadyBtnHVFS;
+    } else if (this.hardValidationF) {
+      track = audioToClickReadyBtnHVF;
+    } else if (this.hardValidationS) {
+      track = audioToClickReadyBtnHVS;
+    }
+
+    return track;
+  }
+
+  // table flow
+  playAudioInstructions = () => {
+    const { activeAudioTrackIndex } = this.state;
+    const { current } = this.$audio;
+    let trackIndex = activeAudioTrackIndex;
+
+    if ((activeAudioTrackIndex < 5 && this.hardValidationS)
+        || (activeAudioTrackIndex < 3 && !this.hardValidationS)) {
+      current.addEventListener('ended', this.playAudioInstructions, { once: true });
+    } else {
+      current.addEventListener('ended', this.startPhotoTimer, { once: true });
+    }
+
+    this.setState({
+      activeAudioTrack: this.specifyAudioInstruction(trackIndex),
+      activeAudioTrackIndex: trackIndex += 1,
+    });
+
+    current.load();
+    current.play();
+    this.$audio.current.playbackRate = this.playSpeed;
+  }
+
+  specifyAudioInstruction = (index) => {
+    let track;
+    let tracksArr;
+
+    switch (index) {
+      case 0:
+        tracksArr = [
+          audioFirstInstructionF,
+          audioFirstInstructionS,
+          audioFirstInstructionHVFSF,
+          audioFirstInstructionHVFSS,
+          audioFirstInstructionHVF,
+          audioFirstInstructionHVS,
+        ];
+
+        track = this.specifyAudioInstructionTrack(tracksArr);
+
+        break;
+      case 1:
+        tracksArr = [
+          audioSecondInstructionF,
+          audioSecondInstructionS,
+          audioSecondInstructionHVFSF,
+          audioSecondInstructionHVFSS,
+          audioSecondInstructionHVF,
+          audioSecondInstructionHVS,
+        ];
+
+        track = this.specifyAudioInstructionTrack(tracksArr);
+
+        break;
+      case 2:
+        tracksArr = [
+          audioThirdInstructionF,
+          audioThirdInstructionS,
+          audioThirdInstructionHVFSF,
+          audioThirdInstructionHVFSS,
+          audioThirdInstructionHVF,
+          audioThirdInstructionHVS,
+        ];
+
+        track = this.specifyAudioInstructionTrack(tracksArr);
+
+        break;
+      case 3:
+        tracksArr = [
+          audioFourthInstructionF,
+          audioFourthInstructionS,
+          audioFourthInstructionHVFSF,
+          audioFourthInstructionHVFSS,
+          audioFourthInstructionHVF,
+          audioFourthInstructionHVS,
+        ];
+
+        track = this.specifyAudioInstructionTrack(tracksArr);
+
+        break;
+      case 4:
+        // only for side hard validation
+        track = audioFifthInstructionHVS;
+
+        break;
+      case 5:
+        // only for side hard validation
+        track = audioSixthInstructionHVS;
+
+        break;
+      default:
+        alert('Problems with audio. Please try again.');
+
+        window.location.reload();
+    }
+
+    return track;
+  }
+
+  specifyAudioInstructionTrack = (tracks) => {
+    const { type } = this.props;
+    const isFrontPhoto = type === 'front';
+
+    let track = isFrontPhoto ? tracks[0] : tracks[1];
+
+    if (this.hardValidationFS) {
+      track = isFrontPhoto ? tracks[2] : tracks[3];
+    } else if (this.hardValidationF) {
+      // eslint-disable-next-line prefer-destructuring
+      track = tracks[4];
+    } else if (this.hardValidationS) {
+      // eslint-disable-next-line prefer-destructuring
+      track = tracks[5];
+    }
+
+    return track;
+  }
+
+  // table flow
+  startPhotoTimer = () => {
+    const { current } = this.$audio;
+
+    this.setState({
+      activeAudioTrackIndex: 0,
       activeAudioTrack: audioTimer,
     });
 
-    current.addEventListener('canplay', this.photoTimerShow, { once: true });
+    current.addEventListener('canplay', this.showPhotoTimer, { once: true });
 
     current.load();
 
@@ -764,7 +912,7 @@ class Camera extends Component {
   }
 
   // table flow
-  photoTimerShow = () => {
+  showPhotoTimer = () => {
     const { current } = this.$audio;
 
     this.photoTimer = setInterval(async () => {
@@ -796,7 +944,7 @@ class Camera extends Component {
   }
 
   // table flow
-  photoTimerClear = () => {
+  clearPhotoTimer = () => {
     clearTimeout(this.photoTimer);
 
     this.setState({
@@ -807,398 +955,7 @@ class Camera extends Component {
   }
 
   // table flow
-  voiceInstructions = () => {
-    const { type } = this.props;
-    const { activeAudioTrackIndex, info } = this.state;
-    const { current } = this.$audio;
-    const frontPhoto = type === 'front';
-
-    let track = activeAudioTrackIndex;
-
-    if (track < 3) {
-      current.addEventListener('ended', this.startVoiceInstructions, { once: true });
-    }
-
-    if (info) {
-      current.removeEventListener('ended', this.startVoiceInstructions, { once: true });
-      current.pause();
-    }
-
-    switch (track) {
-      case 0:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioStepsBackwards : audioSideStart,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 1:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioHighQuality : audioTurnLeft,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-
-        if (frontPhoto) {
-          // setTimeout is for user to have some time to move away
-          setTimeout(() => {
-            current.play();
-          }, 3000);
-        } else {
-          current.play();
-        }
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 2:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioFrontInstruction : audioLegsTogether,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-
-      case 3:
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioDontMove : audioSideDontMove,
-          activeAudioTrackIndex: 0,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        current.addEventListener('ended', this.photoTimerStart, { once: true });
-
-        break;
-      default:
-        alert('Problems with audio. Please try again.');
-
-        window.location.reload();
-    }
-  }
-
-  // table flow
-  voiceInstructionsRetakeFront = () => {
-    const { activeAudioTrackIndex, info } = this.state;
-    const { current } = this.$audio;
-
-    let track = activeAudioTrackIndex;
-
-    if (track < 3) {
-      current.addEventListener('ended', this.voiceInstructionsRetakeFront, { once: true });
-    }
-
-    if (info) {
-      current.removeEventListener('ended', this.voiceInstructionsRetakeFront, { once: true });
-      current.pause();
-    }
-
-    switch (track) {
-      case 0:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioStepsBackwardsRetakeFront,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 1:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioHighQualityRetakeFront,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-
-        // setTimeout is for user to have some time to move away
-        setTimeout(() => {
-          current.play();
-        }, 3000);
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 2:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioInstructionThreeRetakeFront,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-
-      case 3:
-        this.setState({
-          activeAudioTrack: audioSideDontMoveRetakeFrontSideSide,
-          activeAudioTrackIndex: 0,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        current.addEventListener('ended', this.photoTimerStart, { once: true });
-
-        break;
-      default:
-        alert('Problems with audio. Please try again.');
-
-        window.location.reload();
-    }
-  }
-
-  // table flow
-  voiceInstructionsRetakeSide = () => {
-    const { activeAudioTrackIndex, info } = this.state;
-    const { current } = this.$audio;
-
-    let track = activeAudioTrackIndex;
-
-    if (track < 5) {
-      current.addEventListener('ended', this.voiceInstructionsRetakeSide, { once: true });
-    }
-
-    if (info) {
-      current.removeEventListener('ended', this.voiceInstructionsRetakeSide, { once: true });
-      current.pause();
-    }
-
-    switch (track) {
-      case 0:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioStepsBackwardsRetakeSide,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 1:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioHighQualityRetakeFront,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-
-        // setTimeout is for user to have some time to move away
-        setTimeout(() => {
-          current.play();
-        }, 3000);
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 2:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioSideStartRetakeSide,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 3:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioTurnLeftRetakeFrontSideSide,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 4:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: audioLegsTogether,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-
-      case 5:
-        this.setState({
-          activeAudioTrack: audioSideDontMoveRetakeSide,
-          activeAudioTrackIndex: 0,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        current.addEventListener('ended', this.photoTimerStart, { once: true });
-
-        break;
-      default:
-        alert('Problems with audio. Please try again.');
-
-        window.location.reload();
-    }
-  }
-
-  // table flow
-  voiceInstructionsRetakeFrontSide = () => {
-    const { type } = this.props;
-    const { activeAudioTrackIndex, info } = this.state;
-    const { current } = this.$audio;
-    const frontPhoto = type === 'front';
-
-    let track = activeAudioTrackIndex;
-
-    if (track < 3) {
-      current.addEventListener('ended', this.startVoiceInstructions, { once: true });
-    }
-
-    if (info) {
-      current.removeEventListener('ended', this.startVoiceInstructions, { once: true });
-      current.pause();
-    }
-
-    switch (track) {
-      case 0:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioStepsBackwardsRetakeFrontSideFront : audioSideStartRetakeFrontSideSide,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 1:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioHighQualityRetakeFrontSideFront : audioTurnLeft,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-
-        if (frontPhoto) {
-          // setTimeout is for user to have some time to move away
-          setTimeout(() => {
-            current.play();
-          }, 3000);
-        } else {
-          current.play();
-        }
-
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-      case 2:
-        track += 1;
-
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioFrontInstructionRetakeFrontSideFront : audioLegsTogether,
-          activeAudioTrackIndex: track,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        break;
-
-      case 3:
-        this.setState({
-          activeAudioTrack: frontPhoto ? audioSideDontMoveRetakeFrontSide : audioSideDontMoveRetakeFrontSideSide,
-          activeAudioTrackIndex: 0,
-        });
-
-        current.load();
-        current.play();
-        this.$audio.current.playbackRate = this.playSpeed;
-
-        current.addEventListener('ended', this.photoTimerStart, { once: true });
-
-        break;
-      default:
-        alert('Problems with audio. Please try again.');
-
-        window.location.reload();
-    }
-  }
-
-  // table flow
-  startVoiceInstructions = () => {
-    const { hardValidation } = this.props;
-
-    if (!hardValidation.front && !hardValidation.side) {
-      console.log('normal');
-      this.voiceInstructions();
-    } else if (hardValidation.front && !hardValidation.side) {
-      console.log('front');
-      this.voiceInstructionsRetakeFront();
-    } else if (!hardValidation.front && hardValidation.side) {
-      console.log('side');
-      this.voiceInstructionsRetakeSide();
-    } else if (hardValidation.front && hardValidation.side) {
-      console.log('front and side');
-      this.voiceInstructionsRetakeFrontSide();
-    }
-  }
-
-  // table flow
-  voiceFinal = (img) => {
+  playFinalSuccessPhotoAudio = (img) => {
     const { current } = this.$audio;
     const {
       saveSide,
@@ -1207,11 +964,12 @@ class Camera extends Component {
     } = this.props;
 
     this.setState({
-      activeAudioTrack: this.chooseFinalAudioTrack(),
+      activeAudioTrack: this.specifyFinalSuccessPhotoAudio(),
     });
 
     current.load();
     current.play();
+    this.$audio.current.playbackRate = this.playSpeed;
 
     current.addEventListener('ended', () => {
       if (type === 'front') {
@@ -1222,13 +980,15 @@ class Camera extends Component {
     }, { once: true });
   }
 
-  chooseFinalAudioTrack = () => {
-    const { hardValidation } = this.props;
+  specifyFinalSuccessPhotoAudio = () => {
+    let track = audioSuccessPhotoS;
 
-    let track = audioSuccessFinish;
-
-    if (hardValidation.front || hardValidation.side) {
-      track = audioSuccessFinishRetakeFrontSideSide;
+    if (this.hardValidationFS) {
+      track = audioSuccessPhotoHVFSS;
+    } else if (this.hardValidationF) {
+      track = audioSuccessPhotoHVF;
+    } else if (this.hardValidationS) {
+      track = audioSuccessPhotoHVS;
     }
 
     return track;
@@ -1238,13 +998,11 @@ class Camera extends Component {
   removeAudioEventListeners = () => {
     const { current } = this.$audio;
 
-    current.removeEventListener('ended', this.startVoiceInstructions, { once: true });
-    current.removeEventListener('ended', this.voiceInstructionsRetakeFront, { once: true });
-    current.removeEventListener('ended', this.voiceInstructionsRetakeSide, { once: true });
-    current.removeEventListener('ended', this.voiceInstructionsRetakeFrontSide, { once: true });
+    current.removeEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
+    current.removeEventListener('ended', this.playAudioInstructions, { once: true });
+    current.removeEventListener('ended', this.startPhotoTimer, { once: true });
     current.removeEventListener('ended', this.takePhoto, { once: true });
-    current.removeEventListener('ended', this.startVoiceInstructions, { once: true });
-    current.removeEventListener('canplay', this.photoTimer, { once: true });
+    current.removeEventListener('canplay', this.showPhotoTimer, { once: true });
   }
 
   render() {
@@ -1263,7 +1021,7 @@ class Camera extends Component {
       isLastPhoto,
     } = this.state;
 
-    const { type = 'front', isTableFlow = false } = this.props;
+    const { type = 'front', isTableFlow = true } = this.props;
 
     return (
       <div
@@ -1295,12 +1053,12 @@ class Camera extends Component {
             <button
               className="widget-camera__button widget-camera__tap-screen-button"
               type="button"
-              onClick={this.tapToStart}
+              onClick={this.playFirstAudio}
             >
               done
             </button>
           </div>
-        ) : null }
+        ) : null}
 
         {isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
 
@@ -1359,16 +1117,16 @@ class Camera extends Component {
           onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
         >
           {this.before(!processing
-                && (
-                <button
-                  className="widget-camera-take-photo"
-                  onClick={this.handleClick}
-                  type="button"
-                  disabled={info || !isButtonInit || isButtonDisabled}
-                >
-                  <div className={classNames('widget-camera-take-photo-effect')} />
-                </button>
-                ))}
+            && (
+              <button
+                className="widget-camera-take-photo"
+                onClick={this.handleClick}
+                type="button"
+                disabled={info || !isButtonInit || isButtonDisabled}
+              >
+                <div className={classNames('widget-camera-take-photo-effect')} />
+              </button>
+            ))}
         </div>
 
         <div className={classNames('allow-frame', {
@@ -1392,6 +1150,6 @@ class Camera extends Component {
   }
 }
 
-process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
+process.env.NODE_ENV !== 'production' || render(<Camera />, document.body);
 
 export default Camera;
