@@ -965,7 +965,14 @@ class Camera extends Component {
       saveSide,
       saveFront,
       type,
+      turnOffCamera,
     } = this.props;
+
+    if (type === 'front') {
+      saveFront(img);
+    } else {
+      saveSide(img);
+    }
 
     this.setState({
       activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.finallSuccess),
@@ -976,11 +983,7 @@ class Camera extends Component {
     this.$audio.current.playbackRate = this.playSpeed;
 
     current.addEventListener('ended', () => {
-      if (type === 'front') {
-        saveFront(img);
-      } else {
-        saveSide(img);
-      }
+      turnOffCamera();
     }, { once: true });
   }
 
@@ -1140,6 +1143,6 @@ class Camera extends Component {
   }
 }
 
-process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
+process.env.NODE_ENV !== 'production' || render(<Camera />, document.body);
 
 export default Camera;
