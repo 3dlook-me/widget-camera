@@ -25,64 +25,64 @@ import audioTimer from './audio/timer.mp3';
 import audioPhotoShutter from './audio/shutter.mp3';
 
 // Front and side
-import audioStandYourPhone from './audio/Table Flow Script 1 1.1.mp3';
-import audioSuccessGyro from './audio/Table Flow Script 1 1.2.mp3';
-import audioToClickReadyBtn from './audio/Table Flow Script 1 1.3.mp3';
+import audioStandYourPhone from './audio/1.1.mp3';
+import audioSuccessGyro from './audio/1.2.mp3';
+import audioToClickReadyBtn from './audio/1.3.mp3';
 
 // Front
-import audioFirstInstructionF from './audio/Table Flow Script 1 1.4.mp3';
-import audioSecondInstructionF from './audio/Table Flow Script 1 1.5.mp3';
-import audioThirdInstructionF from './audio/Table Flow Script 1 1.6.mp3';
-import audioFourthInstructionF from './audio/Table Flow Script 1 1.7.mp3';
-import audioSuccessPhotoF from './audio/Table Flow Script 1 1.8.mp3';
+import audioFirstInstructionF from './audio/1.4.mp3';
+import audioSecondInstructionF from './audio/1.5.mp3';
+import audioThirdInstructionF from './audio/1.6.mp3';
+import audioFourthInstructionF from './audio/1.7.mp3';
+import audioSuccessPhotoF from './audio/1.8.mp3';
 
 // Side
-import audioFirstInstructionS from './audio/Table Flow Script 1 2.1.mp3';
-import audioSecondInstructionS from './audio/Table Flow Script 1 2.2.mp3';
-import audioThirdInstructionS from './audio/Table Flow Script 1 2.3.mp3';
-import audioFourthInstructionS from './audio/Table Flow Script 1 2.4.mp3';
-import audioSuccessPhotoS from './audio/Table Flow Script 1 2.5.mp3';
+import audioFirstInstructionS from './audio/2.1.mp3';
+import audioSecondInstructionS from './audio/2.2.mp3';
+import audioThirdInstructionS from './audio/2.3.mp3';
+import audioFourthInstructionS from './audio/2.4.mp3';
+import audioSuccessPhotoS from './audio/2.5.mp3';
 
 // Hard-validation front and side
-import audioStandYourPhoneHVFS from './audio/Table Flow Script 1 3.1.mp3';
-import audioSuccessGyroHVFS from './audio/Table Flow Script 1 3.2.mp3';
-import audioToClickReadyBtnHVFS from './audio/Table Flow Script 1 3.3.mp3';
+import audioStandYourPhoneHVFS from './audio/3.1.mp3';
+import audioSuccessGyroHVFS from './audio/3.2.mp3';
+import audioToClickReadyBtnHVFS from './audio/3.3.mp3';
 
 // Hard-validation front and side - FRONT
-import audioFirstInstructionHVFSF from './audio/Table Flow Script 1 3.4.mp3';
-import audioSecondInstructionHVFSF from './audio/Table Flow Script 1 3.5.mp3';
-import audioThirdInstructionHVFSF from './audio/Table Flow Script 1 3.6.mp3';
-import audioFourthInstructionHVFSF from './audio/Table Flow Script 1 3.7.mp3';
-import audioSuccessPhotoHVFSF from './audio/Table Flow Script 1 3.8.mp3';
+import audioFirstInstructionHVFSF from './audio/3.4.mp3';
+import audioSecondInstructionHVFSF from './audio/3.5.mp3';
+import audioThirdInstructionHVFSF from './audio/3.6.mp3';
+import audioFourthInstructionHVFSF from './audio/3.7.mp3';
+import audioSuccessPhotoHVFSF from './audio/3.8.mp3';
 
 // Hard-validation front and side - SIDE
-import audioFirstInstructionHVFSS from './audio/Table Flow Script 1 4.1.mp3';
-import audioSecondInstructionHVFSS from './audio/Table Flow Script 1 4.2.mp3';
-import audioThirdInstructionHVFSS from './audio/Table Flow Script 1 4.3.mp3';
-import audioFourthInstructionHVFSS from './audio/Table Flow Script 1 4.4.mp3';
-import audioSuccessPhotoHVFSS from './audio/Table Flow Script 1 4.5.mp3';
+import audioFirstInstructionHVFSS from './audio/4.1.mp3';
+import audioSecondInstructionHVFSS from './audio/4.2.mp3';
+import audioThirdInstructionHVFSS from './audio/4.3.mp3';
+import audioFourthInstructionHVFSS from './audio/4.4.mp3';
+import audioSuccessPhotoHVFSS from './audio/4.5.mp3';
 
 // Hard-validation front
-import audioStandYourPhoneHVF from './audio/Table Flow Script 1 5.1.mp3';
-import audioSuccessGyroHVF from './audio/Table Flow Script 1 5.2.mp3';
-import audioToClickReadyBtnHVF from './audio/Table Flow Script 1 5.3.mp3';
-import audioFirstInstructionHVF from './audio/Table Flow Script 1 5.4.mp3';
-import audioSecondInstructionHVF from './audio/Table Flow Script 1 5.5.mp3';
-import audioThirdInstructionHVF from './audio/Table Flow Script 1 5.6.mp3';
-import audioFourthInstructionHVF from './audio/Table Flow Script 1 5.7.mp3';
-import audioSuccessPhotoHVF from './audio/Table Flow Script 1 5.8.mp3';
+import audioStandYourPhoneHVF from './audio/5.1.mp3';
+import audioSuccessGyroHVF from './audio/5.2.mp3';
+import audioToClickReadyBtnHVF from './audio/5.3.mp3';
+import audioFirstInstructionHVF from './audio/5.4.mp3';
+import audioSecondInstructionHVF from './audio/5.5.mp3';
+import audioThirdInstructionHVF from './audio/5.6.mp3';
+import audioFourthInstructionHVF from './audio/5.7.mp3';
+import audioSuccessPhotoHVF from './audio/5.8.mp3';
 
 // Hard-validation front and side
-import audioStandYourPhoneHVS from './audio/Table Flow Script 1 6.1.mp3';
-import audioSuccessGyroHVS from './audio/Table Flow Script 1 6.2.mp3';
-import audioToClickReadyBtnHVS from './audio/Table Flow Script 1 6.3.mp3';
-import audioFirstInstructionHVS from './audio/Table Flow Script 1 6.4.mp3';
-import audioSecondInstructionHVS from './audio/Table Flow Script 1 6.5.mp3';
-import audioThirdInstructionHVS from './audio/Table Flow Script 1 6.6.mp3';
-import audioFourthInstructionHVS from './audio/Table Flow Script 1 6.7.mp3';
-import audioFifthInstructionHVS from './audio/Table Flow Script 1 6.8.mp3';
-import audioSixthInstructionHVS from './audio/Table Flow Script 1 6.9.mp3';
-import audioSuccessPhotoHVS from './audio/Table Flow Script 1 6.10.mp3';
+import audioStandYourPhoneHVS from './audio/6.1.mp3';
+import audioSuccessGyroHVS from './audio/6.2.mp3';
+import audioToClickReadyBtnHVS from './audio/6.3.mp3';
+import audioFirstInstructionHVS from './audio/6.4.mp3';
+import audioSecondInstructionHVS from './audio/6.5.mp3';
+import audioThirdInstructionHVS from './audio/6.6.mp3';
+import audioFourthInstructionHVS from './audio/6.7.mp3';
+import audioFifthInstructionHVS from './audio/6.8.mp3';
+import audioSixthInstructionHVS from './audio/6.9.mp3';
+import audioSuccessPhotoHVS from './audio/6.10.mp3';
 
 const AUIDO_CASES = {
   standPhone: [
@@ -1163,6 +1163,6 @@ class Camera extends Component {
   }
 }
 
-process.env.NODE_ENV !== 'production' || render(<Camera />, document.body);
+process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
 
 export default Camera;
