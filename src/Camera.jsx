@@ -212,6 +212,26 @@ class Camera extends Component {
     } else {
       this.isGyroActive();
     }
+
+    // is phone locked detect
+    let hidden;
+    let visibilityChange;
+
+    if (typeof document.hidden !== 'undefined') {
+      hidden = 'hidden';
+      visibilityChange = 'visibilitychange';
+    } else if (typeof document.webkitHidden !== 'undefined') {
+      hidden = 'webkitHidden';
+      visibilityChange = 'webkitvisibilitychange';
+    }
+
+    this.handleVisibilityChange = async () => {
+      if (document[hidden]) {
+        window.location.reload();
+      }
+    };
+
+    document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
   isGyroActive = () => {
