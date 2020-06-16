@@ -178,9 +178,11 @@ class Camera extends Component {
     this.rotY = 0;
 
     // in dev mode comment 3 lines below
-    this.hardValidationFS = props.hardValidation.front && props.hardValidation.side;
-    this.hardValidationF = props.hardValidation.front && !props.hardValidation.side;
-    this.hardValidationS = !props.hardValidation.front && props.hardValidation.side;
+    if (props.hardValidation) {
+      this.hardValidationFS = props.hardValidation.front && props.hardValidation.side;
+      this.hardValidationF = props.hardValidation.front && !props.hardValidation.side;
+      this.hardValidationS = !props.hardValidation.front && props.hardValidation.side;
+    }
 
     this.cameraType = props.isTableFlow ? 'user' : 'environment';
 
@@ -490,6 +492,7 @@ class Camera extends Component {
         canvas.height = settings.height;
       }
       canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
       this.setState({ processing: true }, () => canvas.toBlob(callback));
     } catch (exception) {
       alert(`Error: ${exception}`);
@@ -529,11 +532,11 @@ class Camera extends Component {
 
       this.setState({ processing: false });
 
+      this.video.play();
+
       if (type === 'front') {
         this.setFrontPhotoTableFlow(image);
       } else {
-        this.stream.getVideoTracks()[0].stop();
-
         this.setState({
           isLastPhoto: true,
         });
@@ -550,8 +553,6 @@ class Camera extends Component {
     const { hardValidation, saveFront } = this.props;
 
     if (hardValidation.front && !hardValidation.side) {
-      this.stream.getVideoTracks()[0].stop();
-
       this.setState({
         isLastPhoto: true,
       });
@@ -570,8 +571,6 @@ class Camera extends Component {
       current.play();
 
       current.addEventListener('ended', this.playAudioInstructions, { once: true });
-
-      this.startStream();
     }
   }
 
@@ -596,7 +595,9 @@ class Camera extends Component {
 
   before(component) {
     const { imgURI, processing } = this.state;
-    if (imgURI || processing) {
+    const { isTableFlow } = this.props;
+
+    if ((imgURI || processing) && !isTableFlow) {
       return;
     }
 
@@ -615,8 +616,9 @@ class Camera extends Component {
 
   processing = (component) => {
     const { processing } = this.state;
+    const { isTableFlow } = this.props;
 
-    if (!processing) {
+    if (!processing || isTableFlow) {
       return;
     }
 
@@ -651,6 +653,8 @@ class Camera extends Component {
       if (!isFirstAudio && !isLastPhoto) {
         this.$audio.current.pause();
       }
+
+      this.video.play();
 
       this.setState({
         info: true,
@@ -959,6 +963,8 @@ class Camera extends Component {
           activeAudioTrack: audioPhotoShutter,
         });
 
+        this.video.pause();
+
         current.load();
         current.play();
 
@@ -1034,7 +1040,7 @@ class Camera extends Component {
       isLastPhoto,
     } = this.state;
 
-    const { type = 'front', isTableFlow = true } = this.props;
+    const { type = 'front', isTableFlow = false } = this.props;
 
     return (
       <div
@@ -1163,6 +1169,6 @@ class Camera extends Component {
   }
 }
 
-process.env.NODE_ENV !== 'production' || render(<Camera />, document.body);
+process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
 
 export default Camera;
