@@ -11,6 +11,8 @@ import {
   getOrientation,
   fixOrientation,
   isSamsungBrowser,
+  imgToBase64,
+  getChromeVersion,
 } from './helpers/utils';
 
 import './Camera.scss';
@@ -509,7 +511,15 @@ class Camera extends Component {
     } = this.props;
 
     try {
-      const image = await fixOrientation(blob, await getOrientation(blob));
+      let image;
+
+      // for chrome >= 81 we dont need to use fixOrientation
+      if (this.is('Android') && getChromeVersion() >= 81) {
+        image = await imgToBase64(blob);
+      } else {
+        image = await fixOrientation(blob, await getOrientation(blob));
+      }
+
       this.stream.getVideoTracks()[0].stop();
       this.setState({ processing: false });
 
@@ -528,7 +538,14 @@ class Camera extends Component {
     const { type } = this.props;
 
     try {
-      const image = await fixOrientation(blob, await getOrientation(blob));
+      let image;
+
+      // for chrome >= 81 we dont need to use fixOrientation
+      if (this.is('Android') && getChromeVersion() >= 81) {
+        image = await imgToBase64(blob);
+      } else {
+        image = await fixOrientation(blob, await getOrientation(blob));
+      }
 
       this.setState({ processing: false });
 
