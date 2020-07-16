@@ -67,11 +67,11 @@ const plugins = [
   }) : false,
   mode !== 'production' ? new HtmlWebpackInlineSourcePlugin() : false,
   new MiniCssExtractPlugin({
-    filename: "style.css",
-    chunkFilename: "[name].css"
+    filename: 'style.css',
+    chunkFilename: '[name].css',
   }),
   new CleanWebpackPlugin(),
-].filter(value => value);
+].filter((value) => value);
 
 /**
  * Webpack config
@@ -85,13 +85,13 @@ module.exports = {
     ignored: /node_modules/,
   },
   entry: {
-    'index': path.resolve(`${__dirname}/src/Camera.jsx`),
+    index: path.resolve(`${__dirname}/src/Camera.jsx`),
   },
   output: {
     publicPath: '/',
     path: `${__dirname}/dist`,
     filename: '[name].js',
-    libraryTarget: (mode === 'production') ? "commonjs2" : 'var',
+    libraryTarget: (mode === 'production') ? 'commonjs2' : 'var',
   },
   module: {
     rules: [
@@ -240,6 +240,6 @@ module.exports = {
     historyApiFallback: true,
   },
   externals: {
-    preact: (mode === 'production') ? "preact" : false,
+    preact: (mode === 'production') ? 'preact' : false,
   },
 };

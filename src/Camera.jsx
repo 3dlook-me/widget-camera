@@ -7,6 +7,8 @@ import {
 } from 'preact';
 import classNames from 'classnames';
 
+import AllowFrameTF from './components/AllowFrameTF/AllowFrameTF';
+
 import {
   getOrientation,
   fixOrientation,
@@ -197,6 +199,7 @@ class Camera extends Component {
     };
   }
 
+  // TODO uncomment
   componentDidMount() {
     this.setState({
       width: document.body.clientWidth,
@@ -1057,12 +1060,12 @@ class Camera extends Component {
       isLastPhoto,
     } = this.state;
 
-    const { type = 'front', isTableFlow = false } = this.props;
+    const { type = 'front', isTableFlow = true } = this.props;
 
     return (
       <div
         className={classNames('widget-camera', {
-          'widget-camera--front-mode': isTableFlow,
+          'widget-camera--table-flow': isTableFlow,
         })}
         ref={this.initCamera}
       >
@@ -1101,14 +1104,7 @@ class Camera extends Component {
         <div className="widget-camera__title">
           {`${type} photo`}
         </div>
-        <div className="widget-camera__grade-wrap">
-          <div className="widget-camera__grade-container">
-            <img className="widget-camera__grade" src={grade} alt="grade" />
-            <div className="widget-camera__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
-              <img className="widget-camera__pointer-icon" src={pointer} alt="pointer" />
-            </div>
-          </div>
-        </div>
+
         {this.before(
           <div className="widget-camera__video-wrapper">
             <video
@@ -1146,6 +1142,7 @@ class Camera extends Component {
           </ul>
         ) : null}
 
+        {/* TODO uncomment */}
         <div
           className={classNames('widget-camera-controls', {
             'widget-camera-controls--warning': info,
@@ -1165,22 +1162,41 @@ class Camera extends Component {
             ))}
         </div>
 
-        <div className={classNames('allow-frame', {
-          'allow-frame--warning': info,
-          'allow-frame--hidden': isLastPhoto,
-        })}
-        >
-          <div className="allow-frame__warning-content">
-            <img className="allow-frame__warning-img" src={warning} alt="warning" />
-            <h2 className="allow-frame__warning-txt">
-              Hold your phone vertically and line up the green arrows
-            </h2>
-          </div>
+        {isTableFlow ? (
+          <AllowFrameTF
+            gyroscopePosition={gyroscopePosition}
+            isLastPhoto={isLastPhoto}
+            info={info}
+          />
+        ) : (
+          <Fragment>
+            <div className="widget-camera__grade-wrap">
+              <div className="widget-camera__grade-container">
+                <img className="widget-camera__grade" src={grade} alt="grade" />
+                <div className="widget-camera__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
+                  <img className="widget-camera__pointer-icon" src={pointer} alt="pointer" />
+                </div>
+              </div>
+            </div>
 
-          <div className="allow-frame__bottom-border">
-            <div className="allow-frame__bottom-border-space" />
-          </div>
-        </div>
+            <div className={classNames('allow-frame', {
+              'allow-frame--warning': info,
+              'allow-frame--hidden': isLastPhoto,
+            })}
+            >
+              <div className="allow-frame__warning-content">
+                <img className="allow-frame__warning-img" src={warning} alt="warning" />
+                <h2 className="allow-frame__warning-txt">
+                  Hold your phone vertically and line up the green arrows
+                </h2>
+              </div>
+
+              <div className="allow-frame__bottom-border">
+                <div className="allow-frame__bottom-border-space" />
+              </div>
+            </div>
+          </Fragment>
+        )}
       </div>
     );
   }
