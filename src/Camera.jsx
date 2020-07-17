@@ -25,7 +25,7 @@ import muteIcon from './images/ic_sound.svg';
 
 // System
 import audioTimer from './audio/timer.mp3';
-import audioPhotoShutter from './audio/shutter.mp3';
+import audioPhotoShutter from './audio/shutter-sound-new.mp3';
 
 // Front and side
 import audioStandYourPhone from './audio/1.1.mp3';
@@ -175,7 +175,7 @@ class Camera extends Component {
 
     this.gyroTimer = null;
     this.photoTimer = null;
-    this.playSpeed = 1;
+    this.playSpeed = 2;
     this.rotX = 0;
     this.rotY = 0;
 
@@ -184,6 +184,7 @@ class Camera extends Component {
       this.hardValidationFS = props.hardValidation.front && props.hardValidation.side;
       this.hardValidationF = props.hardValidation.front && !props.hardValidation.side;
       this.hardValidationS = !props.hardValidation.front && props.hardValidation.side;
+      this.isHardValidation = this.hardValidationFS || this.hardValidationF || this.hardValidationS;
     }
 
     this.cameraType = props.isTableFlow ? 'user' : 'environment';
@@ -844,6 +845,70 @@ class Camera extends Component {
   //   this.$audio.current.playbackRate = this.playSpeed;
   // }
 
+  countFrontAudioInstructions = () => {
+    const { type } = this.props;
+    const { activeAudioTrackIndex } = this.state;
+
+    return !(type === 'front' && activeAudioTrackIndex >= 3 && !this.isHardValidation);
+  }
+
+  countSideAudioInstructions = () => {
+    const { type } = this.props;
+    const { activeAudioTrackIndex } = this.state;
+
+    return !(type === 'side' && activeAudioTrackIndex >= 2 && !this.isHardValidation);
+  }
+
+  countFrontAudioInstructionsHV = () => {
+    const { activeAudioTrackIndex } = this.state;
+
+    return !(this.hardValidationF && activeAudioTrackIndex >= 3);
+  }
+
+  countSideAudioInstructionsHV = () => {
+    const { activeAudioTrackIndex } = this.state;
+
+    return !(this.hardValidationS && activeAudioTrackIndex >= 3);
+  }
+
+  countFrontAudioInstructionsHVF = () => {
+    const { type } = this.props;
+    const { activeAudioTrackIndex } = this.state;
+
+    return !(type === 'front' && this.hardValidationFS && activeAudioTrackIndex >= 1);
+  }
+
+  countFrontAudioInstructionsHVS = () => {
+    const { type } = this.props;
+    const { activeAudioTrackIndex } = this.state;
+
+    return !(type === 'side' && this.hardValidationFS && activeAudioTrackIndex >= 2);
+  }
+
+  countAudioInstructions = () => {
+    if (!this.countFrontAudioInstructions()) {
+      return false;
+    }
+
+    if (!this.countSideAudioInstructions()) {
+      return false;
+    }
+
+    if (!this.countFrontAudioInstructionsHV()) {
+      return false;
+    }
+
+    if (!this.countSideAudioInstructionsHV()) {
+      return false;
+    }
+
+    if (!this.countFrontAudioInstructionsHVF()) {
+      return false;
+    }
+
+    return this.countFrontAudioInstructionsHVS();
+  }
+
   // table flow
   playAudioInstructions = () => {
     const { activeAudioTrackIndex } = this.state;
@@ -851,8 +916,14 @@ class Camera extends Component {
     const { current } = this.$audio;
     let trackIndex = activeAudioTrackIndex;
 
-    if ((activeAudioTrackIndex < 5 && this.hardValidationS)
-        || (activeAudioTrackIndex < 3 && !this.hardValidationS)) {
+    // if ((activeAudioTrackIndex < 5 && this.hardValidationS)
+    //     || (activeAudioTrackIndex < 3 && !this.hardValidationS)) {
+    //   current.addEventListener('ended', this.playAudioInstructions, { once: true });
+    // } else {
+    //   current.addEventListener('ended', this.startPhotoTimer, { once: true });
+    // }
+
+    if (this.countAudioInstructions()) {
       current.addEventListener('ended', this.playAudioInstructions, { once: true });
     } else {
       current.addEventListener('ended', this.startPhotoTimer, { once: true });
@@ -1017,7 +1088,8 @@ class Camera extends Component {
   removeAudioEventListeners = () => {
     const { current } = this.$audio;
 
-    current.removeEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
+    // TODO remove after no button click approve
+    // current.removeEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
     current.removeEventListener('ended', this.playAudioInstructions, { once: true });
     current.removeEventListener('ended', this.startPhotoTimer, { once: true });
     current.removeEventListener('ended', this.takePhoto, { once: true });
