@@ -7,6 +7,7 @@ import {
 } from 'preact';
 import classNames from 'classnames';
 
+import AllowFrame from './components/AllowFrameTF/AllowFrameTF';
 import AllowFrameTF from './components/AllowFrameTF/AllowFrameTF';
 
 import {
@@ -18,9 +19,7 @@ import {
 } from './helpers/utils';
 
 import './Camera.scss';
-import warning from './images/camera-warning.svg';
-import grade from './images/grade.svg';
-import pointer from './images/pointer.svg';
+
 import pose from './images/ic_pose.svg';
 import muteIcon from './images/ic_sound.svg';
 
@@ -1131,49 +1130,29 @@ class Camera extends Component {
         ) : (
           <Fragment>
             <div
-                className={classNames('widget-camera-controls', {
-                  'widget-camera-controls--warning': info,
-                })}
-                onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
+              className={classNames('widget-camera-controls', {
+                'widget-camera-controls--warning': info,
+              })}
+              onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
             >
               {this.before(!processing
                   && (
-                      <button
-                          className="widget-camera-take-photo"
-                          onClick={this.takePhoto}
-                          type="button"
-                          disabled={info || !isButtonInit}
-                      >
-                        <div className={classNames('widget-camera-take-photo-effect')} />
-                      </button>
+                  <button
+                    className="widget-camera-take-photo"
+                    onClick={this.takePhoto}
+                    type="button"
+                    disabled={info || !isButtonInit}
+                  >
+                    <div className={classNames('widget-camera-take-photo-effect')} />
+                  </button>
                   ))}
             </div>
 
-            <div className="widget-camera__grade-wrap">
-              <div className="widget-camera__grade-container">
-                <img className="widget-camera__grade" src={grade} alt="grade" />
-                <div className="widget-camera__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
-                  <img className="widget-camera__pointer-icon" src={pointer} alt="pointer" />
-                </div>
-              </div>
-            </div>
-
-            <div className={classNames('allow-frame', {
-              'allow-frame--warning': info,
-              'allow-frame--hidden': isLastPhoto,
-            })}
-            >
-              <div className="allow-frame__warning-content">
-                <img className="allow-frame__warning-img" src={warning} alt="warning" />
-                <h2 className="allow-frame__warning-txt">
-                  Hold your phone vertically and line up the green arrows
-                </h2>
-              </div>
-
-              <div className="allow-frame__bottom-border">
-                <div className="allow-frame__bottom-border-space" />
-              </div>
-            </div>
+            <AllowFrame
+              gyroscopePosition={gyroscopePosition}
+              isLastPhoto={isLastPhoto}
+              info={info}
+            />
           </Fragment>
         )}
       </div>
