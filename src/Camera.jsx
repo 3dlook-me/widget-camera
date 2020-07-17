@@ -168,8 +168,7 @@ class Camera extends Component {
       activeAudioTrackIndex: 0,
 
       isGyroTimerAccess: false,
-      isButtonDisabled: false,
-      photoTimerSecs: 6,
+      photoTimerSecs: 4,
       isPhotoTimer: false,
       isFirstAudio: true,
       isLastPhoto: false,
@@ -466,20 +465,6 @@ class Camera extends Component {
     }
   };
 
-  handleClick = async () => {
-    const { isTableFlow } = this.props;
-
-    if (isTableFlow) {
-      this.playAudioInstructions();
-
-      this.setState({
-        isButtonDisabled: true,
-      });
-    } else {
-      await this.takePhoto();
-    }
-  }
-
   takePhoto = async () => {
     const { isTableFlow } = this.props;
     const callback = isTableFlow ? this.setPhotoTableFlow : this.setPhoto;
@@ -678,9 +663,8 @@ class Camera extends Component {
 
       this.setState({
         info: true,
-        isButtonDisabled: true,
         activeAudioTrackIndex: 0,
-        photoTimerSecs: 6,
+        photoTimerSecs: 4,
       });
     } else {
       if (isGyroTimerAccess && !this.gyroTimer) {
@@ -805,7 +789,6 @@ class Camera extends Component {
 
     this.setState({
       tapScreen: false,
-      isButtonDisabled: true,
     });
   }
 
@@ -813,14 +796,13 @@ class Camera extends Component {
   startGyroTimer = () => {
     this.setState({
       activeAudioTrackIndex: 0,
-      photoTimerSecs: 6,
+      photoTimerSecs: 4,
       isPhotoTimer: false,
-      isButtonDisabled: true,
     });
 
     this.removeAudioEventListeners();
 
-    this.gyroTimer = setTimeout(this.playSuccessGyroAudio, 3000);
+    this.gyroTimer = setTimeout(this.playSuccessGyroAudio, 2000);
   }
 
   // table flow
@@ -828,10 +810,6 @@ class Camera extends Component {
     clearTimeout(this.gyroTimer);
 
     this.gyroTimer = null;
-
-    this.setState({
-      isButtonDisabled: true,
-    });
   }
 
   // table flow
@@ -842,27 +820,30 @@ class Camera extends Component {
       activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.successGyro),
     });
 
-    current.addEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
+    // TODO remove after no button click approve
+    // current.addEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
+    current.addEventListener('ended', this.playAudioInstructions, { once: true });
 
     current.load();
     current.play();
     this.$audio.current.playbackRate = this.playSpeed;
   }
 
+  // TODO remove after no button click approve
   // table flow
-  playToClickReadyBtnAudio = () => {
-    const { current } = this.$audio;
-
-    this.setState({
-      activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.toClickReady),
-      isButtonDisabled: false,
-    });
-
-    // next method if user taps ready is this.handleClick -> this.playAudioInstructions
-    current.load();
-    current.play();
-    this.$audio.current.playbackRate = this.playSpeed;
-  }
+  // playToClickReadyBtnAudio = () => {
+  //   const { current } = this.$audio;
+  //
+  //   this.setState({
+  //     activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.toClickReady),
+  //     isButtonDisabled: false,
+  //   });
+  //
+  //   // next method if user taps ready is this.handleClick -> this.playAudioInstructions
+  //   current.load();
+  //   current.play();
+  //   this.$audio.current.playbackRate = this.playSpeed;
+  // }
 
   // table flow
   playAudioInstructions = () => {
@@ -979,7 +960,7 @@ class Camera extends Component {
 
         this.setState({
           isPhotoTimer: false,
-          photoTimerSecs: 6,
+          photoTimerSecs: 4,
           activeAudioTrack: audioPhotoShutter,
         });
 
@@ -1054,7 +1035,6 @@ class Camera extends Component {
       isButtonInit,
       activeAudioTrack,
       tapScreen,
-      isButtonDisabled,
       isPhotoTimer,
       photoTimerSecs,
       isLastPhoto,
@@ -1142,26 +1122,6 @@ class Camera extends Component {
           </ul>
         ) : null}
 
-        {/* TODO uncomment */}
-        <div
-          className={classNames('widget-camera-controls', {
-            'widget-camera-controls--warning': info,
-          })}
-          onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
-        >
-          {this.before(!processing
-            && (
-              <button
-                className="widget-camera-take-photo"
-                onClick={this.handleClick}
-                type="button"
-                disabled={info || !isButtonInit || isButtonDisabled}
-              >
-                <div className={classNames('widget-camera-take-photo-effect')} />
-              </button>
-            ))}
-        </div>
-
         {isTableFlow ? (
           <AllowFrameTF
             gyroscopePosition={gyroscopePosition}
@@ -1170,6 +1130,25 @@ class Camera extends Component {
           />
         ) : (
           <Fragment>
+            <div
+                className={classNames('widget-camera-controls', {
+                  'widget-camera-controls--warning': info,
+                })}
+                onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
+            >
+              {this.before(!processing
+                  && (
+                      <button
+                          className="widget-camera-take-photo"
+                          onClick={this.takePhoto}
+                          type="button"
+                          disabled={info || !isButtonInit}
+                      >
+                        <div className={classNames('widget-camera-take-photo-effect')} />
+                      </button>
+                  ))}
+            </div>
+
             <div className="widget-camera__grade-wrap">
               <div className="widget-camera__grade-container">
                 <img className="widget-camera__grade" src={grade} alt="grade" />
