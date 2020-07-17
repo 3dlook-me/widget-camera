@@ -24,68 +24,59 @@ import pose from './images/ic_pose.svg';
 import muteIcon from './images/ic_sound.svg';
 
 // System
-import audioTimer from './audio/timer.mp3';
+import audioTimer from './audio/timer-new.mp3';
 import audioPhotoShutter from './audio/shutter-sound-new.mp3';
 
 // Front and side
 import audioStandYourPhone from './audio/1.1.mp3';
 import audioSuccessGyro from './audio/1.2.mp3';
-import audioToClickReadyBtn from './audio/1.3.mp3';
 
 // Front
-import audioFirstInstructionF from './audio/1.4.mp3';
-import audioSecondInstructionF from './audio/1.5.mp3';
-import audioThirdInstructionF from './audio/1.6.mp3';
-import audioFourthInstructionF from './audio/1.7.mp3';
-import audioSuccessPhotoF from './audio/1.8.mp3';
+import audioFirstInstructionF from './audio/1.3.mp3';
+import audioSecondInstructionF from './audio/1.4.mp3';
+import audioThirdInstructionF from './audio/1.5.mp3';
+import audioFourthInstructionF from './audio/1.6.mp3';
+import audioSuccessPhotoF from './audio/1.7.mp3';
 
 // Side
 import audioFirstInstructionS from './audio/2.1.mp3';
 import audioSecondInstructionS from './audio/2.2.mp3';
 import audioThirdInstructionS from './audio/2.3.mp3';
-import audioFourthInstructionS from './audio/2.4.mp3';
-import audioSuccessPhotoS from './audio/2.5.mp3';
+import audioSuccessPhotoS from './audio/2.4.mp3';
 
 // Hard-validation front and side
 import audioStandYourPhoneHVFS from './audio/3.1.mp3';
 import audioSuccessGyroHVFS from './audio/3.2.mp3';
-import audioToClickReadyBtnHVFS from './audio/3.3.mp3';
 
 // Hard-validation front and side - FRONT
-import audioFirstInstructionHVFSF from './audio/3.4.mp3';
-import audioSecondInstructionHVFSF from './audio/3.5.mp3';
-import audioThirdInstructionHVFSF from './audio/3.6.mp3';
-import audioFourthInstructionHVFSF from './audio/3.7.mp3';
-import audioSuccessPhotoHVFSF from './audio/3.8.mp3';
+import audioFirstInstructionHVFSF from './audio/3.3.mp3';
+import audioSecondInstructionHVFSF from './audio/3.4.mp3';
+import audioThirdInstructionHVFSF from './audio/3.5.mp3';
+import audioSuccessPhotoHVFSF from './audio/3.6.mp3';
 
 // Hard-validation front and side - SIDE
 import audioFirstInstructionHVFSS from './audio/4.1.mp3';
 import audioSecondInstructionHVFSS from './audio/4.2.mp3';
 import audioThirdInstructionHVFSS from './audio/4.3.mp3';
-import audioFourthInstructionHVFSS from './audio/4.4.mp3';
-import audioSuccessPhotoHVFSS from './audio/4.5.mp3';
+import audioSuccessPhotoHVFSS from './audio/4.4.mp3';
 
 // Hard-validation front
 import audioStandYourPhoneHVF from './audio/5.1.mp3';
 import audioSuccessGyroHVF from './audio/5.2.mp3';
-import audioToClickReadyBtnHVF from './audio/5.3.mp3';
-import audioFirstInstructionHVF from './audio/5.4.mp3';
-import audioSecondInstructionHVF from './audio/5.5.mp3';
-import audioThirdInstructionHVF from './audio/5.6.mp3';
-import audioFourthInstructionHVF from './audio/5.7.mp3';
-import audioSuccessPhotoHVF from './audio/5.8.mp3';
+import audioFirstInstructionHVF from './audio/5.3.mp3';
+import audioSecondInstructionHVF from './audio/5.4.mp3';
+import audioThirdInstructionHVF from './audio/5.5.mp3';
+import audioFourthInstructionHVF from './audio/5.6.mp3';
+import audioSuccessPhotoHVF from './audio/5.7.mp3';
 
 // Hard-validation front and side
 import audioStandYourPhoneHVS from './audio/6.1.mp3';
 import audioSuccessGyroHVS from './audio/6.2.mp3';
-import audioToClickReadyBtnHVS from './audio/6.3.mp3';
-import audioFirstInstructionHVS from './audio/6.4.mp3';
-import audioSecondInstructionHVS from './audio/6.5.mp3';
-import audioThirdInstructionHVS from './audio/6.6.mp3';
-import audioFourthInstructionHVS from './audio/6.7.mp3';
-import audioFifthInstructionHVS from './audio/6.8.mp3';
-import audioSixthInstructionHVS from './audio/6.9.mp3';
-import audioSuccessPhotoHVS from './audio/6.10.mp3';
+import audioFirstInstructionHVS from './audio/6.3.mp3';
+import audioSecondInstructionHVS from './audio/6.4.mp3';
+import audioThirdInstructionHVS from './audio/6.5.mp3';
+import audioFourthInstructionHVS from './audio/6.6.mp3';
+import audioSuccessPhotoHVS from './audio/6.7.mp3';
 
 const AUIDO_CASES = {
   standPhone: [
@@ -100,12 +91,13 @@ const AUIDO_CASES = {
     audioSuccessGyroHVF,
     audioSuccessGyroHVS,
   ],
-  toClickReady: [
-    audioToClickReadyBtn,
-    audioToClickReadyBtnHVFS,
-    audioToClickReadyBtnHVF,
-    audioToClickReadyBtnHVS,
-  ],
+  // TODO remove after no button click approve
+  // toClickReady: [
+  //   audioToClickReadyBtn,
+  //   audioToClickReadyBtnHVFS,
+  //   audioToClickReadyBtnHVF,
+  //   audioToClickReadyBtnHVS,
+  // ],
   firstInstruction: [
     audioFirstInstructionF,
     audioFirstInstructionS,
@@ -132,13 +124,13 @@ const AUIDO_CASES = {
   ],
   fourthInstruction: [
     audioFourthInstructionF,
-    audioFourthInstructionS,
-    audioFourthInstructionHVFSF,
-    audioFourthInstructionHVFSS,
+    null,
+    null,
+    null,
     audioFourthInstructionHVF,
     audioFourthInstructionHVS,
   ],
-  finallSuccess: [
+  finallySuccess: [
     audioSuccessPhotoS,
     audioSuccessPhotoHVFSS,
     audioSuccessPhotoHVF,
@@ -175,7 +167,7 @@ class Camera extends Component {
 
     this.gyroTimer = null;
     this.photoTimer = null;
-    this.playSpeed = 2;
+    this.playSpeed = 1;
     this.rotX = 0;
     this.rotY = 0;
 
@@ -703,6 +695,7 @@ class Camera extends Component {
     return false;
   }
 
+  // table flow
   gyroscopePointerPosition = (value) => {
     const result = (value * 360) / 180;
     let position = result;
@@ -732,6 +725,7 @@ class Camera extends Component {
     });
   }
 
+  // table flow
   specifyAudioTrack = (tracks) => {
     /* eslint-disable prefer-destructuring */
     let track = tracks[0];
@@ -748,6 +742,7 @@ class Camera extends Component {
     /* eslint-enable prefer-destructuring */
   }
 
+  // table flow
   specifyAudioTrackFS = (tracks) => {
     /* eslint-disable prefer-destructuring */
     const { type } = this.props;
@@ -845,6 +840,7 @@ class Camera extends Component {
   //   this.$audio.current.playbackRate = this.playSpeed;
   // }
 
+  // table flow
   countFrontAudioInstructions = () => {
     const { type } = this.props;
     const { activeAudioTrackIndex } = this.state;
@@ -852,6 +848,7 @@ class Camera extends Component {
     return !(type === 'front' && activeAudioTrackIndex >= 3 && !this.isHardValidation);
   }
 
+  // table flow
   countSideAudioInstructions = () => {
     const { type } = this.props;
     const { activeAudioTrackIndex } = this.state;
@@ -859,25 +856,29 @@ class Camera extends Component {
     return !(type === 'side' && activeAudioTrackIndex >= 2 && !this.isHardValidation);
   }
 
+  // table flow
   countFrontAudioInstructionsHV = () => {
     const { activeAudioTrackIndex } = this.state;
 
     return !(this.hardValidationF && activeAudioTrackIndex >= 3);
   }
 
+  // table flow
   countSideAudioInstructionsHV = () => {
     const { activeAudioTrackIndex } = this.state;
 
     return !(this.hardValidationS && activeAudioTrackIndex >= 3);
   }
 
+  // table flow
   countFrontAudioInstructionsHVF = () => {
     const { type } = this.props;
     const { activeAudioTrackIndex } = this.state;
 
-    return !(type === 'front' && this.hardValidationFS && activeAudioTrackIndex >= 1);
+    return !(type === 'front' && this.hardValidationFS && activeAudioTrackIndex >= 2);
   }
 
+  // table flow
   countFrontAudioInstructionsHVS = () => {
     const { type } = this.props;
     const { activeAudioTrackIndex } = this.state;
@@ -885,6 +886,7 @@ class Camera extends Component {
     return !(type === 'side' && this.hardValidationFS && activeAudioTrackIndex >= 2);
   }
 
+  // table flow
   countAudioInstructions = () => {
     if (!this.countFrontAudioInstructions()) {
       return false;
@@ -949,6 +951,7 @@ class Camera extends Component {
     this.$audio.current.playbackRate = this.playSpeed;
   }
 
+  // table flow
   specifyAudioInstruction = (index) => {
     let track;
 
@@ -967,16 +970,6 @@ class Camera extends Component {
         break;
       case 3:
         track = this.specifyAudioTrackFS(AUIDO_CASES.fourthInstruction);
-
-        break;
-      case 4:
-        // only for side hard validation
-        track = audioFifthInstructionHVS;
-
-        break;
-      case 5:
-        // only for side hard validation
-        track = audioSixthInstructionHVS;
 
         break;
       default:
@@ -1072,7 +1065,7 @@ class Camera extends Component {
     }
 
     this.setState({
-      activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.finallSuccess),
+      activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.finallySuccess),
     });
 
     current.load();
