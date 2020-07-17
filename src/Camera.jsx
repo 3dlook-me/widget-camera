@@ -7,7 +7,7 @@ import {
 } from 'preact';
 import classNames from 'classnames';
 
-import AllowFrame from './components/AllowFrameTF/AllowFrameTF';
+import AllowFrame from './components/AllowFrame/AllowFrame';
 import AllowFrameTF from './components/AllowFrameTF/AllowFrameTF';
 
 import {

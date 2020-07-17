@@ -3,8 +3,8 @@ import classNames from 'classnames';
 
 import './AllowFrame.scss';
 
-import grade from '../../images/grade-tf.svg';
-import pointer from '../../images/arrows-tf.svg';
+import grade from '../../images/grade.svg';
+import pointer from '../../images/pointer.svg';
 import warning from '../../images/camera-warning.svg';
 
 const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
