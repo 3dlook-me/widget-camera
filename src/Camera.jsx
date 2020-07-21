@@ -477,7 +477,9 @@ class Camera extends Component {
 
       this.setState({ processing: true }, () => canvas.toBlob(callback));
     } catch (exception) {
-      alert(`Error: ${exception}`);
+      console.error(`Error: ${exception}`);
+
+      alert('Problems with photo. Please try again.');
 
       window.location.reload();
     }
@@ -509,7 +511,11 @@ class Camera extends Component {
         saveSide(image);
       }
     } catch (exception) {
-      alert(`Error: ${exception}`);
+      console.error(`Error: ${exception}`);
+
+      alert('Problems with photo. Please try again.');
+
+      window.location.reload();
     }
   }
 
