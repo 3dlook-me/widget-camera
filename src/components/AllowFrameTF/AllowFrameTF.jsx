@@ -24,7 +24,7 @@ const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
       </div>
 
       <p className="allow-frame-tf__warning-txt">
-        Hold your phone vertically on a table
+        Place your phone vertically on a table.
         <br />
         <br />
         Angle the phone so that the arrows
