@@ -547,7 +547,9 @@ class Camera extends Component {
         this.playFinalSuccessPhotoAudio(image);
       }
     } catch (exception) {
-      alert(`Error: ${exception}`);
+      console.error(`Error: ${exception}`);
+
+      alert('Problems with setting photo. Please try again.');
     }
   }
 
