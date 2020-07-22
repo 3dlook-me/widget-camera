@@ -232,6 +232,10 @@ class Camera extends Component {
     document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
+  componentWillUnmount() {
+    this.stream.getTracks().forEach((track) => track.stop());
+  }
+
   isGyroActive = () => {
     window.addEventListener('deviceorientation', (event) => {
       if (event.beta === null || event.gamma === null) {
