@@ -225,7 +225,7 @@ class Camera extends Component {
 
     this.handleVisibilityChange = async () => {
       if (document[hidden]) {
-        window.location.reload();
+        await window.location.reload();
       }
     };
 
