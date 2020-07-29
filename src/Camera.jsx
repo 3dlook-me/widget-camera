@@ -233,7 +233,9 @@ class Camera extends Component {
   }
 
   componentWillUnmount() {
-    this.stream.getTracks().forEach((track) => track.stop());
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => track.stop());
+    }
   }
 
   isGyroActive = () => {
