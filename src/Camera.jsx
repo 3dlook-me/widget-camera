@@ -9,6 +9,7 @@ import classNames from 'classnames';
 
 import AllowFrame from './components/AllowFrame/AllowFrame';
 import AllowFrameTF from './components/AllowFrameTF/AllowFrameTF';
+import AccessGuide from './components/AccessGuide/AccessGuide';
 
 import {
   getOrientation,
@@ -192,24 +193,24 @@ class Camera extends Component {
 
   // TODO uncomment
   componentDidMount() {
-    this.setState({
-      width: document.body.clientWidth,
-      height: document.body.clientHeight,
-    }, this.startStream);
-
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      DeviceOrientationEvent.requestPermission()
-        .then((response) => {
-          if (response === 'granted') {
-            window.ondeviceorientation = this.orientation;
-          } else {
-            this.isGyroActiveIphone();
-          }
-        })
-        .catch((err) => console.error(err));
-    } else {
-      this.isGyroActive();
-    }
+    // this.setState({
+    //   width: document.body.clientWidth,
+    //   height: document.body.clientHeight,
+    // }, this.startStream);
+    //
+    // if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    //   DeviceOrientationEvent.requestPermission()
+    //     .then((response) => {
+    //       if (response === 'granted') {
+    //         window.ondeviceorientation = this.orientation;
+    //       } else {
+    //         this.isGyroActiveIphone();
+    //       }
+    //     })
+    //     .catch((err) => console.error(err));
+    // } else {
+    //   this.isGyroActive();
+    // }
 
     // is phone locked detect
     let hidden;
@@ -1125,8 +1126,11 @@ class Camera extends Component {
         className={classNames('widget-camera', {
           'widget-camera--table-flow': isTableFlow,
         })}
-        ref={this.initCamera}
       >
+
+        <AccessGuide
+          isAndroid={this.is('Android')}
+        />
 
         {isTableFlow ? (
           <Fragment>
@@ -1157,7 +1161,7 @@ class Camera extends Component {
           </div>
         ) : null}
 
-        {isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
+        {isTableFlow && isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
 
         <div className="widget-camera__title">
           {`${type} photo`}
