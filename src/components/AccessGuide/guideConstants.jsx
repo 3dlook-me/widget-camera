@@ -13,7 +13,7 @@ import android_5 from '../../images/android-5.png';
 
 export const IOS_GUIDE = [
   {
-    text: ['Open', <b>“Settings”</b>],
+    text: ['Open', <b> “Settings” </b>],
     image: ios_1,
   }, {
     text: ['Scroll down and click', <b> “Safari” </b>],
@@ -23,7 +23,7 @@ export const IOS_GUIDE = [
     image: ios_3,
   }, {
     text: [
-      '4. You need to choose an option:',
+      'You need to choose an option:',
       <br />,
       <p>
         <b> “Ask” - </b>

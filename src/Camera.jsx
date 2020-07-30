@@ -149,6 +149,7 @@ class Camera extends Component {
       imgURI: null,
       processing: false,
       info: false,
+      isCameraAccess: true,
       camerasArr: [],
       activeCamera: -1,
       gyroscopePosition: 180,
@@ -193,24 +194,24 @@ class Camera extends Component {
 
   // TODO uncomment
   componentDidMount() {
-    // this.setState({
-    //   width: document.body.clientWidth,
-    //   height: document.body.clientHeight,
-    // }, this.startStream);
-    //
-    // if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    //   DeviceOrientationEvent.requestPermission()
-    //     .then((response) => {
-    //       if (response === 'granted') {
-    //         window.ondeviceorientation = this.orientation;
-    //       } else {
-    //         this.isGyroActiveIphone();
-    //       }
-    //     })
-    //     .catch((err) => console.error(err));
-    // } else {
-    //   this.isGyroActive();
-    // }
+    this.setState({
+      width: document.body.clientWidth,
+      height: document.body.clientHeight,
+    }, this.startStream);
+
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+          if (response === 'granted') {
+            window.ondeviceorientation = this.orientation;
+          } else {
+            this.isGyroActiveIphone();
+          }
+        })
+        .catch((err) => console.error(err));
+    } else {
+      this.isGyroActive();
+    }
 
     // is phone locked detect
     let hidden;
@@ -266,7 +267,7 @@ class Camera extends Component {
 
     disableTableFlow();
 
-    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use AI ASSISTANT mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
+    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use ALONE mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
 
     window.location.href = '#/camera-mode-selection';
   }
@@ -307,9 +308,7 @@ class Camera extends Component {
         if (isAvailableCameras) return;
       }
 
-      alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
-
-      window.location.reload();
+      this.setState({ isCameraAccess: false });
     } finally {
       this.setState({
         isButtonInit: true,
@@ -1117,6 +1116,7 @@ class Camera extends Component {
       isPhotoTimer,
       photoTimerSecs,
       isLastPhoto,
+      isCameraAccess,
     } = this.state;
 
     const { type = 'front', isTableFlow = true } = this.props;
@@ -1128,9 +1128,11 @@ class Camera extends Component {
         })}
       >
 
-        <AccessGuide
-          isAndroid={this.is('Android')}
-        />
+        {!isCameraAccess ? (
+          <AccessGuide
+            isAndroid={this.is('Android')}
+          />
+        ) : null}
 
         {isTableFlow ? (
           <Fragment>

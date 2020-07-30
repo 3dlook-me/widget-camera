@@ -49,9 +49,7 @@ $color-2: rgba(255,255,255,0.6);
   }
 
   p {
-    &:not(.widget-camera__tap-screen-text) {
-      color: white;
-    }
+    color: white;
   }
 
   &-info {
@@ -280,7 +278,6 @@ $color-2: rgba(255,255,255,0.6);
   }
 
   &__tap-screen-text {
-    color: black;
     font-size: 14px;
     letter-spacing: 0;
     line-height: 21px;
@@ -288,6 +285,10 @@ $color-2: rgba(255,255,255,0.6);
     margin-top: 50px;
     width: 100%;
     max-width: 292px;
+  }
+
+  .widget-camera__tap-screen-text {
+    color: black;
   }
 
   &__button {
