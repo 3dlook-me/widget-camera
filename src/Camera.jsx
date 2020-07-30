@@ -201,7 +201,7 @@ class Camera extends Component {
       DeviceOrientationEvent.requestPermission()
         .then((response) => {
           if (response === 'granted') {
-            window.ondeviceorientation = this.orientation;
+            window.addEventListener('deviceorientation', this.orientation);
           } else {
             this.isGyroActiveIphone();
           }
@@ -272,16 +272,18 @@ class Camera extends Component {
 
   // tap at the bottom of the screen to allow gyroscope for iphone in dev mode
   iphoneGyroStart = () => {
+    // window.addEventListener('deviceorientation', this.getDeviceCoordinates, { once: true });
+
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
         .then((response) => {
           if (response === 'granted') {
-            window.ondeviceorientation = this.orientation;
+            window.addEventListener('deviceorientation', this.orientation);
           }
         })
         .catch(console.error);
     } else {
-      window.ondeviceorientation = this.orientation;
+      window.addEventListener('deviceorientation', this.orientation);
     }
   }
 
@@ -479,7 +481,10 @@ class Camera extends Component {
         canvas.width = settings.width;
         canvas.height = settings.height;
       }
+
       canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+      window.addEventListener('deviceorientation', this.getDeviceCoordinates, { once: true });
 
       this.setState({ processing: true }, () => canvas.toBlob(callback));
     } catch (exception) {
@@ -1103,6 +1108,19 @@ class Camera extends Component {
     current.removeEventListener('canplay', this.showPhotoTimer, { once: true });
   }
 
+  getDeviceCoordinates = (e) => {
+    const { setDeviceCoordinates } = this.props;
+    const { beta, gamma, alpha } = e;
+
+    const coordinates = {
+      ...(beta && { betaX: beta }),
+      ...(gamma && { gammaY: gamma }),
+      ...(alpha && { alphaZ: alpha }),
+    };
+
+    setDeviceCoordinates(coordinates);
+  }
+
   render() {
     const {
       info,
@@ -1118,7 +1136,7 @@ class Camera extends Component {
       isLastPhoto,
     } = this.state;
 
-    const { type = 'front', isTableFlow = true } = this.props;
+    const { type = 'front', isTableFlow = false } = this.props;
 
     return (
       <div
