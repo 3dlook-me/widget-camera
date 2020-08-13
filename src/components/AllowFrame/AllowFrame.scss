@@ -1,0 +1,126 @@
+$color-1: #00FF77;
+$color-2: rgba(255,255,255,0.6);
+
+.allow-frame {
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(100% - 128px);
+  height: calc(100% - 128px);
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border-radius: 4px;
+  border-left: 4px solid $color-1;
+  border-right: 4px solid $color-1;
+  border-top: 4px solid $color-1;
+
+  &--warning {
+    border-left: 4px solid $color-2;
+    border-right: 4px solid $color-2;
+    border-top: 4px solid $color-2;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10;
+
+    .allow-frame__bottom-border {
+      &::before,
+      &::after {
+        background-color: $color-2;
+      }
+    }
+
+    .allow-frame__warning-content {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &--hidden {
+    opacity: 0;
+  }
+
+  &__bottom-border {
+    position: absolute;
+    height: 74px;
+    left: 0;
+    right: 0;
+    bottom: -35px;
+    margin: 0 auto;
+    display: flex;
+    width: 100%;
+    align-items: center;
+
+    &::before,
+    &::after {
+      content: '';
+      background-color: $color-1;
+      height: 4px;
+      flex: 1;
+    }
+  }
+
+  &__bottom-border-space {
+    width: 100px;
+    margin: 0 auto;
+  }
+
+  &__warning-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  &__warning-txt {
+    font-size: 16px;
+    line-height: 22px;
+    max-width: 161px;
+    text-align: center;
+    color: white;
+    margin: 0;
+  }
+
+  &__warning-img {
+    margin-bottom: 30px;
+    height: 92px;
+  }
+}
+
+
+.widget-camera {
+  &__grade-wrap {
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    left: 8px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__grade {
+    margin-top: -8px;
+    margin-bottom: -16px;
+  }
+
+  &__grade-container {
+    position: relative;
+  }
+
+  &__pointer {
+    height: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform .15s linear;
+    will-change: transform;
+  }
+}
