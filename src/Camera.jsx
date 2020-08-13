@@ -1113,9 +1113,9 @@ class Camera extends Component {
     const { beta, gamma, alpha } = e;
 
     const coordinates = {
-      ...(beta && { betaX: beta }),
-      ...(gamma && { gammaY: gamma }),
-      ...(alpha && { alphaZ: alpha }),
+      ...(beta && { betaX: beta.toFixed(1) }),
+      ...(gamma && { gammaY: gamma.toFixed(1) }),
+      ...(alpha && { alphaZ: alpha.toFixed(1) }),
     };
 
     setDeviceCoordinates(coordinates);
