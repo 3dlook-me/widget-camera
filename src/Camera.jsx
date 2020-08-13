@@ -91,13 +91,6 @@ const AUIDO_CASES = {
     audioSuccessGyroHVF,
     audioSuccessGyroHVS,
   ],
-  // TODO remove after no button click approve
-  // toClickReady: [
-  //   audioToClickReadyBtn,
-  //   audioToClickReadyBtnHVFS,
-  //   audioToClickReadyBtnHVF,
-  //   audioToClickReadyBtnHVS,
-  // ],
   firstInstruction: [
     audioFirstInstructionF,
     audioFirstInstructionS,
@@ -834,30 +827,12 @@ class Camera extends Component {
       activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.successGyro),
     });
 
-    // TODO remove after no button click approve
-    // current.addEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
     current.addEventListener('ended', this.playAudioInstructions, { once: true });
 
     current.load();
     current.play();
     this.$audio.current.playbackRate = this.playSpeed;
   }
-
-  // TODO remove after no button click approve
-  // table flow
-  // playToClickReadyBtnAudio = () => {
-  //   const { current } = this.$audio;
-  //
-  //   this.setState({
-  //     activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.toClickReady),
-  //     isButtonDisabled: false,
-  //   });
-  //
-  //   // next method if user taps ready is this.handleClick -> this.playAudioInstructions
-  //   current.load();
-  //   current.play();
-  //   this.$audio.current.playbackRate = this.playSpeed;
-  // }
 
   // table flow
   countFrontAudioInstructions = () => {
@@ -936,13 +911,6 @@ class Camera extends Component {
     const { type } = this.props;
     const { current } = this.$audio;
     let trackIndex = activeAudioTrackIndex;
-
-    // if ((activeAudioTrackIndex < 5 && this.hardValidationS)
-    //     || (activeAudioTrackIndex < 3 && !this.hardValidationS)) {
-    //   current.addEventListener('ended', this.playAudioInstructions, { once: true });
-    // } else {
-    //   current.addEventListener('ended', this.startPhotoTimer, { once: true });
-    // }
 
     if (this.countAudioInstructions()) {
       current.addEventListener('ended', this.playAudioInstructions, { once: true });
@@ -1100,8 +1068,6 @@ class Camera extends Component {
   removeAudioEventListeners = () => {
     const { current } = this.$audio;
 
-    // TODO remove after no button click approve
-    // current.removeEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
     current.removeEventListener('ended', this.playAudioInstructions, { once: true });
     current.removeEventListener('ended', this.startPhotoTimer, { once: true });
     current.removeEventListener('ended', this.takePhoto, { once: true });
