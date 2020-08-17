@@ -10,6 +10,7 @@ import android_2 from '../../images/android-2.png';
 import android_3 from '../../images/android-3.png';
 import android_4 from '../../images/android-4.png';
 import android_5 from '../../images/android-5.png';
+import android_6 from '../../images/android-6.png';
 
 export const IOS_GUIDE = [
   {
@@ -39,18 +40,22 @@ export const IOS_GUIDE = [
 
 export const ANDROID_GUIDE = [
   {
-    text: ['Open', <b>“Settings”</b>],
+    text: ['Click on', <b> “Menu button” </b>, 'in your Chrome'],
     image: android_1,
   }, {
-    text: ['Scroll down and click', <b> “Apps” </b>],
+    text: ['Scroll down and click', <b> “Settings” </b>],
     image: android_2,
   }, {
-    text: ['Scroll down and click', <b> “Chrome” </b>],
+    text: ['Scroll down and click', <b> “Site settings” </b>],
     image: android_3,
   }, {
-    text: ['Scroll down and click', <b> “Permissions” </b>],
+    text: ['Scroll down and click', <b> “Camera” </b>],
     image: android_4,
   }, {
-    text: ['Turn on the button', <b> “Camera” </b>],
+    text: ['Chose our site'],
     image: android_5,
+    widget_host: window.location.origin,
+  }, {
+    text: ['Click', <b> “Clear & reset” </b>, 'button'],
+    image: android_6,
   }];

@@ -185,7 +185,6 @@ class Camera extends Component {
     };
   }
 
-  // TODO uncomment
   componentDidMount() {
     this.setState({
       width: document.body.clientWidth,

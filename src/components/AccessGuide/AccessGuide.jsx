@@ -6,7 +6,7 @@ import './AccessGuide.scss';
 import arrow from '../../images/ic_try.svg';
 
 const AccessGuide = ({ isAndroid }) => {
-  const GUIDE = isAndroid ? ANDROID_GUIDE : IOS_GUIDE;
+  const GUIDE = !isAndroid ? ANDROID_GUIDE : IOS_GUIDE;
 
   return (
     <div className="access-guide">
@@ -20,6 +20,7 @@ const AccessGuide = ({ isAndroid }) => {
             </p>
             <figure className="access-guide__img-wrap">
               <img src={el.image} alt="screen" />
+              <span className="access-guide__widget-address access-guide__text">{el.widget_host}</span>
             </figure>
           </li>
         ))}
