@@ -6,7 +6,7 @@ import './AccessGuide.scss';
 import arrow from '../../images/ic_try.svg';
 
 const AccessGuide = ({ isAndroid }) => {
-  const GUIDE = !isAndroid ? ANDROID_GUIDE : IOS_GUIDE;
+  const GUIDE = isAndroid ? ANDROID_GUIDE : IOS_GUIDE;
 
   return (
     <div className="access-guide">
