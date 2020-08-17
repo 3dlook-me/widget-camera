@@ -92,13 +92,6 @@ const AUIDO_CASES = {
     audioSuccessGyroHVF,
     audioSuccessGyroHVS,
   ],
-  // TODO remove after no button click approve
-  // toClickReady: [
-  //   audioToClickReadyBtn,
-  //   audioToClickReadyBtnHVFS,
-  //   audioToClickReadyBtnHVF,
-  //   audioToClickReadyBtnHVS,
-  // ],
   firstInstruction: [
     audioFirstInstructionF,
     audioFirstInstructionS,
@@ -203,7 +196,7 @@ class Camera extends Component {
       DeviceOrientationEvent.requestPermission()
         .then((response) => {
           if (response === 'granted') {
-            window.ondeviceorientation = this.orientation;
+            window.addEventListener('deviceorientation', this.orientation);
           } else {
             this.isGyroActiveIphone();
           }
@@ -227,7 +220,7 @@ class Camera extends Component {
 
     this.handleVisibilityChange = async () => {
       if (document[hidden]) {
-        window.location.reload();
+        await window.location.reload();
       }
     };
 
@@ -274,16 +267,18 @@ class Camera extends Component {
 
   // tap at the bottom of the screen to allow gyroscope for iphone in dev mode
   iphoneGyroStart = () => {
+    // window.addEventListener('deviceorientation', this.getDeviceCoordinates, { once: true });
+
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
         .then((response) => {
           if (response === 'granted') {
-            window.ondeviceorientation = this.orientation;
+            window.addEventListener('deviceorientation', this.orientation);
           }
         })
         .catch(console.error);
     } else {
-      window.ondeviceorientation = this.orientation;
+      window.addEventListener('deviceorientation', this.orientation);
     }
   }
 
@@ -479,7 +474,10 @@ class Camera extends Component {
         canvas.width = settings.width;
         canvas.height = settings.height;
       }
+
       canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+      window.addEventListener('deviceorientation', this.getDeviceCoordinates, { once: true });
 
       this.setState({ processing: true }, () => canvas.toBlob(callback));
     } catch (exception) {
@@ -829,30 +827,12 @@ class Camera extends Component {
       activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.successGyro),
     });
 
-    // TODO remove after no button click approve
-    // current.addEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
     current.addEventListener('ended', this.playAudioInstructions, { once: true });
 
     current.load();
     current.play();
     this.$audio.current.playbackRate = this.playSpeed;
   }
-
-  // TODO remove after no button click approve
-  // table flow
-  // playToClickReadyBtnAudio = () => {
-  //   const { current } = this.$audio;
-  //
-  //   this.setState({
-  //     activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.toClickReady),
-  //     isButtonDisabled: false,
-  //   });
-  //
-  //   // next method if user taps ready is this.handleClick -> this.playAudioInstructions
-  //   current.load();
-  //   current.play();
-  //   this.$audio.current.playbackRate = this.playSpeed;
-  // }
 
   // table flow
   countFrontAudioInstructions = () => {
@@ -931,13 +911,6 @@ class Camera extends Component {
     const { type } = this.props;
     const { current } = this.$audio;
     let trackIndex = activeAudioTrackIndex;
-
-    // if ((activeAudioTrackIndex < 5 && this.hardValidationS)
-    //     || (activeAudioTrackIndex < 3 && !this.hardValidationS)) {
-    //   current.addEventListener('ended', this.playAudioInstructions, { once: true });
-    // } else {
-    //   current.addEventListener('ended', this.startPhotoTimer, { once: true });
-    // }
 
     if (this.countAudioInstructions()) {
       current.addEventListener('ended', this.playAudioInstructions, { once: true });
@@ -1095,12 +1068,23 @@ class Camera extends Component {
   removeAudioEventListeners = () => {
     const { current } = this.$audio;
 
-    // TODO remove after no button click approve
-    // current.removeEventListener('ended', this.playToClickReadyBtnAudio, { once: true });
     current.removeEventListener('ended', this.playAudioInstructions, { once: true });
     current.removeEventListener('ended', this.startPhotoTimer, { once: true });
     current.removeEventListener('ended', this.takePhoto, { once: true });
     current.removeEventListener('canplay', this.showPhotoTimer, { once: true });
+  }
+
+  getDeviceCoordinates = (e) => {
+    const { setDeviceCoordinates } = this.props;
+    const { beta, gamma, alpha } = e;
+
+    const coordinates = {
+      ...(beta && { betaX: beta }),
+      ...(gamma && { gammaY: gamma }),
+      ...(alpha && { alphaZ: alpha }),
+    };
+
+    setDeviceCoordinates(coordinates);
   }
 
   render() {
@@ -1119,7 +1103,7 @@ class Camera extends Component {
       isCameraAccess,
     } = this.state;
 
-    const { type = 'front', isTableFlow = true } = this.props;
+    const { type = 'front', isTableFlow = false } = this.props;
 
     return (
       <div
