@@ -301,7 +301,7 @@ class Camera extends Component {
         if (isAvailableCameras) return;
       }
 
-      alert('Oops!\nGet fitted requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
+      alert('Oops!\nWidget requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
 
       window.location.reload();
     } finally {
