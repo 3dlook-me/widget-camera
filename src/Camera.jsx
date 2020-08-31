@@ -303,6 +303,7 @@ class Camera extends Component {
       }
 
       this.setState({ isCameraAccess: false });
+      document.querySelector('.widget-camera').classList.add('widget-camera--z-i-20');
     } finally {
       this.setState({
         isButtonInit: true,
