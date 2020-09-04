@@ -52,7 +52,7 @@ export const ANDROID_GUIDE = [
     text: ['Scroll down and click', <b> “Camera” </b>],
     image: android_4,
   }, {
-    text: ['Chose our site'],
+    text: ['Choose our site'],
     image: android_5,
     widget_host: window.location.origin,
   }, {
