@@ -9,6 +9,7 @@ import classNames from 'classnames';
 
 import AllowFrame from './components/AllowFrame/AllowFrame';
 import AllowFrameTF from './components/AllowFrameTF/AllowFrameTF';
+import AccessGuide from './components/AccessGuide/AccessGuide';
 
 import {
   getOrientation,
@@ -141,6 +142,7 @@ class Camera extends Component {
       imgURI: null,
       processing: false,
       info: false,
+      isCameraAccess: true,
       camerasArr: [],
       activeCamera: -1,
       gyroscopePosition: 180,
@@ -183,7 +185,6 @@ class Camera extends Component {
     };
   }
 
-  // TODO uncomment
   componentDidMount() {
     this.setState({
       width: document.body.clientWidth,
@@ -258,7 +259,7 @@ class Camera extends Component {
 
     disableTableFlow();
 
-    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use AI ASSISTANT mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
+    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use HANDS-FREE mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
 
     window.location.href = '#/camera-mode-selection';
   }
@@ -301,9 +302,12 @@ class Camera extends Component {
         if (isAvailableCameras) return;
       }
 
-      alert('Oops!\nWidget requires access to the camera to allow you to make photos that are required to calculate your body measurements. Please reopen widget and try again.');
+      this.setState({ isCameraAccess: false });
+      document.querySelector('.widget-camera').classList.add('widget-camera--z-i-20');
 
-      window.location.reload();
+      if (this.$audio) {
+        this.$audio.current.pause();
+      }
     } finally {
       this.setState({
         isButtonInit: true,
@@ -1100,6 +1104,7 @@ class Camera extends Component {
       isPhotoTimer,
       photoTimerSecs,
       isLastPhoto,
+      isCameraAccess,
     } = this.state;
 
     const { type = 'front', isTableFlow = false } = this.props;
@@ -1109,8 +1114,13 @@ class Camera extends Component {
         className={classNames('widget-camera', {
           'widget-camera--table-flow': isTableFlow,
         })}
-        ref={this.initCamera}
       >
+
+        {!isCameraAccess ? (
+          <AccessGuide
+            isAndroid={this.is('Android')}
+          />
+        ) : null}
 
         {isTableFlow ? (
           <Fragment>
@@ -1141,7 +1151,7 @@ class Camera extends Component {
           </div>
         ) : null}
 
-        {isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
+        {isTableFlow && isPhotoTimer ? <div className="widget-camera__photo-timer">{photoTimerSecs}</div> : null}
 
         <div className="widget-camera__title">
           {`${type} photo`}
