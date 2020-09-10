@@ -11,7 +11,8 @@
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/sort-comp": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "import/prefer-default-export": 0
   },
   "globals": {
     "API_HOST": true,

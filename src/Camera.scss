@@ -1,3 +1,6 @@
+$color-1: #00FF77;
+$color-2: rgba(255,255,255,0.6);
+
 .widget-camera {
   position: absolute;
   top: 0;
@@ -12,6 +15,46 @@
   align-items: center;
   background-color: black;
   overflow: hidden;
+  z-index: 1;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &--table-flow {
+    .allow-frame {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border-bottom: 4px solid $color-1;
+    }
+
+    .allow-frame__bottom-border {
+      display: none;
+    }
+
+    .allow-frame--warning {
+      border: none;
+    }
+
+    .widget-camera-video {
+      transform: scaleX(-1);
+    }
+
+    .widget-camera-take-photo {
+      &[disabled] {
+        opacity: 0;
+      }
+    }
+
+    .widget-camera__cameras {
+      bottom: 16px;
+    }
+  }
+
+  &--z-i-20 {
+    z-index: 20;
+  }
 
   p {
     color: white;
@@ -88,7 +131,7 @@
 
     &[disabled] {
       border-color: #CBC9C7;
-      
+
       .widget-camera-take-photo-effect {
         background-color: #CBC9C7;
 
@@ -192,7 +235,7 @@
     z-index: 5;
     text-transform: lowercase;
     position: absolute;
-    top: 26px;
+    top: 34px;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0;
@@ -203,124 +246,119 @@
       text-transform: uppercase;
     }
   }
-
-  &__grade-wrap {
+  
+  &__top-icon {
     position: absolute;
     z-index: 5;
-    top: 0;
-    left: 8px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 38px;
+    left: 28px;
+    max-height: 19px;
   }
 
-  &__grade {
-    margin-top: -8px;
-    margin-bottom: -16px;
-  }
-
-  &__grade-container {
-    position: relative;
-  }
-
-  &__pointer {
-    height: 1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform .15s linear;
-    will-change: transform;
-  }
-}
-
-$color-1: #00FF77;
-$color-2: rgba(255,255,255,0.6);
-
-.allow-frame {
-  z-index: 5;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: calc(100% - 128px);
-  height: calc(100% - 128px);
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border-radius: 4px;
-  border-left: 4px solid $color-1;
-  border-right: 4px solid $color-1;
-  border-top: 4px solid $color-1;
-
-  &--warning {
-    border-left: 4px solid $color-2;
-    border-right: 4px solid $color-2;
-    border-top: 4px solid $color-2;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 10;
-
-    .allow-frame__bottom-border {
-      &::before,
-      &::after {
-        background-color: $color-2;
-      }
-    }
-
-    .allow-frame__warning-content {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-
-  &__bottom-border {
+  &__tap-screen {
     position: absolute;
-    height: 74px;
+    z-index: 8;
+    top: 0;
     left: 0;
-    right: 0;
-    bottom: -35px;
-    margin: 0 auto;
-    display: flex;
     width: 100%;
-    align-items: center;
-
-    &::before,
-    &::after {
-      content: '';
-      background-color: $color-1;
-      height: 4px;
-      flex: 1;
-    }
-  }
-
-  &__bottom-border-space {
-    width: 100px;
-    margin: 0 auto;
-  }
-
-  &__warning-content {
+    height: 100%;
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    visibility: hidden;
-    opacity: 0;
+    font-size: 70px;
+    padding: 0 16px;
+    box-sizing: border-box;
+
+    & ~ .allow-frame {
+      opacity: 0;
+      z-index: 0;
+    }
+
+    & ~ .widget-camera-controls {
+      display: none;
+    }
+
+    & ~ .widget-camera__grade-wrap {
+      display: none;
+    }
   }
 
-  &__warning-txt {
-    font-size: 16px;
-    line-height: 22px;
-    max-width: 161px;
+  &__tap-screen-text {
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 21px;
     text-align: center;
-    color: white;
-    margin: 0;
+    margin-top: 50px;
+    width: 100%;
+    max-width: 292px;
   }
 
-  &__warning-img {
-    margin-bottom: 30px;
-    height: 92px;
+  .widget-camera__tap-screen-text {
+    color: black;
+  }
+
+  &__button {
+    display: block;
+    height: 50px;
+    width: 275px;
+    border-radius: 4px;
+    background-color: #343239;
+    padding: 0;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 2.3px;
+    text-transform: uppercase;
+    font-weight: 400;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  &__tap-screen-icon {
+    width: 100%;
+    max-width: 112px;
+    margin-top: auto;
+    height: 192px;
+  }
+
+  &__tap-screen-button {
+    margin-top: auto;
+    margin-bottom: 20px;
+  }
+
+  &__photo-timer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 270px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 316px;
+    text-align: center;
+    color: $color-1;
+  }
+
+  audio {
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &__photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
