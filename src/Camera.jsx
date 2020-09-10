@@ -259,7 +259,7 @@ class Camera extends Component {
 
     disableTableFlow();
 
-    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use ALONE mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
+    alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use HANDS-FREE mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
 
     window.location.href = '#/camera-mode-selection';
   }
