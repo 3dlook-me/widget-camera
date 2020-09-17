@@ -781,6 +781,9 @@ class Camera extends Component {
   // table flow
   playFirstAudio = () => {
     const { current } = this.$audio;
+    const { onClickDone } = this.props;
+
+    if (onClickDone) onClickDone();
 
     this.setState({
       activeAudioTrack: this.specifyAudioTrack(AUIDO_CASES.standPhone),
