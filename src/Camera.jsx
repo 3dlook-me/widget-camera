@@ -1110,7 +1110,7 @@ class Camera extends Component {
       isCameraAccess,
     } = this.state;
 
-    const { type = 'front', isTableFlow = true } = this.props;
+    const { type = 'front', isTableFlow = false } = this.props;
 
     return (
       <div
