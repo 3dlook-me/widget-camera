@@ -21,8 +21,8 @@ import {
 
 import './Camera.scss';
 
-import pose from './images/ic_pose.svg';
-import muteIcon from './images/ic_sound.svg';
+import SVGPose from './components/SVGComponents/SVGPose';
+import SVGMuteIcon from './components/SVGComponents/SVGMuteIcon';
 
 // System
 import audioTimer from './audio/timer-new.mp3';
@@ -1110,7 +1110,7 @@ class Camera extends Component {
       isCameraAccess,
     } = this.state;
 
-    const { type = 'front', isTableFlow = false } = this.props;
+    const { type = 'front', isTableFlow = true } = this.props;
 
     return (
       <div
@@ -1127,7 +1127,7 @@ class Camera extends Component {
 
         {isTableFlow ? (
           <Fragment>
-            <img className="widget-camera__top-icon" src={pose} alt="human" />
+            <SVGPose className="widget-camera__top-icon" />
 
             <audio ref={this.$audio} preload="auto">
               <source src={activeAudioTrack} type="audio/mp3" />
@@ -1137,7 +1137,7 @@ class Camera extends Component {
 
         {isTableFlow && tapScreen ? (
           <div className="widget-camera__tap-screen">
-            <img className="widget-camera__tap-screen-icon" src={muteIcon} alt="sound-on" />
+            <SVGMuteIcon className="widget-camera__tap-screen-icon" />
             <p className="widget-camera__tap-screen-text">
               Please check the sound on your phone.
               <br />
