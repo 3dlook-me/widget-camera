@@ -34,53 +34,51 @@ const SVGGrade = (props) => (
         <stop stop-color="#33CF7C" offset="100%" />
       </linearGradient>
     </defs>
-    <g id="Mobile" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
-      <g id="[M]-Step-6_2" transform="translate(-7.000000, -126.000000)">
-        <g id="Group-5" filter="url(#filter-1)" transform="translate(7.000000, 134.000000)">
-          <g id="grade" transform="translate(10.000000, 0.000000)">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+      <g transform="translate(-7.000000, -126.000000)">
+        <g filter="url(#filter-1)" transform="translate(7.000000, 134.000000)">
+          <g transform="translate(10.000000, 0.000000)">
             <path
               d="M4,0 L16,0 C18.209139,-4.05812251e-16 20,1.790861 20,4 L20,180 L20,180 L0,180 L0,4 C-2.705415e-16,1.790861 1.790861,4.05812251e-16 4,0 Z"
-              id="Rectangle"
               fill="url(#linearGradient-2)"
             />
             <path
               d="M4,180 L16,180 C18.209139,180 20,181.790861 20,184 L20,360 L20,360 L0,360 L0,184 C-2.705415e-16,181.790861 1.790861,180 4,180 Z"
-              id="Rectangle-Copy-2"
               fill="url(#linearGradient-2)"
               transform="translate(10.000000, 270.000000) scale(1, -1) translate(-10.000000, -270.000000) "
             />
-            <g id="Group-6" transform="translate(3.000000, 14.000000)" fill="#FFFFFF">
-              <rect id="Rectangle-Copy-3" x="4" y="0" width="6" height="1" />
-              <rect id="Rectangle-Copy-4" x="4" y="11" width="6" height="1" />
-              <rect id="Rectangle-Copy-5" x="4" y="22" width="6" height="1" />
-              <rect id="Rectangle-Copy-6" x="0" y="33" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="44" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="55" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="66" width="6" height="1" />
-              <rect id="Rectangle-Copy-10" x="0" y="77" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="88" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="99" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="110" width="6" height="1" />
-              <rect id="Rectangle-Copy-10" x="0" y="121" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="132" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="143" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="154" width="6" height="1" />
-              <rect id="Rectangle-Copy-10" x="0" y="165" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="176" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="187" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="198" width="6" height="1" />
-              <rect id="Rectangle-Copy-10" x="0" y="209" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="220" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="231" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="242" width="6" height="1" />
-              <rect id="Rectangle-Copy-10" x="0" y="253" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="264" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="275" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="286" width="6" height="1" />
-              <rect id="Rectangle-Copy-10" x="0" y="297" width="14" height="1" />
-              <rect id="Rectangle-Copy-7" x="4" y="308" width="6" height="1" />
-              <rect id="Rectangle-Copy-8" x="4" y="319" width="6" height="1" />
-              <rect id="Rectangle-Copy-9" x="4" y="330" width="6" height="1" />
+            <g transform="translate(3.000000, 14.000000)" fill="#FFFFFF">
+              <rect x="4" y="0" width="6" height="1" />
+              <rect x="4" y="11" width="6" height="1" />
+              <rect x="4" y="22" width="6" height="1" />
+              <rect x="0" y="33" width="14" height="1" />
+              <rect x="4" y="44" width="6" height="1" />
+              <rect x="4" y="55" width="6" height="1" />
+              <rect x="4" y="66" width="6" height="1" />
+              <rect x="0" y="77" width="14" height="1" />
+              <rect x="4" y="88" width="6" height="1" />
+              <rect x="4" y="99" width="6" height="1" />
+              <rect x="4" y="110" width="6" height="1" />
+              <rect x="0" y="121" width="14" height="1" />
+              <rect x="4" y="132" width="6" height="1" />
+              <rect x="4" y="143" width="6" height="1" />
+              <rect x="4" y="154" width="6" height="1" />
+              <rect x="0" y="165" width="14" height="1" />
+              <rect x="4" y="176" width="6" height="1" />
+              <rect x="4" y="187" width="6" height="1" />
+              <rect x="4" y="198" width="6" height="1" />
+              <rect x="0" y="209" width="14" height="1" />
+              <rect x="4" y="220" width="6" height="1" />
+              <rect x="4" y="231" width="6" height="1" />
+              <rect x="4" y="242" width="6" height="1" />
+              <rect x="0" y="253" width="14" height="1" />
+              <rect x="4" y="264" width="6" height="1" />
+              <rect x="4" y="275" width="6" height="1" />
+              <rect x="4" y="286" width="6" height="1" />
+              <rect x="0" y="297" width="14" height="1" />
+              <rect x="4" y="308" width="6" height="1" />
+              <rect x="4" y="319" width="6" height="1" />
+              <rect x="4" y="330" width="6" height="1" />
             </g>
           </g>
         </g>
