@@ -3,8 +3,8 @@ import classNames from 'classnames';
 
 import './AllowFrameTF.scss';
 
-import grade from '../../images/grade-tf.svg';
-import pointer from '../../images/arrows-tf.svg';
+import SVGGradeTF from '../SVGComponents/SVGGradeTF';
+import SVGPointerTF from '../SVGComponents/SVGPointerTF';
 
 const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
   <div className={classNames('allow-frame-tf', {
@@ -16,9 +16,9 @@ const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
 
       <div className="allow-frame-tf__grade-wrap">
         <div className="allow-frame-tf__grade-container">
-          <img className="allow-frame-tf__grade" src={grade} alt="grade" />
+          <SVGGradeTF className="allow-frame-tf__grade" />
           <div className="allow-frame-tf__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
-            <img className="allow-frame-tf__pointer-icon" src={pointer} alt="pointer" />
+            <SVGPointerTF className="allow-frame-tf__pointer-icon" />
           </div>
         </div>
       </div>

@@ -1,19 +1,19 @@
 import { Fragment, h } from 'preact';
 import classNames from 'classnames';
 
-import './AllowFrame.scss';
+import SVGGrade from '../SVGComponents/SVGGrade';
+import SVGPointer from '../SVGComponents/SVGPointer';
+import SVGWarning from '../SVGComponents/SVGWarning';
 
-import grade from '../../images/grade.svg';
-import pointer from '../../images/pointer.svg';
-import warning from '../../images/camera-warning.svg';
+import './AllowFrame.scss';
 
 const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
   <Fragment>
     <div className="widget-camera__grade-wrap">
       <div className="widget-camera__grade-container">
-        <img className="widget-camera__grade" src={grade} alt="grade" />
+        <SVGGrade className="widget-camera__grade" />
         <div className="widget-camera__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
-          <img className="widget-camera__pointer-icon" src={pointer} alt="pointer" />
+          <SVGPointer className="widget-camera__pointer-icon" />
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@ const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
     })}
     >
       <div className="allow-frame__warning-content">
-        <img className="allow-frame__warning-img" src={warning} alt="warning" />
+        <SVGWarning className="allow-frame__warning-img" />
         <h2 className="allow-frame__warning-txt">
           Hold your phone vertically and line up the green arrows
         </h2>
