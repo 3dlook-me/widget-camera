@@ -79,7 +79,8 @@
     "@babel/polyfill": "^7.8.3",
     "@babel/runtime": "^7.8.4",
     "classnames": "^2.2.6",
-    "preact": "^10.3.1"
+    "preact": "^10.3.1",
+    "preact-custom-element": "^4.2.1"
   },
   "peerDependencies": {
     "preact": "^10.3.1"

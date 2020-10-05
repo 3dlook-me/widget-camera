@@ -6,6 +6,7 @@ import {
   Fragment,
 } from 'preact';
 import classNames from 'classnames';
+import register from 'preact-custom-element';
 
 import AllowFrame from './components/AllowFrame/AllowFrame';
 import AllowFrameTF from './components/AllowFrameTF/AllowFrameTF';
@@ -132,6 +133,15 @@ const AUIDO_CASES = {
   ],
 };
 
+function savePhoto(image) {
+  window.dispatchEvent(
+    new CustomEvent(
+      'savePhoto',
+      { detail: { image } },
+    )
+  );
+}
+
 class Camera extends Component {
   $audio = createRef();
 
@@ -254,7 +264,7 @@ class Camera extends Component {
     }
   }
 
-  gyroDisabledMsg = () => {
+  /* gyroDisabledMsg = () => {
     const { disableTableFlow } = this.props;
 
     disableTableFlow();
@@ -262,7 +272,7 @@ class Camera extends Component {
     alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use HANDS-FREE mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
 
     window.location.href = '#/camera-mode-selection';
-  }
+  } */
 
   // tap at the bottom of the screen to allow gyroscope for iphone in dev mode
   iphoneGyroStart = () => {
@@ -481,13 +491,13 @@ class Camera extends Component {
 
       canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
-      window.addEventListener('deviceorientation', this.getDeviceCoordinates, { once: true });
+      // window.addEventListener('deviceorientation', this.getDeviceCoordinates, { once: true });
 
       this.setState({ processing: true }, () => canvas.toBlob(callback));
     } catch (exception) {
       console.error(`Error: ${exception}`);
 
-      alert('Problems with photo. Please try again.');
+      alert(`Error taking photo: ${exception}`);
 
       window.location.reload();
     }
@@ -495,8 +505,6 @@ class Camera extends Component {
 
   setPhoto = async (blob) => {
     const {
-      saveFront,
-      saveSide,
       type,
     } = this.props;
 
@@ -514,14 +522,14 @@ class Camera extends Component {
       this.setState({ processing: false });
 
       if (type === 'front') {
-        saveFront(image);
+        savePhoto(image);
       } else {
-        saveSide(image);
+        savePhoto(image);
       }
     } catch (exception) {
       console.error(`Error: ${exception}`);
 
-      alert('Problems with photo. Please try again.');
+      alert(`Error setting photo: ${exception}`);
 
       window.location.reload();
     }
@@ -563,7 +571,7 @@ class Camera extends Component {
 
   // table flow
   setFrontPhotoTableFlow = async (img) => {
-    const { hardValidation, saveFront } = this.props;
+    const { hardValidation } = this.props;
 
     if (hardValidation.front && !hardValidation.side) {
       this.setState({
@@ -574,7 +582,7 @@ class Camera extends Component {
     } else {
       const { current } = this.$audio;
 
-      saveFront(img);
+      savePhoto(img);
 
       this.setState({
         activeAudioTrack: this.specifySuccessPhotoAudio(),
@@ -607,12 +615,12 @@ class Camera extends Component {
   }
 
   before(component) {
-    const { imgURI, processing } = this.state;
+    /* const { imgURI, processing } = this.state;
     const { isTableFlow } = this.props;
 
     if ((imgURI || processing) && !isTableFlow) {
       return;
-    }
+    } */
 
     return component;
   }
@@ -1021,14 +1029,14 @@ class Camera extends Component {
           activeAudioTrack: audioPhotoShutter,
         });
 
-        this.video.pause();
+        this.video && this.video.pause();
 
         current.load();
         current.play();
 
         current.addEventListener('ended', this.takePhoto, { once: true });
       }
-    }, 1000);
+    }, 5000);
   }
 
   // table flow
@@ -1046,16 +1054,13 @@ class Camera extends Component {
   playFinalSuccessPhotoAudio = (img) => {
     const { current } = this.$audio;
     const {
-      saveSide,
-      saveFront,
       type,
-      turnOffCamera,
     } = this.props;
 
     if (type === 'front') {
-      saveFront(img);
+      savePhoto(img);
     } else {
-      saveSide(img);
+      savePhoto(img);
     }
 
     this.setState({
@@ -1065,10 +1070,6 @@ class Camera extends Component {
     current.load();
     current.play();
     this.$audio.current.playbackRate = this.playSpeed;
-
-    current.addEventListener('ended', () => {
-      turnOffCamera();
-    }, { once: true });
   }
 
   // table flow
@@ -1081,7 +1082,7 @@ class Camera extends Component {
     current.removeEventListener('canplay', this.showPhotoTimer, { once: true });
   }
 
-  getDeviceCoordinates = (e) => {
+  /* getDeviceCoordinates = (e) => {
     const { setDeviceCoordinates } = this.props;
     const { beta, gamma, alpha } = e;
 
@@ -1092,7 +1093,7 @@ class Camera extends Component {
     };
 
     setDeviceCoordinates(coordinates);
-  }
+  } */
 
   render() {
     const {
@@ -1209,7 +1210,7 @@ class Camera extends Component {
               className={classNames('widget-camera-controls', {
                 'widget-camera-controls--warning': info,
               })}
-              onClick={process.env.NODE_ENV !== 'production' ? this.iphoneGyroStart : null}
+              onClick={this.iphoneGyroStart}
             >
               {this.before(!processing
                   && (
@@ -1236,6 +1237,11 @@ class Camera extends Component {
   }
 }
 
-process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
-
+register(Camera, 'app-react-camera', [
+  'type',
+  'isTableFlow',
+  'hardValidation',
+]);
+/* process.env.NODE_ENV === 'production' || render(<Camera />, document.body);
+ */
 export default Camera;
