@@ -16,10 +16,7 @@ const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
 
       <div className="allow-frame-tf__grade-wrap">
         <div className="allow-frame-tf__grade-container">
-          <img className="allow-frame-tf__grade" src={grade} alt="grade" />
-          <div className="allow-frame-tf__pointer" style={{ transform: `translateY(-${gyroscopePosition}px)` }}>
-            <img className="allow-frame-tf__pointer-icon" src={pointer} alt="pointer" />
-          </div>
+          {Math.round(gyroscopePosition * 180 / 360)}&deg;
         </div>
       </div>
 

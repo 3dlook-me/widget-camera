@@ -133,11 +133,11 @@ const AUIDO_CASES = {
   ],
 };
 
-function savePhoto(image) {
+function savePhoto(image, degree) {
   window.dispatchEvent(
     new CustomEvent(
       'savePhoto',
-      { detail: { image } },
+      { detail: { image, degree: degree ? Math.round(degree * 180 / 360) : degree } },
     )
   );
 }
@@ -184,7 +184,7 @@ class Camera extends Component {
       this.isHardValidation = this.hardValidationFS || this.hardValidationF || this.hardValidationS;
     }
 
-    this.cameraType = props.isTableFlow ? 'user' : 'environment';
+    this.cameraType = props.type === 'front' ? 'user' : 'environment';
 
     this.VIDEO_CONFIG = {
       audio: false,
@@ -264,15 +264,9 @@ class Camera extends Component {
     }
   }
 
-  /* gyroDisabledMsg = () => {
-    const { disableTableFlow } = this.props;
-
-    disableTableFlow();
-
+  gyroDisabledMsg = () => {
     alert('Oops!.. To continue use AI assistant you need to turn on GYROSCOPE!\nTo use HANDS-FREE mode please turn on GYROSCOPE in your mobile setting and restart browser.\nWithout GYROSCOPE, you can use just WITH A FRIEND Mode.');
-
-    window.location.href = '#/camera-mode-selection';
-  } */
+  }
 
   // tap at the bottom of the screen to allow gyroscope for iphone in dev mode
   iphoneGyroStart = () => {
@@ -328,8 +322,8 @@ class Camera extends Component {
   getUserDevices = () => navigator.mediaDevices.enumerateDevices()
     .then(async (devices) => {
       const devicesArr = [];
-      const { isTableFlow } = this.props;
-      const cameraType = isTableFlow ? 'front' : 'back';
+      const { type } = this.props;
+      const cameraType = type === 'front' ? 'front' : 'back';
 
       devices.forEach((e) => {
         if (e.kind === 'videoinput' && e.label.includes(cameraType)) {
@@ -521,11 +515,8 @@ class Camera extends Component {
       this.stream.getVideoTracks()[0].stop();
       this.setState({ processing: false });
 
-      if (type === 'front') {
-        savePhoto(image);
-      } else {
-        savePhoto(image);
-      }
+      savePhoto(image, this.state.gyroscopePosition);
+
     } catch (exception) {
       console.error(`Error: ${exception}`);
 
@@ -1218,7 +1209,7 @@ class Camera extends Component {
                     className="widget-camera-take-photo"
                     onClick={this.takePhoto}
                     type="button"
-                    disabled={info || !isButtonInit}
+                    disabled={!isButtonInit}
                   >
                     <div className={classNames('widget-camera-take-photo-effect')} />
                   </button>

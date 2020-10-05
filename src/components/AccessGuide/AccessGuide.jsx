@@ -4,6 +4,7 @@ import { IOS_GUIDE, ANDROID_GUIDE } from './guideConstants';
 
 import './AccessGuide.scss';
 import arrow from '../../images/ic_try.svg';
+const reload = () => window.location.reload();
 
 const AccessGuide = ({ isAndroid }) => {
   const GUIDE = isAndroid ? ANDROID_GUIDE : IOS_GUIDE;
@@ -28,10 +29,10 @@ const AccessGuide = ({ isAndroid }) => {
       </ul>
 
       <div className="access-guide__btn-wrap">
-        <a className="access-guide__btn" href="/camera-mode-selection">
+        <button className="access-guide__btn" onClick={reload}>
           <img src={arrow} alt="arrow" />
           Try again
-        </a>
+        </button>
       </div>
       <div />
     </div>

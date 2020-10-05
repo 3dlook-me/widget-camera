@@ -70,6 +70,10 @@ $color-2: #FF0000;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: white;
+    background: rgba(0,0,0, 0.6);
+    padding: 2px 4px;
+    border-radius: 4px;
   }
 
   &__pointer {
