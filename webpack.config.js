@@ -64,6 +64,13 @@ const plugins = [
     template: path.resolve('src/index.html'),
     inject: true,
     inlineSource: 'widget.(js/css)$',
+    excludeChunks: ['demo'],
+  }) : false,
+  mode !== 'production' ? new HtmlWebpackPlugin({
+    filename: 'demo.html',
+    template: path.resolve('src/demo.html'),
+    inject: false,
+    inlineSource: 'widget.(js/css)$',
   }) : false,
   mode !== 'production' ? new HtmlWebpackInlineSourcePlugin() : false,
   new MiniCssExtractPlugin({
@@ -72,6 +79,15 @@ const plugins = [
   }),
   new CleanWebpackPlugin(),
 ].filter((value) => value);
+
+// entry
+const entry = {
+  index: path.resolve(`${__dirname}/src/Camera.jsx`),
+};
+
+if (mode !== 'production') {
+  entry.demo = path.resolve(`${__dirname}/src/demo/Camera.demo.jsx`);
+}
 
 /**
  * Webpack config
@@ -84,9 +100,7 @@ module.exports = {
     poll: 1000,
     ignored: /node_modules/,
   },
-  entry: {
-    index: path.resolve(`${__dirname}/src/Camera.jsx`),
-  },
+  entry,
   output: {
     publicPath: '/',
     path: `${__dirname}/dist`,
