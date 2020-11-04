@@ -1,17 +1,32 @@
-### Install all the dependencies 
+### Install all the dependencies
 ```sh
 npm install
 ```
 
 ### Development
 ```sh
-npm start 
+npm start
+```
+
+### Demo app
+
+Execute the following command to run the app in a development envirinment:
+
+```sh
+npm install
+npm start
+```
+
+then open link in your browser:
+
+```
+http://localhost:9000/demo.html
 ```
 
 ### Publish to nexus (develop branch)
 ```sh
 1. npmrc nexus
-2. npm run build 
+2. npm run build
 3. npm version patch (if you need to up camera version)
 4. npm publish
 ```
@@ -19,12 +34,10 @@ npm start
 ### Publish to npm (master branch)
 ```sh
 1. npmrc npm-camera
-2. npm run build 
+2. npm run build
 3. npm version patch (if you need to up camera version)
 4. npm publish --access=public
 ```
-
-[Demo](https://codesandbox.io/s/modern-bird-7bztd) when taking a photo of a friend
 
 # Prop Types
 | Property | Type | Required? | Description
