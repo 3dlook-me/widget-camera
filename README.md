@@ -39,8 +39,6 @@ http://localhost:9000/demo.html
 4. npm publish --access=public
 ```
 
-[Demo](https://codesandbox.io/s/modern-bird-7bztd) when taking a photo of a friend
-
 # Prop Types
 | Property | Type | Required? | Description
 | ------ | ------ | :------: | ------ |
