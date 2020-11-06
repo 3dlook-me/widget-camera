@@ -5,17 +5,25 @@ export default class App extends Component {
   state = {
     cameraOn: false,
     type: null,
-    hardValidation: { front: null, side: null }
+    hardValidation: { front: null, side: null },
+    frontImage: null,
+    sideImage: null,
   };
 
   saveFrontFile = (file) => {
     console.log("saveFrontFile", file);
-    this.setState({ type: null });
+    this.setState({
+      type: null,
+      frontImage: file,
+    });
   };
 
   saveSideFile = (file) => {
     console.log("saveSideFile", file);
-    this.setState({ type: null });
+    this.setState({
+      type: null,
+      sideImage: file,
+    });
   };
 
   disableTableFlow = () => {
@@ -35,7 +43,12 @@ export default class App extends Component {
   };
 
   render() {
-    const { type, hardValidation } = this.state;
+    const {
+      type,
+      hardValidation,
+      frontImage,
+      sideImage,
+    } = this.state;
 
     return (
       <div>
@@ -46,6 +59,20 @@ export default class App extends Component {
         <button type="button" onClick={this.toggleCamera("side")}>
           Take side foto
         </button>
+        <div>
+          <p>Front image:</p>
+          {(frontImage) ? (
+            <img src={frontImage} alt="Front photo"/>
+          ) : (
+            <p>None</p>
+          )}
+          <p>Side image:</p>
+          {(sideImage) ? (
+            <img src={sideImage} alt="Side photo"/>
+          ) : (
+            <p>None</p>
+          )}
+        </div>
         {type && (
           <Camera
             type={type}
