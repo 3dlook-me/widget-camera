@@ -498,6 +498,7 @@ class Camera extends Component {
       saveFront,
       saveSide,
       type,
+      gaTakePhoto,
     } = this.props;
 
     try {
@@ -515,8 +516,12 @@ class Camera extends Component {
 
       if (type === 'front') {
         saveFront(image);
+
+        if (gaTakePhoto) gaTakePhoto('front');
       } else {
         saveSide(image);
+
+        if (gaTakePhoto) gaTakePhoto('side');
       }
     } catch (exception) {
       console.error(`Error: ${exception}`);
