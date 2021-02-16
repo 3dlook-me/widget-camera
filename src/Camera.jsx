@@ -534,7 +534,7 @@ class Camera extends Component {
 
   // table flow
   setPhotoTableFlow = async (blob) => {
-    const { type } = this.props;
+    const { type, gaTakePhoto } = this.props;
 
     try {
       let image;
@@ -552,12 +552,16 @@ class Camera extends Component {
 
       if (type === 'front') {
         this.setFrontPhotoTableFlow(image);
+
+        if (gaTakePhoto) gaTakePhoto('front');
       } else {
         this.setState({
           isLastPhoto: true,
         });
 
         this.playFinalSuccessPhotoAudio(image);
+
+        if (gaTakePhoto) gaTakePhoto('side');
       }
     } catch (exception) {
       console.error(`Error: ${exception}`);
