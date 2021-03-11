@@ -42,6 +42,10 @@ $color-2: #FF0000;
     align-items: center;
     visibility: hidden;
     opacity: 0;
+
+    @media screen and (max-height: 568px) {
+      padding: 80px 0 24px;
+    }
   }
 
   &__warning-txt {
@@ -50,6 +54,12 @@ $color-2: #FF0000;
     text-align: center;
     color: white;
     margin: auto 0 0;
+
+    @media screen and (max-height: 568px) {
+      font-size: 14px;
+      line-height: 18px;
+      margin-top: 30px;
+    }
   }
 
   &__grade-wrap {
