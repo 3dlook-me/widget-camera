@@ -31,7 +31,10 @@ http://localhost:9000/demo.html
     - use patch for fixes, docs and demos updates
     - use minor for new features which don’t break backward capabilities
     - use major for those changes which bring breaking changes
-4. npm publish
+4. Commit current changes and push them to the repository. Also, push tags
+    - git push
+    - git push --tags
+5. npm publish
 ```
 
 # Prop Types
