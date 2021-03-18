@@ -23,20 +23,15 @@ then open link in your browser:
 http://localhost:9000/demo.html
 ```
 
-### Publish to nexus (develop branch)
+### Publish to nexus
 ```sh
 1. npmrc nexus
 2. npm run build
-3. npm version patch (if you need to up camera version)
+3. npm version <patch|minor|major> (if you need to up camera version)
+    - use patch for fixes, docs and demos updates
+    - use minor for new features which don’t break backward capabilities
+    - use major for those changes which bring breaking changes
 4. npm publish
-```
-
-### Publish to npm (master branch)
-```sh
-1. npmrc npm-camera
-2. npm run build
-3. npm version patch (if you need to up camera version)
-4. npm publish --access=public
 ```
 
 # Prop Types
