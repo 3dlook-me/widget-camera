@@ -261,7 +261,7 @@ class Camera extends Component {
 
     const errText = this.is('Android')
       ? 'Oops!...\nTo continue using HANDS-FREE mode, you’ll need to allow camera and motion sensors accesses in your browser site Settings!\nNOTE: Don’t forget to RESTART browser ;)'
-      : 'Oops!..\nTo continue using HANDS-FREE mode, you\'ll need to allow camera access in Settings!\nNOTE: Don\'t forget to RESTART browser ;)';
+      : 'Oops!..\nTo continue using HANDS-FREE mode, you\'ll need to allow camera access in browser Settings!\nNOTE: Don\'t forget to RESTART browser ;)';
 
     alert(errText);
 
