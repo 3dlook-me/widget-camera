@@ -1,6 +1,6 @@
 {
   "name": "@3dlook/camera",
-  "version": "2.0.5",
+  "version": "2.0.7",
   "description": "Widget camera component",
   "publishConfig": {
     "registry": "https://nexus.3dlook.me/repository/3dlook-npm-hosted/"
