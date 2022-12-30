@@ -57,7 +57,7 @@
     "karma-webpack": "^4.0.2",
     "minami": "^1.2.3",
     "mini-css-extract-plugin": "^0.9.0",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "node-sass": "^4.13.1",
     "postcss-loader": "^3.0.0",
     "preact-compat-enzyme": "^0.2.5",
