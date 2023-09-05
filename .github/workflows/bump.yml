@@ -8,6 +8,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GH_RO_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   
 jobs:
   bump:
