@@ -9,10 +9,7 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack --progress"
   },
-  "repository": {
-    "type": "git",
-    "url": "org-47566883@github.com:3dlook-me/widget-camera.git"
-  },
+  "repository": "github:3dlook-me/widget-camera",
   "author": "3DLOOK",
   "license": "ISC",
   "main": "dist/index.js",
