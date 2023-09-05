@@ -12,11 +12,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ needs.check_environment.outputs.env_name }}
+
     env:
-      VITE_RUDDERSTACK_WRITE_KEY: ${{ secrets.VITE_RUDDERSTACK_WRITE_KEY }}
-      VITE_RUDDERSTACK_DATA_PLANE_URL: ${{ secrets.VITE_RUDDERSTACK_DATA_PLANE_URL }}
+      GITHUB_TOKEN: ${{ secrets.GH_RO_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
