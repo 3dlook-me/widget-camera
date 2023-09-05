@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:Skiminojek/widget-camera.git"
+    "url": "git@github.com:3dlook-me/widget-camera.git"
   },
   "author": "3DLOOK",
   "license": "ISC",
   "main": "dist/index.js",
-  "homepage": "https://bitbucket.org/Skiminojek/widget-camera/src",
+  "homepage": "https://github.com/3dlook-me/widget-camera/src",
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -78,8 +78,11 @@
   "dependencies": {
     "@babel/polyfill": "^7.8.3",
     "@babel/runtime": "^7.8.4",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "classnames": "^2.2.6",
-    "preact": "^10.3.1"
+    "preact": "^10.3.1",
+    "semantic-release": "^17.4.7"
   },
   "peerDependencies": {
     "preact": "^10.3.1"

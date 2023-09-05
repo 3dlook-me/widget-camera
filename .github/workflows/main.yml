@@ -1,0 +1,55 @@
+---
+# https://shopify.dev/apps/tools/cli/cli-2/ci-cd#step-4-integrate-shopify-cli-into-your-pipeline
+
+name: Build & Publish
+
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.check_environment.outputs.env_name }}
+    env:
+      VITE_RUDDERSTACK_WRITE_KEY: ${{ secrets.VITE_RUDDERSTACK_WRITE_KEY }}
+      VITE_RUDDERSTACK_DATA_PLANE_URL: ${{ secrets.VITE_RUDDERSTACK_DATA_PLANE_URL }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+          registry-url: https://npm.pkg.github.com
+          always-auth: true
+          scope: '@3dlook-me'
+
+      - name: npm install, build, and test
+        run: |
+          npm install --force
+          npm run build --if-present
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: |
+            ./dist
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
