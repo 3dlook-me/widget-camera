@@ -180,7 +180,7 @@ class Camera extends Component {
       audio: false,
       video: {
         facingMode: this.cameraType,
-        width: { exact: 1280 },
+        width: { min: 1280, ideal: 1920, max: 2560 },
       },
     };
   }
@@ -369,7 +369,7 @@ class Camera extends Component {
     const videoConfig = {
       video: {
         deviceId: cameras[0],
-        width: { exact: 1280 },
+        width: { min: 1280, ideal: 1920, max: 2560 },
       },
       audio: false,
     };
@@ -385,7 +385,7 @@ class Camera extends Component {
     const videoConfig = {
       video: {
         deviceId: camerasArr[id],
-        width: { exact: 1280 },
+        width: { min: 1280, ideal: 1920, max: 2560 },
       },
       audio: false,
     };
@@ -408,7 +408,7 @@ class Camera extends Component {
       const videoConfig = {
         video: {
           deviceId: camerasArr[i],
-          width: { exact: 1280 },
+          width: { min: 1280, ideal: 1920, max: 2560 },
         },
         audio: false,
       };
@@ -436,7 +436,7 @@ class Camera extends Component {
       const videoConfig = {
         video: {
           deviceId: filteredCameras[0],
-          width: { exact: 1280 },
+          width: { min: 1280, ideal: 1920, max: 2560 },
         },
         audio: false,
       };
