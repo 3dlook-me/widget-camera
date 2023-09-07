@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/3dlook-me/widget-camera/compare/v2.2.0...v2.2.1) (2023-09-07)
+
+
+### Bug Fixes
+
+* remove dev dependencies from core deps ([0de9652](https://github.com/3dlook-me/widget-camera/commit/0de9652edd0d00a228ab55f32465eb4ac10f2172))
+
 # [2.2.0](https://github.com/3dlook-me/widget-camera/compare/v2.1.0...v2.2.0) (2023-09-07)
 
 
