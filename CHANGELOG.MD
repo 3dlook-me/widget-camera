@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/3dlook-me/widget-camera/compare/v2.1.0...v2.2.0) (2023-09-07)
+
+
+### Features
+
+* MT-2166 : Improve input front\size Photo resizing logic ([30791f7](https://github.com/3dlook-me/widget-camera/commit/30791f7a232dbf530dfab833a36710e9ecc82065))
+
 # [2.1.0](https://github.com/3dlook-me/widget-camera/compare/v2.0.5...v2.1.0) (2023-09-06)
 
 
