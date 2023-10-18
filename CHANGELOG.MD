@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/3dlook-me/widget-camera/compare/v2.2.1...v2.3.0) (2023-10-18)
+
+
+### Features
+
+* MT-2166 : Increase ideal photo width ([d36fa68](https://github.com/3dlook-me/widget-camera/commit/d36fa68ef0a76901dd079137b6d8121c3025a8af))
+
 ## [2.2.1](https://github.com/3dlook-me/widget-camera/compare/v2.2.0...v2.2.1) (2023-09-07)
 
 
