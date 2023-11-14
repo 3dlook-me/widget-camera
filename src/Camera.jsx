@@ -202,7 +202,7 @@ class Camera extends Component {
         })
         .catch((err) => console.error(err));
     } else {
-      this.isGyroActive();
+        this.isGyroActive();
     }
 
     // is phone locked detect
@@ -223,7 +223,7 @@ class Camera extends Component {
       }
     };
 
-    document.addEventListener(visibilityChange, this.handleVisibilityChange);
+      document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
   componentWillUnmount() {
@@ -310,7 +310,8 @@ class Camera extends Component {
       document.querySelector('.widget-camera').classList.add('widget-camera--z-i-20');
 
       if (this.$audio) {
-        this.$audio.current.pause();
+          this.$audio.current.pause();
+          this.connectToSpeaker(this.$audio, 20);
       }
     } finally {
       this.setState({
@@ -456,7 +457,7 @@ class Camera extends Component {
     if (isTableFlow) {
       setTimeout(() => {
         this.gyroscopePointerPosition(beta);
-        this.normalizeDataTableFlow(gamma, beta);
+          this.normalizeDataTableFlow(gamma, beta);
       }, 50);
     } else {
       setTimeout(() => {
@@ -1053,6 +1054,23 @@ class Camera extends Component {
     });
 
     this.photoTimer = null;
+  }
+
+
+  connectToSpeaker(remoteAudioStream, gain) {
+    try {
+      const AudioCtx = window.AudioContext || window['webkitAudioContext'];
+      const context = new AudioCtx();
+      const audioNode = context.createMediaStreamSource(remoteAudioStream);
+      const gainNode = context.createGain();
+       // some device volume too low ex. iPad
+      gainNode.gain.value = gain;
+      audioNode.connect(gainNode);
+      gainNode.connect(context.destination);
+     } catch (ex) {
+      // will throw an exception if no audio track exists
+      console.error(ex)
+     }
   }
 
   // table flow
