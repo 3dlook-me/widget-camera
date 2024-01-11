@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/3dlook-me/widget-camera/compare/v2.3.1...v2.4.0) (2024-01-11)
+
+
+### Features
+
+* KDL-810 Test Speaker button and guide ([7fd513b](https://github.com/3dlook-me/widget-camera/commit/7fd513bee7a93387fa09824075639df8fc161966))
+
 ## [2.3.1](https://github.com/3dlook-me/widget-camera/compare/v2.3.0...v2.3.1) (2023-11-14)
 
 
