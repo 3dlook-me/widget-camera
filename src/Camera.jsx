@@ -23,6 +23,9 @@ import './Camera.scss';
 
 import SVGPose from './components/SVGComponents/SVGPose';
 import SVGMuteIcon from './components/SVGComponents/SVGMuteIcon';
+import speakerGuide from './images/speaker_on_guide.gif';
+import closeIcon from './images/close-icon.svg';
+import volumeIcon from './images/volume.svg';
 
 // System
 import audioTimer from './audio/timer-new.mp3';
@@ -133,7 +136,8 @@ const AUIDO_CASES = {
 };
 
 class Camera extends Component {
-  $audio = createRef();
+    $audio = createRef();
+    $testAudio = createRef();
 
   constructor(props, context) {
     super(props, context);
@@ -158,6 +162,7 @@ class Camera extends Component {
       isPhotoTimer: false,
       isFirstAudio: true,
       isLastPhoto: false,
+      showSwitchSpeakerGuide: false,
     };
 
     this.gyroTimer = null;
@@ -818,7 +823,15 @@ class Camera extends Component {
     this.setState({
       tapScreen: false,
     });
-  }
+    }
+
+    switchSpeakerInstructions = () => {
+        this.setState((prevState) => ({ ...prevState, showSwitchSpeakerGuide: !prevState.showSwitchSpeakerGuide}));
+    }
+
+    playTestAudio = () => {
+        this.$testAudio.current.play();
+    }
 
   // table flow
   startGyroTimer = () => {
@@ -1139,6 +1152,7 @@ class Camera extends Component {
       photoTimerSecs,
       isLastPhoto,
       isCameraAccess,
+      showSwitchSpeakerGuide,
     } = this.state;
 
     const { type = 'front', isTableFlow = false } = this.props;
@@ -1175,6 +1189,27 @@ class Camera extends Component {
               To use voice instructions, it
               <b> must be turned on.</b>
             </p>
+            <audio ref={this.$testAudio} preload="auto">
+            <source src="https://front-end-assets.3dlook.me/ta3swim/camera/audio/sound-check.mp3" type="audio/mp3" />
+            </audio>
+            <button className="widget-camera__tap-screen-voice-check" onClick={this.playTestAudio}>
+               <img className="widget-camera__tap-screen-voice-check-icon" src={volumeIcon} alt="testAudio" />
+                Test speaker
+            </button>
+            { !this.is('Android')
+               ? <div className="widget-camera__tap-screen--low-sound-text">To fix low sound, follow <button type="button" onClick={this.switchSpeakerInstructions}>these steps</button>
+                     {showSwitchSpeakerGuide
+                        ? <div className="widget-camera__tap-screen-speaker-guide">
+                           <div className="widget-camera__tap-screen-speaker-guide--header">      
+                             <button onClick={this.switchSpeakerInstructions}>
+                               <img src={closeIcon} alt="close-button" />
+                             </button>
+                           </div>
+                                    <img src={speakerGuide} alt="switchSpeakerInstructions" />
+                                </div>
+                         : null}
+                 </div>
+               : null}
             <button
               className="widget-camera__button widget-camera__tap-screen-button"
               type="button"
@@ -1182,6 +1217,7 @@ class Camera extends Component {
             >
               done
             </button>
+
           </div>
         ) : null}
 
