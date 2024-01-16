@@ -23,7 +23,7 @@ import './Camera.scss';
 
 import SVGPose from './components/SVGComponents/SVGPose';
 import SVGMuteIcon from './components/SVGComponents/SVGMuteIcon';
-import speakerGuide from './images/speaker_on_guide.gif';
+import speakerGuide from './images/speaker_guide.mp4';
 import closeIcon from './images/close-icon.svg';
 import volumeIcon from './images/volume.svg';
 
@@ -138,6 +138,7 @@ const AUIDO_CASES = {
 class Camera extends Component {
     $audio = createRef();
     $testAudio = createRef();
+    $videoGuide = createRef();
 
   constructor(props, context) {
     super(props, context);
@@ -1205,8 +1206,12 @@ class Camera extends Component {
                                <img src={closeIcon} alt="close-button" />
                              </button>
                            </div>
-                                    <img src={speakerGuide} alt="switchSpeakerInstructions" />
-                                </div>
+                                    <video ref={this.$videoGuide}
+                                        muted
+                                        preload="auto"
+                                        playsInline
+              autoPlay src={speakerGuide} alt="switchSpeakerInstructions" />
+                          </div>
                          : null}
                  </div>
                : null}
