@@ -827,7 +827,7 @@ class Camera extends Component {
     }
 
     switchSpeakerInstructions = () => {
-        this.setState((prevState) => ({ ...prevState, showSwitchSpeakerGuide: !prevState.showSwitchSpeakerGuide}));
+        this.setState((prevState) => ({ ...prevState, showSwitchSpeakerGuide: !prevState.showSwitchSpeakerGuide }));
     }
 
     playTestAudio = () => {
@@ -1161,7 +1161,8 @@ class Camera extends Component {
     return (
       <div
         className={classNames('widget-camera', {
-          'widget-camera--table-flow': isTableFlow,
+            'widget-camera--table-flow': isTableFlow,
+            'widget-camera--z-i-25': showSwitchSpeakerGuide,
         })}
       >
 
