@@ -827,7 +827,14 @@ class Camera extends Component {
     }
 
     switchSpeakerInstructions = () => {
-        this.setState((prevState) => ({ ...prevState, showSwitchSpeakerGuide: !prevState.showSwitchSpeakerGuide}));
+        this.setState((prevState) => ({ ...prevState, showSwitchSpeakerGuide: !prevState.showSwitchSpeakerGuide }));
+        const { showSwitchSpeakerGuide } = this.state;
+        const widgetCamera = document.querySelector('.widget-camera');
+            if (!showSwitchSpeakerGuide) {
+                widgetCamera.classList.add('widget-camera--z-i-25');
+            } else {
+                widgetCamera.classList.remove('widget-camera--z-i-25');
+            }
     }
 
     playTestAudio = () => {
