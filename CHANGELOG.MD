@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/3dlook-me/widget-camera/compare/v2.5.0...v2.5.1) (2024-01-16)
+
+
+### Bug Fixes
+
+* speaker guide close button ([2c35b77](https://github.com/3dlook-me/widget-camera/commit/2c35b774c1bbdc7f0e3708aa249c32ab5e390e08))
+
 # [2.5.0](https://github.com/3dlook-me/widget-camera/compare/v2.4.0...v2.5.0) (2024-01-16)
 
 
