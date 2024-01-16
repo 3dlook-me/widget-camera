@@ -1,3 +1,11 @@
+## [2.5.2](https://github.com/3dlook-me/widget-camera/compare/v2.5.1...v2.5.2) (2024-01-16)
+
+
+### Bug Fixes
+
+* speaker guide ([62e3d7e](https://github.com/3dlook-me/widget-camera/commit/62e3d7e68444f99ab96989ef17d079bfd41b28a2))
+* speker guide ([1d00e11](https://github.com/3dlook-me/widget-camera/commit/1d00e11b62dcdecf97885ac29e04dd606464d0cd))
+
 ## [2.5.1](https://github.com/3dlook-me/widget-camera/compare/v2.5.0...v2.5.1) (2024-01-16)
 
 
