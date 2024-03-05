@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/3dlook-me/widget-camera/compare/v2.5.2...v2.6.0) (2024-03-05)
+
+
+### Features
+
+* node 18 update ([1f2ac6f](https://github.com/3dlook-me/widget-camera/commit/1f2ac6f61817a2e3eb7f9bccff3b868d5e6e332b))
+
 ## [2.5.2](https://github.com/3dlook-me/widget-camera/compare/v2.5.1...v2.5.2) (2024-01-16)
 
 
