@@ -21,6 +21,8 @@ jobs:
           cache: npm
       - name: Install NPM pkgs
         run: npm ci
+      - name: build
+        run: |
           npm run build:prod
           cp src/demo.html dist/demo.html
       - uses: actions/upload-artifact@v3
