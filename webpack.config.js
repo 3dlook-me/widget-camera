@@ -59,20 +59,19 @@ const plugins = [
     COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
     BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
   }),
-  mode !== 'production' ? new HtmlWebpackPlugin({
+  new HtmlWebpackPlugin({
     filename: 'index.html',
-    template: path.resolve('src/index.html'),
+      template: path.resolve(`${__dirname}/src/index.html`),
     inject: true,
     inlineSource: 'widget.(js/css)$',
     excludeChunks: ['demo'],
-  }) : false,
-  mode !== 'production' ? new HtmlWebpackPlugin({
+  }),
+  new HtmlWebpackPlugin({
     filename: 'demo.html',
-    template: path.resolve('src/demo.html'),
+      template: path.resolve(`${__dirname}/src/demo.html`),
     inject: false,
-    inlineSource: 'widget.(js/css)$',
-  }) : false,
-  mode !== 'production' ? new HtmlWebpackInlineSourcePlugin() : false,
+  }),
+  new HtmlWebpackInlineSourcePlugin(),
   new MiniCssExtractPlugin({
     filename: 'style.css',
     chunkFilename: '[name].css',
@@ -85,9 +84,7 @@ const entry = {
   index: path.resolve(`${__dirname}/src/Camera.jsx`),
 };
 
-if (mode !== 'production') {
-  entry.demo = path.resolve(`${__dirname}/src/demo/Camera.demo.jsx`);
-}
+ entry.demo = path.resolve(`${__dirname}/src/demo/Camera.demo.jsx`);
 
 /**
  * Webpack config
