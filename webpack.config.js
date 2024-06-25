@@ -64,12 +64,12 @@ const plugins = [
       template: path.resolve(`${__dirname}/src/index.html`),
     inject: true,
     inlineSource: 'widget.(js/css)$',
-    excludeChunks: ['demo'],
   }),
   new HtmlWebpackPlugin({
     filename: 'demo.html',
       template: path.resolve(`${__dirname}/src/demo.html`),
-    inject: false,
+      inject: true,
+      inlineSource: 'widget.(js/css)$',
   }),
   new HtmlWebpackInlineSourcePlugin(),
   new MiniCssExtractPlugin({
@@ -81,10 +81,8 @@ const plugins = [
 
 // entry
 const entry = {
-  index: path.resolve(`${__dirname}/src/Camera.jsx`),
+    index: path.resolve(`${__dirname}/src/demo/Camera.demo.jsx`),
 };
-
- entry.demo = path.resolve(`${__dirname}/src/demo/Camera.demo.jsx`);
 
 /**
  * Webpack config
@@ -102,7 +100,6 @@ module.exports = {
     publicPath: '/',
     path: `${__dirname}/dist`,
     filename: '[name].js',
-    libraryTarget: (mode === 'production') ? 'commonjs2' : 'var',
   },
   module: {
     rules: [
@@ -249,8 +246,5 @@ module.exports = {
     host: '0.0.0.0',
     port: 9000,
     historyApiFallback: true,
-  },
-  externals: {
-    preact: (mode === 'production') ? 'preact' : false,
   },
 };
