@@ -51,8 +51,8 @@ class App extends Component {
             sideImage,
         } = this.state;
 
-        window.postMessage({ eventType: `save ${type} file`, front: frontImage, side: sideImage });
-        window.ReactNativeWebView.postMessage({ eventType: `save ${type} file`, front: frontImage, side: sideImage });
+        //window.postMessage(JSON.stringify({ eventType: `save ${type} file`, front: frontImage, side: sideImage }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ eventType: `save ${type} file`, front: frontImage, side: sideImage }));
     }
 
 
