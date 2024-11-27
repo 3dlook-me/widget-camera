@@ -5,6 +5,7 @@ import './AllowFrameTF.scss';
 
 import SVGGradeTF from '../SVGComponents/SVGGradeTF';
 import SVGPointerTF from '../SVGComponents/SVGPointerTF';
+import SVGFrame from '../SVGComponents/SVGFrame';
 
 const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
   <div className={classNames('allow-frame-tf', {
@@ -12,6 +13,7 @@ const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
     'allow-frame-tf--hidden': isLastPhoto,
   })}
   >
+    <SVGFrame className="allow-frame-tf__silhouette" />
     <div className="allow-frame-tf__warning-content">
 
       <div className="allow-frame-tf__grade-wrap">

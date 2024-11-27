@@ -17,6 +17,11 @@ $color-2: #FF0000;
   background-color: transparent;
   border: 6px solid $color-1;
 
+  &__silhouette {
+    position: absolute;
+    z-index: 4;
+  }
+
   &--warning {
     border: 6px solid $color-2;
     background-color: rgba(0, 0, 0, 0.75);
