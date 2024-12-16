@@ -6,6 +6,7 @@ import SVGPointer from '../SVGComponents/SVGPointer';
 import SVGWarning from '../SVGComponents/SVGWarning';
 
 import './AllowFrame.scss';
+import SVGFrame from '../SVGComponents/SVGFrame';
 
 const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
   <Fragment>
@@ -23,15 +24,12 @@ const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
       'allow-frame--hidden': isLastPhoto,
     })}
     >
+      <SVGFrame className="allow-frame__silhouette" />
       <div className="allow-frame__warning-content">
         <SVGWarning className="allow-frame__warning-img" />
         <h2 className="allow-frame__warning-txt">
           Hold your phone vertically and line up the green arrows
         </h2>
-      </div>
-
-      <div className="allow-frame__bottom-border">
-        <div className="allow-frame__bottom-border-space" />
       </div>
     </div>
   </Fragment>

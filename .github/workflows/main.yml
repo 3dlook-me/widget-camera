@@ -21,6 +21,8 @@ jobs:
           cache: npm
       - name: Install NPM pkgs
         run: npm ci
+      - name: build
+        run: |
           npm run build:prod
           cp src/demo.html dist/demo.html
       - uses: actions/upload-artifact@v3
@@ -45,7 +47,7 @@ jobs:
         with:
           folder: ./dist
           bucket-region: ${{ vars.AWS_BUCKET_ZONE }}
-          bucket: ${{ vars.AWS_BUCKET }}
+          bucket: ${{ vars.AWS_BUCKET }}.3dlook.me
           dist-id: ${{ env.AWS_CF_DISTRIBUTION_ID }}
           invalidation: /
           delete-removed: true
