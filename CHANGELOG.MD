@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/3dlook-me/widget-camera/compare/v2.6.0...v2.7.0) (2024-12-16)
+
+
+### Features
+
+* Add body silhouette frame to Camera SDK ([270c4f8](https://github.com/3dlook-me/widget-camera/commit/270c4f8ac62a69f4fa4ae70998940a359f1b0ad7))
+
 # [2.6.0](https://github.com/3dlook-me/widget-camera/compare/v2.5.2...v2.6.0) (2024-03-05)
 
 
