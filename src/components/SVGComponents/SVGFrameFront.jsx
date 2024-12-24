@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import { h } from 'preact';
 
-const SVGFrame = (props) => (
+const SVGFrameFront = (props) => (
   <svg
     className={props.className}
     version="1.1"
@@ -43,4 +43,4 @@ const SVGFrame = (props) => (
 );
 /* eslint-enable react/no-unknown-property */
 
-export default SVGFrame;
+export default SVGFrameFront;

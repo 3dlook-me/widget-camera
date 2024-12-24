@@ -20,6 +20,7 @@ $color-2: #FF0000;
   &__silhouette {
     position: absolute;
     z-index: 4;
+    padding: 32px;
   }
 
   &--warning {
