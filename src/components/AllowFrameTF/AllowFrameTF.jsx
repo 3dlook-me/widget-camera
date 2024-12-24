@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h } from 'preact';
 import classNames from 'classnames';
 
@@ -5,7 +6,8 @@ import './AllowFrameTF.scss';
 
 import SVGGradeTF from '../SVGComponents/SVGGradeTF';
 import SVGPointerTF from '../SVGComponents/SVGPointerTF';
-import SVGFrame from '../SVGComponents/SVGFrame';
+import SVGFrameFront from '../SVGComponents/SVGFrameFront';
+import SVGFrameSide from '../SVGComponents/SVGFrameSide';
 
 const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
   <div className={classNames('allow-frame-tf', {
@@ -13,7 +15,7 @@ const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
     'allow-frame-tf--hidden': isLastPhoto,
   })}
   >
-    <SVGFrame className="allow-frame-tf__silhouette" />
+    {isLastPhoto ? <SVGFrameSide className="allow-frame-tf__silhouette" /> : <SVGFrameFront className="allow-frame-tf__silhouette" />}
     <div className="allow-frame-tf__warning-content">
 
       <div className="allow-frame-tf__grade-wrap">
