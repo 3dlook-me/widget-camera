@@ -1,3 +1,10 @@
+# [2.8.0](https://github.com/3dlook-me/widget-camera/compare/v2.7.0...v2.8.0) (2024-12-24)
+
+
+### Features
+
+* Fix Side photo frame ([61d9481](https://github.com/3dlook-me/widget-camera/commit/61d948152125de4e718eb228a4323957a1257929))
+
 # [2.7.0](https://github.com/3dlook-me/widget-camera/compare/v2.6.0...v2.7.0) (2024-12-16)
 
 
