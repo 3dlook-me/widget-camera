@@ -1275,6 +1275,7 @@ class Camera extends Component {
             gyroscopePosition={gyroscopePosition}
             isLastPhoto={isLastPhoto}
             info={info}
+            type={type}
           />
         ) : (
           <Fragment>
@@ -1301,6 +1302,7 @@ class Camera extends Component {
               gyroscopePosition={gyroscopePosition}
               isLastPhoto={isLastPhoto}
               info={info}
+              type={type}
             />
           </Fragment>
         )}
