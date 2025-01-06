@@ -1,3 +1,10 @@
+# [2.10.0](https://github.com/3dlook-me/widget-camera/compare/v2.9.0...v2.10.0) (2025-01-06)
+
+
+### Features
+
+* Fix types ([ad2e2d5](https://github.com/3dlook-me/widget-camera/commit/ad2e2d5e1d27ad9943d5688031d8f287bdafc99b))
+
 # [2.9.0](https://github.com/3dlook-me/widget-camera/compare/v2.8.0...v2.9.0) (2025-01-06)
 
 
