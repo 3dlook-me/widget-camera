@@ -20,7 +20,7 @@ const AllowFrameTF = ({
     'allow-frame-tf--hidden': isLastPhoto,
   })}
   >
-    {type === 'front' ? <SVGFrameFront className="allow-frame-tf__silhouette" /> : <SVGFrameSide className="allow-frame-tf__silhouette" />}
+    {!info && (type === 'front' ? <SVGFrameFront className="allow-frame-tf__silhouette" /> : <SVGFrameSide className="allow-frame-tf__silhouette" />)}
     <div className="allow-frame-tf__warning-content">
 
       <div className="allow-frame-tf__grade-wrap">
