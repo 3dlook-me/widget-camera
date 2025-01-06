@@ -10,7 +10,12 @@ import './AllowFrame.scss';
 import SVGFrameFront from '../SVGComponents/SVGFrameFront';
 import SVGFrameSide from '../SVGComponents/SVGFrameSide';
 
-const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
+const AllowFrame = ({
+  gyroscopePosition,
+  isLastPhoto,
+  info,
+  type = 'front',
+}) => (
   <Fragment>
     <div className="widget-camera__grade-wrap">
       <div className="widget-camera__grade-container">
@@ -26,7 +31,7 @@ const AllowFrame = ({ gyroscopePosition, isLastPhoto, info }) => (
       'allow-frame--hidden': isLastPhoto,
     })}
     >
-      {isLastPhoto ? <SVGFrameSide className="allow-frame__silhouette" /> : <SVGFrameFront className="allow-frame__silhouette" />}
+      {!info && (type === 'front' ? <SVGFrameFront className="allow-frame__silhouette" /> : <SVGFrameSide className="allow-frame__silhouette" />)}
       <div className="allow-frame__warning-content">
         <SVGWarning className="allow-frame__warning-img" />
         <h2 className="allow-frame__warning-txt">

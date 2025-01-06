@@ -9,13 +9,18 @@ import SVGPointerTF from '../SVGComponents/SVGPointerTF';
 import SVGFrameFront from '../SVGComponents/SVGFrameFront';
 import SVGFrameSide from '../SVGComponents/SVGFrameSide';
 
-const AllowFrameTF = ({ gyroscopePosition, isLastPhoto, info }) => (
+const AllowFrameTF = ({
+  gyroscopePosition,
+  isLastPhoto,
+  info,
+  type = 'front',
+}) => (
   <div className={classNames('allow-frame-tf', {
     'allow-frame-tf--warning': info,
     'allow-frame-tf--hidden': isLastPhoto,
   })}
   >
-    {isLastPhoto ? <SVGFrameSide className="allow-frame-tf__silhouette" /> : <SVGFrameFront className="allow-frame-tf__silhouette" />}
+    {type === 'front' ? <SVGFrameFront className="allow-frame-tf__silhouette" /> : <SVGFrameSide className="allow-frame-tf__silhouette" />}
     <div className="allow-frame-tf__warning-content">
 
       <div className="allow-frame-tf__grade-wrap">
