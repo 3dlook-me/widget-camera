@@ -1,3 +1,10 @@
+## [2.10.1](https://github.com/3dlook-me/widget-camera/compare/v2.10.0...v2.10.1) (2025-01-14)
+
+
+### Bug Fixes
+
+* Side photo turn left. Change button ([d63bab9](https://github.com/3dlook-me/widget-camera/commit/d63bab949507c2452f2868d4b63e131f025aa383))
+
 # [2.10.0](https://github.com/3dlook-me/widget-camera/compare/v2.9.0...v2.10.0) (2025-01-06)
 
 
