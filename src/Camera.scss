@@ -91,8 +91,8 @@ $color-2: rgba(255,255,255,0.6);
     &-controls {
         position: absolute;
         z-index: 20;
-        bottom: 0;
-        height: 133px;
+        bottom: -100px;
+        height: 174px;
         width: 100%;
         display: flex;
         flex-direction: row;
@@ -126,8 +126,8 @@ $color-2: rgba(255,255,255,0.6);
     &-take-photo {
         -webkit-appearance: none;
         position: relative;
-        width: 74px;
-        height: 74px;
+        width: 166px;
+        height: 166px;
         background-color: transparent;
         border-radius: 50%;
         border: 6px solid #fff;
@@ -148,22 +148,23 @@ $color-2: rgba(255,255,255,0.6);
         &-effect {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 56px;
-            height: 56px;
+            top: 20px;
+            left: 20px;
+            width: 114px;
+            height: 114px;
             border-radius: 50%;
             background-color: #fff;
 
             &::after {
                 content: 'READY';
-                font-size: 15px;
+                font-size: 16px;
                 font-weight: bold;
                 letter-spacing: -0.34px;
-                line-height: 18px;
+                line-height: 19px;
                 color: black;
+                padding-top: 16px;
             }
         }
 
