@@ -19,6 +19,9 @@ import {
   getChromeVersion,
 } from './helpers/utils';
 
+import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import { Pose } from '@mediapipe/pose';
+
 import './Camera.scss';
 
 import SVGPose from './components/SVGComponents/SVGPose';
@@ -135,6 +138,49 @@ const AUIDO_CASES = {
   ],
 };
 
+const rulesText = {
+    3: "There is no person in the photo or there is some body part",
+    4: "Some part(s) of the human body is(are) absent in the photo",
+    5: "The person in the photo stands far away from the camera",
+    6: "The person stands too close to the camera",
+    7: "The person stays sideways in the photo taken as a front one",
+    8: "The person stays facing to the camera in the photo taken as a side one",
+    9: "The person is in an uncertain position (e.g. mid turned) in any photo (front or side)",
+    10: "The person stands backwards in the front photo",
+    11: "The person bends the left hand or the elbow",
+    12: "The person bends the right hand or the elbow",
+    13: "The person lifts the left hand too high",
+    14: "The person lifts the right hand too high. ",
+    15: "The person lifts both hands too high or/and bends them on the elbow",
+    16: "The distance between the person's legs is too small or too big",
+    17: "The person tilts the head to any side in the front photo",
+    18: "The person bends any of the hands or the elbow",
+    19: "The person raises the hand(s) in a plane parallel to the plane of the photo",
+    20: "The person stands in T-pose, pose close to T-pose or with clasped hands",
+    21: "The person stands with the head tilted forward or backward",
+    22: "The person bends the knee(s)",
+    23: "The person looks into the camera when standing sideways on the side photo",
+    24: "Multiple persons detected",
+    25: "The person is not looking straight to the camera",
+    26: "The person crosses its legs",
+    27: "The person bends the body",
+    28: "The body is not within the guides",
+    29: "The body is not within the top guide",
+    30: "The body is not within the bottom guide",
+    31: "The body is not within the left guide",
+    32: "The body is not within the right guide",
+    33: "The arms are not open (too close to the body)",
+    34: "The distance between the legs is too small",
+    35: "[Side] Turn towards the camera (slightly)",
+    36: "[Side] Turn against (away from) the camera (slightly)",
+    37: "The legs are partly occluded (table/desk)",
+    38: "[Side] Looking to the right-side",
+    39: "[Side] Looking to the left-side",
+    40: "The distance between the person's legs is too big",
+    41: "[Softer] The arms are not open (too close to the body)",
+    42: "[Softer] The distance between the legs is too small",
+};
+
 class Camera extends Component {
     $audio = createRef();
     $testAudio = createRef();
@@ -189,9 +235,58 @@ class Camera extends Component {
         width: { min: 1920, ideal: 2560, max: 2560 },
       },
     };
+
+    this.rules = undefined;
+    this.usertPose = undefined;
+
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.9/dist/tf-tflite.min.js';
+    script.async = true;
+    document.body.appendChild(script);
   }
 
-  componentDidMount() {
+    componentDidMount() {
+
+       async function loadRules() {
+            window.tflite.setWasmPath(
+                'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.9/dist/'
+            );
+            let MODEL_URL = 'https://front-end-assets.3dlook.me/tflite-model/validation_rules_v32.tflite';
+            return await window.tflite.loadTFLiteModel(MODEL_URL);
+        }; 
+
+        const checkForTflite = () => {
+            if (window.tflite) {
+                this.rules = loadRules();
+                clearInterval(intervalId);
+            }
+        };
+
+        const intervalId = setInterval(checkForTflite, 100);
+
+        this.userPose = new Pose({
+            locateFile: (file) => {
+                //return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+                //return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@${mpPose.VERSION}/${file}`;
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${file}`;
+            },
+        });
+        this.userPose.setOptions({
+            minDetectionConfidence: 0.45,
+            minTrackingConfidence: 0.45,
+        });
+
+        this.userPose.onResults(this.onResults);
+
+        this.setState({
+            width: document.body.clientWidth,
+            height: document.body.clientHeight,
+        }, this.startStream);
+
+        this.video.addEventListener("loadeddata", () => {
+            this.predict();
+        });
+
     this.setState({
       width: document.body.clientWidth,
       height: document.body.clientHeight,
@@ -324,6 +419,162 @@ class Camera extends Component {
         isButtonInit: true,
       });
     }
+    }
+
+  computeRules = (poseLandmarks) => {
+        let rulesOutput = undefined;
+        let bodyRulesOutput = undefined;
+
+        // How many poses?
+        if (poseLandmarks === undefined) {
+            // 3: "There is no person in the photo or there is some body part",
+            console.log("R3: There is no person in the photo or there is some body part");
+            // Empty rules output
+            rulesOutput = Array.from({ length: 40 }, (_, i) => 0);
+            // R3=1
+            rulesOutput[0] = 1;
+        }
+        else {
+            // Extract (x, y) normalized
+            let landmarks_xy_norm = [];
+            for (let i = 0; i < poseLandmarks.length; i++) {
+                landmarks_xy_norm[i] = [poseLandmarks[i].x, poseLandmarks[i].y];
+            }
+
+            // Inference
+            [rulesOutput, bodyRulesOutput] = tf.tidy(() => {
+                let tensor_landmarks_xy_norm = tf.expandDims(tf.tensor(landmarks_xy_norm), 0);
+                let result = this.rules.predict(tensor_landmarks_xy_norm);
+                // Tensors
+                let rulesOut = result["PartitionedCall:1"].dataSync();
+                let bodyRulesOut = result["PartitionedCall:0"].dataSync();
+                return [rulesOut, bodyRulesOut];
+            });
+            /*
+            TODO: Missing multiple persons detected
+            // At least one pose detected
+            if (poses.length > 1){
+                // 24: "Multiple persons detected",
+                console.log("R24: Multiple persons detected");
+                // Manually update rule value
+                rulesOutput[24-3] = 1;
+            }
+            */
+        }
+
+        return [rulesOutput, bodyRulesOutput];
+    }
+
+  onResults = (results) => {
+
+        const canvasElement = document.getElementById(
+            "output_canvas"
+        );
+        const canvasCtx = canvasElement.getContext("2d");
+
+        // Rules based on single pose estimation
+        let rulesOutput = undefined;
+        let bodyRules = undefined;
+        [rulesOutput, bodyRules] = computeRules(results.poseLandmarks);
+
+        // Update the frame rate.
+        //fpsControl.tick();
+
+        // Draw the overlays.
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        // Draw landmarks
+        if (results.poseLandmarks) {
+            function getRGB(status) {
+                if (status == 1) {
+                    return 'rgb(255,0,0)';
+                } else {
+                    return 'rgb(0,255,0)';
+                }
+            };
+
+            drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, { visibilityMin: 0.15, color: 'white', 'lineWidth': 3 });
+
+            // Keypoints of interest corresponding to body rules output
+            let keypoints_of_interest = [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+
+            for (const i of Array(keypoints_of_interest.length).keys()) {
+                let kpt_idx = keypoints_of_interest[i];
+                let kpt_status = bodyRules[i];
+                drawLandmarks(canvasCtx, [results.poseLandmarks[kpt_idx]], { visibilityMin: 0.15, color: 'white', fillColor: getRGB(kpt_status), 'radius': 7 });
+            };
+
+        }
+
+        // Draw rules
+        canvasCtx.font = "bold 15px Arial";
+        let y_jump = 15;
+        let y_text = y_jump;
+
+        if (rulesOutput === undefined) {
+            let rule_idx = 3;
+            canvasCtx.fillText("R" + rule_idx + ". " + rulesText[rule_idx], 5, y_text);
+        }
+        else {
+            for (let i = 0; i < rulesOutput.length; i++) {
+                if (rulesOutput[i] === 1) {
+                    let rule_idx = i + 3;
+                    canvasCtx.fillText("R" + rule_idx + ". " + rulesText[rule_idx], 5, y_text);
+                    y_text = y_text + y_jump;
+                }
+            }
+        }
+
+        // Blur face
+        if (results.poseLandmarks) {
+            let faceLandmarksIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            // Face bounding box
+            let minX = 1, minY = 1, maxX = 0, maxY = 0;
+            for (let i = 0; i < faceLandmarksIndices.length; i++) {
+                // Lanmdmark of interest
+                let landmark_x = results.poseLandmarks[faceLandmarksIndices[i]].x;
+                let landmark_y = results.poseLandmarks[faceLandmarksIndices[i]].y;
+                // Min & Max values update
+                minX = Math.min(minX, landmark_x);
+                minY = Math.min(minY, landmark_y);
+                maxX = Math.max(maxX, landmark_x);
+                maxY = Math.max(maxY, landmark_y);
+            }
+            // X-axis adjustent
+            minX = minX - (maxX - minX) * 0.05;
+            maxX = maxX + (maxX - minX) * 0.05;
+            // Y-axis adjustment
+            minY = minY - (maxY - minY) * 0.95;
+            maxY = maxY + (maxY - minY) * 0.25;
+
+            // Normalized to pixel position
+            minX = minX * canvasElement.width;
+            maxX = maxX * canvasElement.width;
+            minY = minY * canvasElement.height;
+            maxY = maxY * canvasElement.height;
+            // Ellipsoid
+            let e_x = (maxX + minX) / 2;
+            let e_y = (maxY + minY) / 2;
+            let e_w = (maxX - minX) * 0.65;
+            let e_h = (maxY - minY) * 0.65;
+
+            // Draw blur
+            canvasCtx.filter = 'none'; // remove filter
+            canvasCtx.fillStyle = 'rgba(200,200,200,0.9)';
+
+            canvasCtx.beginPath();
+            canvasCtx.ellipse(e_x, e_y, e_w, e_h, 0, 0, 2 * Math.PI);
+            canvasCtx.fill();
+        }
+
+        canvasCtx.restore();
+    }
+
+  predict = async () => {
+   console.log(this.userPose);
+   await this.userPose.send({ image: this.video });
   }
 
   getUserDevices = () => navigator.mediaDevices.enumerateDevices()
@@ -1232,7 +1483,9 @@ class Camera extends Component {
         <div className="widget-camera__title">
           {`${type} photo`}
         </div>
-
+            <div className="widget-camera__video-wrapper">
+                <canvas className="widget-camera-video" id="output_canvas" width="100%" height="100%" style="position: absolute; left: 0px; top: 0px; z-index: 7"></canvas>
+            </div>
         {this.before(
           <div className="widget-camera__video-wrapper">
             <video
