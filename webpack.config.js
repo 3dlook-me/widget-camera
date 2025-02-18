@@ -130,7 +130,7 @@ module.exports = {
                   corejs: false,
                   helpers: true,
                   regenerator: true,
-                  useESModules: false,
+                    useESModules: false,
                 }],
               ],
             },
@@ -138,6 +138,33 @@ module.exports = {
         ],
       },
 
+          {
+              test: /\.mjs$/,
+              use: [
+                  {
+                      loader: 'babel-loader',
+                      options: {
+                          presets: [
+                              ['@babel/preset-env', {
+                                  targets: {
+                                      browsers: ['last 2 versions', 'safari >= 7'],
+                                  },
+                              }],
+                          ],
+                          plugins: [
+                              ['@babel/plugin-transform-async-to-generator'],
+                              ['@babel/plugin-proposal-class-properties', { loose: false }],
+                              ['@babel/plugin-transform-runtime', {
+                                  corejs: false,
+                                  helpers: true,
+                                  regenerator: true,
+                                  useESModules: true,
+                              }],
+                          ],
+                      },
+                  },
+              ],
+          },
       {
         test: /\.jsx$/,
         exclude: /node_modules/,
@@ -170,6 +197,7 @@ module.exports = {
           },
         ],
       },
+
 
       {
         test: /\.(s*)css$/,

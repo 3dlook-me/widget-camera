@@ -74,8 +74,12 @@
   "dependencies": {
     "@babel/polyfill": "^7.8.3",
     "@babel/runtime": "^7.8.4",
+    "@mediapipe/drawing_utils": "^0.3.1675466124",
+    "@mediapipe/pose": "^0.5.1675469404",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@tensorflow/tfjs-backend-cpu": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
     "classnames": "^2.5.1",
     "preact": "^10.19.6",
     "sass": "^1.71.1",

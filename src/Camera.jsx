@@ -27,6 +27,11 @@ import speakerGuide from './images/speaker_guide.mp4';
 import closeIcon from './images/close-icon.svg';
 import volumeIcon from './images/volume.svg';
 
+import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import { Pose } from '@mediapipe/pose';
+import * as mediapipePose from "@mediapipe/pose";
+
+
 // System
 import audioTimer from './audio/timer-new.mp3';
 import audioPhotoShutter from './audio/shutter-sound-new.mp3';
@@ -139,6 +144,7 @@ class Camera extends Component {
     $audio = createRef();
     $testAudio = createRef();
     $videoGuide = createRef();
+    
 
   constructor(props, context) {
     super(props, context);
@@ -164,6 +170,7 @@ class Camera extends Component {
       isFirstAudio: true,
       isLastPhoto: false,
       showSwitchSpeakerGuide: false,
+      lastVideoTime: -1,
     };
 
     this.gyroTimer = null;
@@ -171,7 +178,7 @@ class Camera extends Component {
     this.playSpeed = 1;
     this.rotX = 0;
     this.rotY = 0;
-
+      
     // in dev mode comment 3 lines below
     if (props.hardValidation) {
       this.hardValidationFS = props.hardValidation.front && props.hardValidation.side;
@@ -180,7 +187,11 @@ class Camera extends Component {
       this.isHardValidation = this.hardValidationFS || this.hardValidationF || this.hardValidationS;
     }
 
-    this.cameraType = props.isTableFlow ? 'user' : 'environment';
+      this.cameraType = props.isTableFlow ? 'user' : 'environment';
+
+      this.poseLandmarker = undefined;
+      this.rules = undefined;
+      this.userPose = undefined;
 
     this.VIDEO_CONFIG = {
       audio: false,
@@ -188,14 +199,83 @@ class Camera extends Component {
         facingMode: this.cameraType,
         width: { min: 1920, ideal: 2560, max: 2560 },
       },
-    };
-  }
+      };
 
-  componentDidMount() {
-    this.setState({
-      width: document.body.clientWidth,
-      height: document.body.clientHeight,
-    }, this.startStream);
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.9/dist/tf-tflite.min.js';
+      script.async = true;
+      document.body.appendChild(script);
+  }
+  
+    componentDidMount() {
+        async function loadRules() {    
+            window.tflite.setWasmPath(
+                'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.9/dist/'
+            );
+            let MODEL_URL = 'https://front-end-assets.3dlook.me/tflite-model/validation_rules_v32.tflite'; 
+            return await window.tflite.loadTFLiteModel(MODEL_URL);
+    };
+
+        const checkForTflite = () => {
+            if (window.tflite) {       
+                this.rules = loadRules();
+                clearInterval(intervalId);
+            }
+        };
+
+        const intervalId = setInterval(checkForTflite, 100);
+
+            this.userPose = new Pose({
+                locateFile: (file) => {
+                    //return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+                    //return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@${mpPose.VERSION}/${file}`;
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${file}`;
+                },
+            });
+
+
+            this.userPose.setOptions({
+                minDetectionConfidence: 0.45,
+                minTrackingConfidence: 0.45,
+            });
+
+            this.userPose.onResults(this.onResults);
+
+        this.setState({
+            width: document.body.clientWidth,
+            height: document.body.clientHeight,
+        }, this.startStream);
+
+        this.video.addEventListener("loadeddata", () => {
+            this.predict();
+        });
+ 
+        //const createPoseLandmarker = async () => {
+            //const vision = await FilesetResolver.forVisionTasks(
+               //"https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+           // );
+
+            //this.poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+                //baseOptions: {
+                    //modelAssetPath: `./models/rules_lite_v32.tflite`,
+                    //delegate: "GPU"
+                //},
+                //runningMode: 'VIDEO',
+                //numPoses: 2
+            //});
+        //};
+  
+        //createPoseLandmarker();
+
+
+        //if (!this.poseLandmarker) {
+            //console.log("Wait! poseLandmaker not loaded yet.");
+            //return;
+       // }
+
+ 
+        //this.video.addEventListener("loadeddata", this.predictWebcam);
+
 
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
@@ -235,8 +315,160 @@ class Camera extends Component {
   componentWillUnmount() {
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());
-    }
+      }
+      return () => clearInterval(intervalId);
   }
+
+    computeRules = (poseLandmarks) => {
+    let rulesOutput = undefined;
+    let bodyRulesOutput = undefined;
+
+    // How many poses?
+    if (poseLandmarks === undefined) {
+        // 3: "There is no person in the photo or there is some body part",
+        console.log("R3: There is no person in the photo or there is some body part");
+        // Empty rules output
+        rulesOutput = Array.from({ length: 40 }, (_, i) => 0);
+        // R3=1
+        rulesOutput[0] = 1;
+    }
+    else {
+        // Extract (x, y) normalized
+        let landmarks_xy_norm = [];
+        for (let i = 0; i < poseLandmarks.length; i++) {
+            landmarks_xy_norm[i] = [poseLandmarks[i].x, poseLandmarks[i].y];
+        }
+
+        // Inference
+        [rulesOutput, bodyRulesOutput] = tf.tidy(() => {
+            let tensor_landmarks_xy_norm = tf.expandDims(tf.tensor(landmarks_xy_norm), 0);
+            let result = this.rules.predict(tensor_landmarks_xy_norm);
+            // Tensors
+            let rulesOut = result["PartitionedCall:1"].dataSync();
+            let bodyRulesOut = result["PartitionedCall:0"].dataSync();
+            return [rulesOut, bodyRulesOut];
+        });
+        /*
+        TODO: Missing multiple persons detected
+        // At least one pose detected
+        if (poses.length > 1){
+            // 24: "Multiple persons detected",
+            console.log("R24: Multiple persons detected");
+            // Manually update rule value
+            rulesOutput[24-3] = 1;
+        }
+        */
+    }
+
+    return [rulesOutput, bodyRulesOutput];
+}
+
+    onResults = (results) => {
+
+        const canvasElement = document.getElementById(
+            "output_canvas"
+        );
+        const canvasCtx = canvasElement.getContext("2d");
+
+    // Rules based on single pose estimation
+    let rulesOutput = undefined;
+    let bodyRules = undefined;
+    [rulesOutput, bodyRules] = computeRules(results.poseLandmarks);
+
+    // Update the frame rate.
+    //fpsControl.tick();
+
+    // Draw the overlays.
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+    // Draw landmarks
+    if (results.poseLandmarks) {
+        function getRGB(status) {
+            if (status == 1) {
+                return 'rgb(255,0,0)';
+            } else {
+                return 'rgb(0,255,0)';
+            }
+        };
+
+        drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, { visibilityMin: 0.15, color: 'white', 'lineWidth': 3 });
+
+        // Keypoints of interest corresponding to body rules output
+        let keypoints_of_interest = [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+
+        for (const i of Array(keypoints_of_interest.length).keys()) {
+            let kpt_idx = keypoints_of_interest[i];
+            let kpt_status = bodyRules[i];
+            drawLandmarks(canvasCtx, [results.poseLandmarks[kpt_idx]], { visibilityMin: 0.15, color: 'white', fillColor: getRGB(kpt_status), 'radius': 7 });
+        };
+
+    }
+
+    // Draw rules
+    canvasCtx.font = "bold 15px Arial";
+    let y_jump = 15;
+    let y_text = y_jump;
+
+    if (rulesOutput === undefined) {
+        let rule_idx = 3;
+        canvasCtx.fillText("R" + rule_idx + ". " + rulesText[rule_idx], 5, y_text);
+    }
+    else {
+        for (let i = 0; i < rulesOutput.length; i++) {
+            if (rulesOutput[i] === 1) {
+                let rule_idx = i + 3;
+                canvasCtx.fillText("R" + rule_idx + ". " + rulesText[rule_idx], 5, y_text);
+                y_text = y_text + y_jump;
+            }
+        }
+    }
+
+    // Blur face
+    if (results.poseLandmarks) {
+        let faceLandmarksIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        // Face bounding box
+        let minX = 1, minY = 1, maxX = 0, maxY = 0;
+        for (let i = 0; i < faceLandmarksIndices.length; i++) {
+            // Lanmdmark of interest
+            let landmark_x = results.poseLandmarks[faceLandmarksIndices[i]].x;
+            let landmark_y = results.poseLandmarks[faceLandmarksIndices[i]].y;
+            // Min & Max values update
+            minX = Math.min(minX, landmark_x);
+            minY = Math.min(minY, landmark_y);
+            maxX = Math.max(maxX, landmark_x);
+            maxY = Math.max(maxY, landmark_y);
+        }
+        // X-axis adjustent
+        minX = minX - (maxX - minX) * 0.05;
+        maxX = maxX + (maxX - minX) * 0.05;
+        // Y-axis adjustment
+        minY = minY - (maxY - minY) * 0.95;
+        maxY = maxY + (maxY - minY) * 0.25;
+
+        // Normalized to pixel position
+        minX = minX * canvasElement.width;
+        maxX = maxX * canvasElement.width;
+        minY = minY * canvasElement.height;
+        maxY = maxY * canvasElement.height;
+        // Ellipsoid
+        let e_x = (maxX + minX) / 2;
+        let e_y = (maxY + minY) / 2;
+        let e_w = (maxX - minX) * 0.65;
+        let e_h = (maxY - minY) * 0.65;
+
+        // Draw blur
+        canvasCtx.filter = 'none'; // remove filter
+        canvasCtx.fillStyle = 'rgba(200,200,200,0.9)';
+
+        canvasCtx.beginPath();
+        canvasCtx.ellipse(e_x, e_y, e_w, e_h, 0, 0, 2 * Math.PI);
+        canvasCtx.fill();
+    }
+
+    canvasCtx.restore();
+}
 
   isGyroActive = () => {
     window.addEventListener('deviceorientation', (event) => {
@@ -291,15 +523,16 @@ class Camera extends Component {
     }
   }
 
-  startStream = async () => {
-    this.startCamera(this.VIDEO_CONFIG, this.getUserDevices);
+    startStream = async () => {
+     this.userPose.reset();
+     this.startCamera(this.VIDEO_CONFIG, this.getUserDevices);
   };
 
-  startCamera = async (config, callback) => {
+    startCamera = async (config, callback) => {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia(config);
 
-      this.video.srcObject = this.stream;
+        this.video.srcObject = this.stream;
 
       if (callback) {
         callback().catch((err) => console.err(err));
@@ -323,8 +556,70 @@ class Camera extends Component {
       this.setState({
         isButtonInit: true,
       });
+
     }
-  }
+    }
+
+
+    predict = async () => {
+        console.log(this.userPose);
+        await this.userPose.send({ image: this.video });
+    }
+
+
+    predictWebcam = () => {
+        const { lastVideoTime } = this.state;
+        if (!this.poseLandmarker) {
+            console.log("Wait! poseLandmaker not loaded yet.");
+            return;
+        }
+        console.log('predictWebcam');
+        console.log(this.poseLandmarker);
+        const videoHeight = "360px";
+        const videoWidth = "480px";
+   
+    
+        //console.log(canvasElement, canvasCtx);
+ 
+        // Now let's start detecting the stream.
+     
+       
+        let startTimeMs = performance.now();
+        //if (lastVideoTime !== this.video.currentTime) {
+            console.log('result');
+
+            this.setState({
+                lastVideoTime: this.video.currentTime,
+            });
+        this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
+            const canvasElement = document.getElementById(
+                "output_canvas"
+            );
+            const canvasCtx = canvasElement.getContext("2d");
+            //canvasElement.style.height = videoHeight;
+            //this.video.style.height = videoHeight;
+            //canvasElement.style.width = videoWidth;
+            //this.video.style.width = videoWidth; 
+            const drawingUtils = new DrawingUtils(canvasCtx);
+                canvasCtx.save();
+                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                console.log(result.landmarks);
+                console.log(this.video);
+                for (const landmark of result.landmarks) {
+                    drawingUtils.drawLandmarks(landmark, { color: 'red', lineWidth: 1, radius: 1 });
+                    drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS, { color: '#3240CF', lineWidth: 1 });
+
+                    console.log(landmark);
+                }
+                canvasCtx.restore();
+            });
+       // }
+
+        // Call this function again to keep predicting when the browser is ready.
+
+        window.requestAnimationFrame(this.predictWebcam);
+    }
+    
 
   getUserDevices = () => navigator.mediaDevices.enumerateDevices()
     .then(async (devices) => {
@@ -1231,8 +1526,10 @@ class Camera extends Component {
 
         <div className="widget-camera__title">
           {`${type} photo`}
-        </div>
-
+            </div>
+            <div className="widget-camera__video-wrapper">
+                <canvas className="widget-camera-video" id="output_canvas" width="100%" height="100%" style="position: absolute; left: 0px; top: 0px; z-index: 7"></canvas>
+            </div>
         {this.before(
           <div className="widget-camera__video-wrapper">
             <video
@@ -1244,7 +1541,8 @@ class Camera extends Component {
               playsinline
               autoPlay
               className={classNames('widget-camera-video')}
-            />
+             />
+            
           </div>,
         )}
 
@@ -1304,7 +1602,8 @@ class Camera extends Component {
             />
           </Fragment>
         )}
-      </div>
+        </div>
+
     );
   }
 }
