@@ -8,7 +8,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "build:test": "cross-env NODE_ENV=development webpack --progress",
-    "build:prod": "cross-env NODE_ENV=production webpack --progress"
+    "build:prod": "cross-env NODE_ENV=development webpack --progress"
   },
   "repository": "github:3dlook-me/widget-camera",
   "author": "3DLOOK",
