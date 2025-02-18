@@ -3,6 +3,15 @@ name: MainFlow
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: Select environment to deploy
+        required: true
+        default: TEST
+        type: choice
+        options:
+          - TEST
+          - DEV
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_S3 }}
@@ -34,7 +43,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-20.04
     environment:
-      name: TEST
+      name: ${{ github.event.inputs.environment }}
       url: https://${{ vars.AWS_BUCKET }}.3dlook.me
     env:
       AWS_CF_DISTRIBUTION_ID: ${{ secrets.AWS_CF_DISTRIBUTION_ID }}
