@@ -7,7 +7,7 @@ on:
       environment:
         description: Select environment to deploy
         required: true
-        default: TEST
+        default: DEV
         type: choice
         options:
           - TEST
