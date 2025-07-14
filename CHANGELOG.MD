@@ -1,3 +1,10 @@
+## [2.10.2](https://github.com/3dlook-me/widget-camera/compare/v2.10.1...v2.10.2) (2025-07-14)
+
+
+### Bug Fixes
+
+* dumb commit to trigger semantic-release ([3b480bd](https://github.com/3dlook-me/widget-camera/commit/3b480bdf090e5e15dcd7a623190c74765ff6a2f3))
+
 ## [2.10.1](https://github.com/3dlook-me/widget-camera/compare/v2.10.0...v2.10.1) (2025-01-14)
 
 
