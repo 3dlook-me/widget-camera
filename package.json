@@ -11,6 +11,11 @@
     "build:prod": "cross-env NODE_ENV=production webpack --progress"
   },
   "repository": "github:3dlook-me/widget-camera",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE.md"
+  ],
   "author": "3DLOOK",
   "license": "ISC",
   "main": "dist/index.js",
