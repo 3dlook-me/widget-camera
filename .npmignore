@@ -1,1 +1,9 @@
 .idea/
+.github/
+src/
+node_modules/
+.gitignore
+.npmignore
+.eslintrc
+.releaserc
+webpack.config.js
