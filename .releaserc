@@ -1,5 +1,6 @@
 branches:
   - develop
+
 debug: true
 ci: true
 dryRun: false
