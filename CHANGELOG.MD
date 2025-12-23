@@ -1,3 +1,13 @@
+## [2.10.5](https://github.com/3dlook-me/widget-camera/compare/v2.10.4...v2.10.5) (2025-12-23)
+
+
+### Bug Fixes
+
+* **ci:** update node version ([6849378](https://github.com/3dlook-me/widget-camera/commit/68493782b1fb464ff5d69b9d4eaf71475d9f8cfc))
+* **ci:** update node version to 22 ([022126a](https://github.com/3dlook-me/widget-camera/commit/022126a6884b8f951b70376d9989652e3314eaf5))
+* enable OIDC for npmjs ([321ff28](https://github.com/3dlook-me/widget-camera/commit/321ff28a98c62d280399ea2f603d981c9fcf190d))
+* update semantic release ([3754ba1](https://github.com/3dlook-me/widget-camera/commit/3754ba1458378788665bf31476477591658a872c))
+
 ## [2.10.4](https://github.com/3dlook-me/widget-camera/compare/v2.10.3...v2.10.4) (2025-12-23)
 
 
