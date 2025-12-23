@@ -85,7 +85,7 @@
     "classnames": "^2.5.1",
     "preact": "^10.19.6",
     "sass": "^1.71.1",
-    "semantic-release": "^22.0.12"
+    "semantic-release": "^25.0.2"
   },
   "peerDependencies": {
     "preact": "^10.19.6"
