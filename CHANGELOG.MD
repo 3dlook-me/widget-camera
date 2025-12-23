@@ -1,3 +1,10 @@
+## [2.10.3](https://github.com/3dlook-me/widget-camera/compare/v2.10.2...v2.10.3) (2025-12-23)
+
+
+### Bug Fixes
+
+* friend flow frame ([a95e719](https://github.com/3dlook-me/widget-camera/commit/a95e719bc69aab2321b5c91a7968c53a86dedef8))
+
 ## [2.10.2](https://github.com/3dlook-me/widget-camera/compare/v2.10.1...v2.10.2) (2025-07-14)
 
 
