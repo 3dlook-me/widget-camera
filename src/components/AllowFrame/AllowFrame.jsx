@@ -8,7 +8,7 @@ import SVGWarning from '../SVGComponents/SVGWarning';
 
 import './AllowFrame.scss';
 import SVGFrameFront from '../SVGComponents/SVGFrameFront';
-import SVGFrameSide from '../SVGComponents/SVGFrameSide';
+import SVGFrameSideFriend from '../SVGComponents/SVGFrameSideFriend';
 
 const AllowFrame = ({
   gyroscopePosition,
@@ -31,7 +31,7 @@ const AllowFrame = ({
       'allow-frame--hidden': isLastPhoto,
     })}
     >
-      {!info && (type === 'front' ? <SVGFrameFront className="allow-frame__silhouette" /> : <SVGFrameSide className="allow-frame__silhouette" />)}
+    {!info && (type === 'front' ? <SVGFrameFront className="allow-frame__silhouette" /> : <SVGFrameSideFriend className="allow-frame__silhouette" />)}
       <div className="allow-frame__warning-content">
         <SVGWarning className="allow-frame__warning-img" />
         <h2 className="allow-frame__warning-txt">
